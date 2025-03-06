@@ -1,0 +1,188 @@
+INFO - 2024-11-20 00:00:27 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-11-20 00:00:38 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-11-20 00:00:38 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2024-11-20 00:01:43 --> ErrorException: Undefined variable $horario
+[Method: GET, Route: configuracion]
+in APPPATH\Views\configuracion.php on line 204.
+ 1 APPPATH\Views\configuracion.php(204): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $horario', 'C:\\xampp\\htdocs\\login2\\app\\Views\\configuracion.php', 204)
+ 2 SYSTEMPATH\View\View.php(234): include('C:\\xampp\\htdocs\\login2\\app\\Views\\configuracion.php')
+ 3 SYSTEMPATH\View\View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1171): CodeIgniter\View\View->render('configuracion', [], true)
+ 5 APPPATH\Controllers\Home.php(90): view('configuracion')
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Home->iraconfiguracion()
+ 7 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Home))
+ 8 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(325): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2024-11-20 00:01:44 --> ErrorException: Undefined variable $horario
+[Method: GET, Route: configuracion]
+in APPPATH\Views\configuracion.php on line 204.
+ 1 APPPATH\Views\configuracion.php(204): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $horario', 'C:\\xampp\\htdocs\\login2\\app\\Views\\configuracion.php', 204)
+ 2 SYSTEMPATH\View\View.php(234): include('C:\\xampp\\htdocs\\login2\\app\\Views\\configuracion.php')
+ 3 SYSTEMPATH\View\View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1171): CodeIgniter\View\View->render('configuracion', [], true)
+ 5 APPPATH\Controllers\Home.php(90): view('configuracion')
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Home->iraconfiguracion()
+ 7 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Home))
+ 8 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(325): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2024-11-20 00:01:44 --> ErrorException: Undefined variable $horario
+[Method: GET, Route: configuracion]
+in APPPATH\Views\configuracion.php on line 204.
+ 1 APPPATH\Views\configuracion.php(204): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $horario', 'C:\\xampp\\htdocs\\login2\\app\\Views\\configuracion.php', 204)
+ 2 SYSTEMPATH\View\View.php(234): include('C:\\xampp\\htdocs\\login2\\app\\Views\\configuracion.php')
+ 3 SYSTEMPATH\View\View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1171): CodeIgniter\View\View->render('configuracion', [], true)
+ 5 APPPATH\Controllers\Home.php(90): view('configuracion')
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Home->iraconfiguracion()
+ 7 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Home))
+ 8 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(325): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2024-11-20 00:02:22 --> ErrorException: Undefined variable $horario
+[Method: GET, Route: configuracion]
+in APPPATH\Views\configuracion.php on line 204.
+ 1 APPPATH\Views\configuracion.php(204): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $horario', 'C:\\xampp\\htdocs\\login2\\app\\Views\\configuracion.php', 204)
+ 2 SYSTEMPATH\View\View.php(234): include('C:\\xampp\\htdocs\\login2\\app\\Views\\configuracion.php')
+ 3 SYSTEMPATH\View\View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1171): CodeIgniter\View\View->render('configuracion', [], true)
+ 5 APPPATH\Controllers\Home.php(90): view('configuracion')
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Home->iraconfiguracion()
+ 7 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Home))
+ 8 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(325): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2024-11-20 00:02:22 --> ErrorException: Undefined variable $horario
+[Method: GET, Route: configuracion]
+in APPPATH\Views\configuracion.php on line 204.
+ 1 APPPATH\Views\configuracion.php(204): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $horario', 'C:\\xampp\\htdocs\\login2\\app\\Views\\configuracion.php', 204)
+ 2 SYSTEMPATH\View\View.php(234): include('C:\\xampp\\htdocs\\login2\\app\\Views\\configuracion.php')
+ 3 SYSTEMPATH\View\View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1171): CodeIgniter\View\View->render('configuracion', [], true)
+ 5 APPPATH\Controllers\Home.php(90): view('configuracion')
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Home->iraconfiguracion()
+ 7 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Home))
+ 8 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(325): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2024-11-20 00:02:24 --> ErrorException: Undefined variable $horario
+[Method: GET, Route: configuracion]
+in APPPATH\Views\configuracion.php on line 204.
+ 1 APPPATH\Views\configuracion.php(204): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $horario', 'C:\\xampp\\htdocs\\login2\\app\\Views\\configuracion.php', 204)
+ 2 SYSTEMPATH\View\View.php(234): include('C:\\xampp\\htdocs\\login2\\app\\Views\\configuracion.php')
+ 3 SYSTEMPATH\View\View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1171): CodeIgniter\View\View->render('configuracion', [], true)
+ 5 APPPATH\Controllers\Home.php(90): view('configuracion')
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Home->iraconfiguracion()
+ 7 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Home))
+ 8 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(325): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+INFO - 2024-11-20 00:02:25 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2024-11-20 00:02:27 --> ErrorException: Undefined variable $horario
+[Method: GET, Route: configuracion]
+in APPPATH\Views\configuracion.php on line 204.
+ 1 APPPATH\Views\configuracion.php(204): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $horario', 'C:\\xampp\\htdocs\\login2\\app\\Views\\configuracion.php', 204)
+ 2 SYSTEMPATH\View\View.php(234): include('C:\\xampp\\htdocs\\login2\\app\\Views\\configuracion.php')
+ 3 SYSTEMPATH\View\View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1171): CodeIgniter\View\View->render('configuracion', [], true)
+ 5 APPPATH\Controllers\Home.php(90): view('configuracion')
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Home->iraconfiguracion()
+ 7 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Home))
+ 8 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(325): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+INFO - 2024-11-20 00:05:20 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-11-20 00:05:39 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-11-20 00:06:02 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-11-20 00:06:03 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-11-20 00:06:09 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-11-20 00:06:09 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-11-20 00:07:07 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2024-11-20 00:07:07 --> TypeError: Cannot access offset of type string on string
+[Method: GET, Route: irainicio]
+in APPPATH\Views\inicio.php on line 123.
+ 1 SYSTEMPATH\View\View.php(234): include()
+ 2 SYSTEMPATH\View\View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 3 SYSTEMPATH\Common.php(1171): CodeIgniter\View\View->render('inicio', [], true)
+ 4 APPPATH\Controllers\HorariosController.php(33): view('inicio', [...])
+ 5 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\HorariosController->index()
+ 6 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\HorariosController))
+ 7 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 8 SYSTEMPATH\Boot.php(325): CodeIgniter\CodeIgniter->run()
+ 9 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+10 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+INFO - 2024-11-20 00:07:08 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2024-11-20 00:07:08 --> TypeError: Cannot access offset of type string on string
+[Method: GET, Route: irainicio]
+in APPPATH\Views\inicio.php on line 123.
+ 1 SYSTEMPATH\View\View.php(234): include()
+ 2 SYSTEMPATH\View\View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 3 SYSTEMPATH\Common.php(1171): CodeIgniter\View\View->render('inicio', [], true)
+ 4 APPPATH\Controllers\HorariosController.php(33): view('inicio', [...])
+ 5 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\HorariosController->index()
+ 6 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\HorariosController))
+ 7 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 8 SYSTEMPATH\Boot.php(325): CodeIgniter\CodeIgniter->run()
+ 9 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+10 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+INFO - 2024-11-20 00:07:10 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2024-11-20 00:07:10 --> TypeError: Cannot access offset of type string on string
+[Method: GET, Route: irainicio]
+in APPPATH\Views\inicio.php on line 123.
+ 1 SYSTEMPATH\View\View.php(234): include()
+ 2 SYSTEMPATH\View\View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 3 SYSTEMPATH\Common.php(1171): CodeIgniter\View\View->render('inicio', [], true)
+ 4 APPPATH\Controllers\HorariosController.php(33): view('inicio', [...])
+ 5 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\HorariosController->index()
+ 6 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\HorariosController))
+ 7 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 8 SYSTEMPATH\Boot.php(325): CodeIgniter\CodeIgniter->run()
+ 9 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+10 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+INFO - 2024-11-20 00:07:14 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-11-20 00:07:20 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-11-20 00:07:20 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2024-11-20 00:07:20 --> TypeError: Cannot access offset of type string on string
+[Method: GET, Route: irainicio]
+in APPPATH\Views\inicio.php on line 123.
+ 1 SYSTEMPATH\View\View.php(234): include()
+ 2 SYSTEMPATH\View\View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 3 SYSTEMPATH\Common.php(1171): CodeIgniter\View\View->render('inicio', [], true)
+ 4 APPPATH\Controllers\HorariosController.php(33): view('inicio', [...])
+ 5 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\HorariosController->index()
+ 6 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\HorariosController))
+ 7 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 8 SYSTEMPATH\Boot.php(325): CodeIgniter\CodeIgniter->run()
+ 9 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+10 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+INFO - 2024-11-20 00:07:33 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-11-20 00:17:55 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-11-20 00:18:01 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-11-20 00:18:04 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-11-20 00:18:13 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-11-20 00:18:27 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-11-20 00:18:27 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-11-20 00:18:35 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-11-20 00:49:22 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-11-20 00:49:27 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-11-20 00:49:27 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-11-20 00:49:36 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-11-20 00:49:40 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-11-20 00:49:40 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-11-20 00:49:49 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-11-20 00:49:49 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-11-20 18:48:18 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-11-20 19:33:53 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-11-20 19:33:54 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-11-20 19:39:33 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-11-20 19:39:39 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-11-20 19:39:39 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.

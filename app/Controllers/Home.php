@@ -25,7 +25,10 @@ class Home extends Controller
     {
         return view('configuracion');
     }
- 
+    public function iradiseño()
+    {
+        return view('pele');
+    }
 
 
 

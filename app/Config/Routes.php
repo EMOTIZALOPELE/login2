@@ -36,3 +36,7 @@ $routes->get('/iniciovalogin', 'Home::iralogin');
 $routes->get('/iniciovaregister', 'Home::inicioregister');
 $routes->get('/tercon', 'HorariosController::terminoscondiciones');
 $routes->get('/pantalla', 'Home::iniciar2');
+
+// PLANOS VENTANAS
+$routes->get('/pele', 'Home::iradiseño');
+$routes->post('design/saveDesign', 'DesignController::saveDesign');

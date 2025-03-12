@@ -27,7 +27,7 @@
     box-sizing: border-box;
 }
 .body1 {
-    background-image: url('fondo.jpg');
+    background-image: url('<?= base_url('img/fondo.jpg') ?>');
     background-position: center center;
     background-repeat: no-repeat;
     background-size: cover;

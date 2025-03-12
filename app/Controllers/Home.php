@@ -25,7 +25,10 @@ class Home extends Controller
     {
         return view('configuracion');
     }
- 
+    public function iradiseño()
+    {
+        return view('pele');
+    }
 
 
 
@@ -59,12 +62,12 @@ class Home extends Controller
                 return redirect()->to('/irainicio'); // Redirigir a la página de inicio
             } else {
                 // Contraseña incorrecta
-                $session->setFlashdata('error', 'Contraseña incorrecta');
+                $session->setFlashdata('error', 'Algo no ha salido bien');
                 return redirect()->back();
             }
         } else {
             // Usuario no encontrado
-            $session->setFlashdata('error', 'Usuario no encontrado');
+            $session->setFlashdata('error', 'Algo no ha salido bien');
             return redirect()->back();
         }
     }

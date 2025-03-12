@@ -185,7 +185,7 @@
                 <li><a href="configuracion">Configuración</a></li>
                 <li><a href="<?= base_url('pele') ?>">Diseña tu sistema</a></li>
                 <li><a href="<?= base_url('logout') ?>">Cerrar Sesión</a></li>
-             
+
             </ul>
         </nav>
 

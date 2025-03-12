@@ -13,7 +13,7 @@
 <body class="bodyprototipo">
   
   <section class="form-login">
-    <h1>Login</h1>
+    <h1>Accede a tu cuenta</h1>
     <?php if (session()->get('error')): ?>
         <div>
             <p style="color: red;"><?= session()->get('error') ?></p>

@@ -101,8 +101,14 @@
         table th {
             background-color: #1f53c5;
             color: white;
-            padding: 12px;
-            font-weight: bold;
+            padding: 12px;          
+        }
+        table td {
+            padding: 10px;
+            transition: all 0.3s;
+        }
+        table tr:hover {
+            background-color:rgb(192, 188, 188);
         }
 
         .no-data {
@@ -111,6 +117,42 @@
             text-align: center;
             margin-top: 20px;
         }
+        .menu-toggle {
+               
+            background: #1f53c5;
+            color: white;
+            border: none;
+            font-size: 24px;
+            padding: 10px;
+            cursor: pointer;
+            width: 100%;
+            text-align: left;
+            display: block;
+        }
+        .menu {
+            width: 250px;
+            background-color: #333;
+            padding: 20px 0;
+            height: 100%;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .menu.show {
+            display: block;
+        }
+        @media (max-width: 768px) {
+            .menu {
+                transform: translateX(-100%); /* Oculta el menú fuera de pantalla */
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 250px;
+                height: 100%;
+            }
+            .menu.show {
+                transform: translateX(0); /* Muestra el menú */
+            }
+    }
 
         /* Media Queries para pantallas medianas (tablets) */
         @media (max-width: 1024px) {
@@ -177,13 +219,16 @@
             h2 {
                 font-size: 18px;
             }
+        
         }
     </style>
 </head>
 <body>
+
     <div class="container">
         <!-- Menú lateral (o superior en móviles) -->
         <nav class="menu">
+            <button class="menu-toggle">☰</button>
             <ul>
                 <li><a href="configuracion">Configuración</a></li>
                 <li><a href="<?= base_url('pele') ?>">Diseña tu sistema</a></li>
@@ -227,5 +272,11 @@
             </div>
         </div>
     </div>
+
+    <script>
+        document.querySelector('.menu-toggle').addEventListener('click', function() {
+            document.querySelector('.menu').classList.toggle('show');
+        });
+    </script>
 </body>
 </html>

@@ -6,6 +6,86 @@
     <link rel="stylesheet" href="<?= base_url('css/style.css') ?>">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <title>Registro</title>
+    <style>
+        .form-register {
+    width: 450px;
+    background-color: #24303c;
+    padding: 30px ;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 10px;
+    font-family: 'calibri';
+    color: white;
+    box-shadow: 7px 13px 37px #0a0dca;
+
+}
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+.body1 {
+    background-image: url('<?= base_url('img/fondo.jpg') ?>');
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+}
+.form-register h1 {
+    margin-top: 0px;
+    text-align: center;
+    height: 45px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid;
+    font-size: 30px;
+    top: 30%;
+    left: 30%;
+    transform: translate(0%, -20%);
+}
+.controls {
+    width: 100%;
+    background-color: #24303c;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 16px;
+    border: 1px solid #1f53c5;
+    font-family: 'calibri';
+    font-size: 18px;
+    color: white;
+}
+.form-register p {
+    height: 40px;
+    text-align: center;
+    font-size: 18px;
+    line-height: 40px;
+}
+.form-register a {
+    color: white;
+    text-decoration: none;
+}
+.form-register a:hover {
+    color: rgb(255, 255, 255);
+    text-decoration: underline;
+}
+.form-register .botons {
+    width: 100%;
+    background: #1f53c5;
+    border: none;
+    padding: 12px;
+    color: white;
+    margin: 16px 0;
+    font-size: 16px;
+}
+.password-container img{
+    margin-right: -500px;
+    padding-left: 15px;
+    width: 40px;
+    cursor: pointer;
+    transform: translate(840%, -215%);
+}
+    </style>
 </head>
 <body class="body1">
     <section class="form-register">

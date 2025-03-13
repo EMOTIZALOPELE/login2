@@ -13,12 +13,9 @@
         }
 
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            color: #333;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            background: url(<?= base_url("img/fondo.jpg") ?>) no-repeat center center fixed;
+            background-size: cover;        
+            font-family: Arial, sans-serif;        
             height: 100vh;
         }
 
@@ -52,11 +49,13 @@
             font-size: 18px;
             padding: 10px 20px;
             display: block;
-            transition: background-color 0.3s;
+            transition: all 0.3s ease-in-out;
         }
 
         .menu ul li a:hover {
-            background-color: #575757;
+            background-color: #1f53c5;
+            transform: scale(1.05);
+            border radius: 5px;
         }
 
         /* Contenido principal */
@@ -88,9 +87,11 @@
         table {
             width: 100%;
             border-collapse: collapse;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0,2);
+            background: white;
         }
 
-        table th, table td {
+        table th,  table td {
             padding: 8px;
             text-align: center;
             border: 1px solid black;
@@ -98,7 +99,9 @@
         }
 
         table th {
-            background-color: #f4f4f4;
+            background-color: #1f53c5;
+            color: white;
+            padding: 12px;
             font-weight: bold;
         }
 

@@ -9,6 +9,87 @@
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
   <title>Formulario Login</title>
+  <style>
+    * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+.bodyprototipo {
+    background-image: url('<?= base_url('img/fondo.jpg') ?>');
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+    font-family: arial;
+}
+.form-login {
+    width: 450px;
+    background-color: #24303c;
+    padding: 30px ;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 10px;
+    font-family: 'calibri';
+    font-size: 18px;
+    color: white;
+    box-shadow: 7px 13px 37px #0a0dca;
+}
+.password-container img{
+    margin-right: -500px;
+    padding-left: 15px;
+    width: 40px;
+    cursor: pointer;
+    transform: translate(840%, -215%);
+}
+.form-login h1 {
+    margin-top: 0px;
+    text-align: center;
+    height: 45px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid;
+    font-size: 30px;
+}
+.controls {
+    width: 100%;
+    border: 1px solid #017bab;
+    margin-bottom: 15px;
+    padding: 11px 10px;
+    background: #252322;
+    font-size: 14px;
+    font-weight: bold;
+}
+.buttons {
+    width: 100%;
+    height: 40px;
+    background: #1f53c5;
+    border: none;
+    color: white;
+    margin-bottom: 16px;
+}
+
+.form-login p {
+    height: 40px;
+    text-align: center;
+    border-bottom: 1px solid;
+}
+.ccn {
+   
+    text-align: center;
+    border-bottom: 1px solid;
+
+}
+.form-login a {
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+}
+.form-login a:hover {
+    text-decoration: underline;
+}
+</style>
 </head>
 <body class="bodyprototipo">
   

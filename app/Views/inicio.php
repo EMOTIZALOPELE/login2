@@ -27,7 +27,7 @@
         }
 
         /* Menú lateral */
-        .menu {
+        .botonesmenulateral {
             width: 250px; /* Ancho fijo para pantallas grandes */
             background-color: #333;
             padding: 20px 0;
@@ -35,15 +35,15 @@
             height: 100%;
         }
 
-        .menu ul {
+        .botonesmenulateral ul {
             list-style-type: none;
         }
 
-        .menu ul li {
+        .botonesmenulateral ul li {
             margin: 20px 0;
         }
 
-        .menu ul li a {
+        .botonesmenulateral ul li a {
             color: white;
             text-decoration: none;
             font-size: 18px;
@@ -52,7 +52,7 @@
             transition: all 0.3s ease-in-out;
         }
 
-        .menu ul li a:hover {
+        .botonesmenulateral ul li a:hover {
             background-color: #1f53c5;
             transform: scale(1.05);
             border radius: 5px;
@@ -67,78 +67,40 @@
             padding: 20px;
             width: calc(100% - 250px);
         }
-
-        .table-container {
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            max-width: 800px;
-            width: 100%;
-            text-align: center;
-        }
-
-        h2 {
-            font-size: 24px;
-            margin-bottom: 20px;
-            color: #333;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0,2);
-            background: white;
-        }
-
-        table th,  table td {
-            padding: 8px;
-            text-align: center;
-            border: 1px solid black;
-            font-size: 14px;
-        }
-
-        table th {
-            background-color: #1f53c5;
-            color: white;
-            padding: 12px;          
-        }
-        table td {
-            padding: 10px;
-            transition: all 0.3s;
-        }
-        table tr:hover {
-            background-color:rgb(192, 188, 188);
-        }
-
-        .no-data {
-            font-size: 16px;
-            color: #7f8c8d;
-            text-align: center;
-            margin-top: 20px;
-        }
         .menu-toggle {
                
-            background: #1f53c5;
+            position: fixed; /* Fijar el botón en la pantalla */
+            top: -10px; /* Espacio desde arriba */
+            left: 0px; /* Espacio desde la izquierda */
+            z-index: 1001; /* Asegura que esté por encima del menú */
+            background: rgb(73, 76, 83);
             color: white;
             border: none;
-            font-size: 24px;
+            font-size: 30px;
             padding: 10px;
             cursor: pointer;
-            width: 100%;
-            text-align: left;
-            display: block;
+            width: 40px;
+            height: 40px;
+            border-radius: 5px;
+      
         }
         .menu {
-            width: 250px;
-            background-color: #333;
+            width: 20px;
+            background-color:rgb(87, 84, 84);
             padding: 20px 0;
-            height: 100%;
-            transition: transform 0.3s ease-in-out;
+            height: 10%;
         }
-
-        .menu.show {
-            display: block;
+        .botonesmenulateral {
+            width: 200px;
+            background-color:rgb(78, 73, 76);
+            height: 100%;
+            position: fixed;
+            left: -250px;
+            top: 0;
+            transition: left 0.5s ease-in-out;
+        }
+        .botonesmenulateral.show {
+            left: 0;
         }
         @media (max-width: 768px) {
             .menu {
@@ -164,14 +126,43 @@
                 margin-left: 200px;
                 width: calc(100% - 200px);
             }
-
-            .table-container {
+            /* Todo esto es el style de las cards*/
+            .horarios-container {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding: 20px;
+            }
+            .horario-card {
+                background:rgb(231, 230, 235);
+                padding: 25px;
+                border-radius: 10px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+                width: 300px;
+                transform: translateX(-254px); 
+                margin-top: -300px; 
+                text-align: center;
+                transition: transform 0.3s ease-in-out;
+            }
+            .horario-card h3 {
+                background: #1f53c5;
+                color: white;
+                font-size: 20px;
                 padding: 15px;
+                border-radius: 8px 8px 0 0;
+                margin: -25px -25px 15px -25px;
             }
+            .horario-card p {
+                font-size: 16px;
+                color:rgb(8, 16, 34);
+                margin: 10px 0;
+                text-align: left;
+                padding: 5px;
+                border-bottom: 1px solid #ddd;
 
-            table th, table td {
-                font-size: 12px;
             }
+            
+            /* Aca termina*/
         }
 
         /* Media Queries para pantallas pequeñas (móviles) */
@@ -207,75 +198,43 @@
                 width: 100%;
                 margin-top: 10px; /* Separación del menú */
             }
-
-            .table-container {
-                padding: 10px;
-            }
-
-            table th, table td {
-                font-size: 12px; /* Tamaño reducido */
-            }
-
-            h2 {
-                font-size: 18px;
-            }
-        
         }
     </style>
 </head>
 <body>
-
     <div class="container">
+        
         <!-- Menú lateral (o superior en móviles) -->
-        <nav class="menu">
             <button class="menu-toggle">☰</button>
-            <ul>
-                <li><a href="configuracion">Configuración</a></li>
-                <li><a href="<?= base_url('pele') ?>">Diseña tu sistema</a></li>
-                <li><a href="<?= base_url('logout') ?>">Cerrar Sesión</a></li>
-
-            </ul>
-        </nav>
-
+                <nav class="botonesmenulateral">
+                    <ul>
+                        <li><a href="configuracion">Configuración</a></li>
+                        <li><a href="<?= base_url('pele') ?>">Diseña tu sistema</a></li>
+                        <li><a href="<?= base_url('logout') ?>">Cerrar Sesión</a></li>
+                    </ul>
+                </nav>
+       
         <!-- Contenido principal -->
         <div class="content">
-            <div class="table-container">
-                <?php if (!empty($horarios)): ?>
-                    <h2>Horarios de Usuario: <?= session()->get('nombre'); ?></h2>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Ventana Apertura</th>
-                                <th>Ventana Cierre</th>
-                                <th>Cortina Apertura</th>
-                                <th>Cortina Cierre</th>
-                                <th>Postigón Apertura</th>
-                                <th>Postigón Cierre</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($horarios as $horario): ?>
-                                <tr>
-                                    <td><?= esc($horario['ventana_apertura']); ?></td>
-                                    <td><?= esc($horario['ventana_cierre']); ?></td>
-                                    <td><?= esc($horario['cortina_apertura']); ?></td>
-                                    <td><?= esc($horario['cortina_cierre']); ?></td>
-                                    <td><?= esc($horario['postigon_apertura']); ?></td>
-                                    <td><?= esc($horario['postigon_cierre']); ?></td>
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                <?php else: ?>
-                    <p class="no-data">No se encontraron horarios para este usuario.</p>
-                <?php endif; ?>
-            </div>
+                <div class="horarios-container">
+                    <?php foreach ($horarios as $horario): ?>
+                        <div class="horario-card">
+                            <h3>Horario de <?= session()->get('nombre'); ?></h3>
+                            <p><strong>Ventana Apertura:</strong> <?= esc($horario['ventana_apertura']); ?></p>
+                            <p><strong>Ventana Cierre:</strong> <?= esc($horario['ventana_cierre']); ?></p>
+                            <p><strong>Cortina Apertura:</strong> <?= esc($horario['cortina_apertura']); ?></p>
+                            <p><strong>Cortina Cierre:</strong> <?= esc($horario['cortina_cierre']); ?></p>
+                            <p><strong>Postigón Apertura:</strong> <?= esc($horario['postigon_apertura']); ?></p>
+                            <p><strong>Postigón Cierre:</strong> <?= esc($horario['postigon_cierre']); ?></p>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
         </div>
     </div>
 
     <script>
         document.querySelector('.menu-toggle').addEventListener('click', function() {
-            document.querySelector('.menu').classList.toggle('show');
+            document.querySelector('.botonesmenulateral').classList.toggle('show');
         });
     </script>
 </body>

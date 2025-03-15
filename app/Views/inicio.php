@@ -67,20 +67,26 @@
             padding: 20px;
             width: calc(100% - 250px);
         }
+        @media (min-width: 1025px) {
+            .content {
+                margin-left: auto;
+                width: 100%;
+    }
+}
         .menu-toggle {
                
             position: fixed; /* Fijar el botón en la pantalla */
             top: -10px; /* Espacio desde arriba */
             left: 0px; /* Espacio desde la izquierda */
             z-index: 1001; /* Asegura que esté por encima del menú */
-            background: rgb(73, 76, 83);
+            background: rgb(78, 73, 76);
             color: white;
             border: none;
             font-size: 30px;
             padding: 10px;
             cursor: pointer;
-            width: 40px;
-            height: 40px;
+            width: 45px;
+            height: 50px;
             border-radius: 5px;
       
         }
@@ -115,55 +121,51 @@
                 transform: translateX(0); /* Muestra el menú */
             }
     }
-
-        /* Media Queries para pantallas medianas (tablets) */
-        @media (max-width: 1024px) {
-            .menu {
-                width: 200px;
+        .content {
+            margin-left: 200px;
+            width: calc(100% - 200px);
             }
-
-            .content {
-                margin-left: 200px;
-                width: calc(100% - 200px);
+        /* Todo esto es el style de las cards*/
+        .horarios-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
             }
-            /* Todo esto es el style de las cards*/
-            .horarios-container {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                padding: 20px;
+        .horario-card {
+            background:rgb(231, 230, 235);
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 300px;
+            margin-left: -400px;
+            margin-top: -520px; 
+            text-align: center;
+            display: block;
+            transition: all 0.5s ease-in-out;
             }
-            .horario-card {
-                background:rgb(231, 230, 235);
-                padding: 25px;
-                border-radius: 10px;
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-                width: 300px;
-                transform: translateX(-254px); 
-                margin-top: -300px; 
-                text-align: center;
-                transition: transform 0.3s ease-in-out;
-            }
-            .horario-card h3 {
-                background: #1f53c5;
-                color: white;
-                font-size: 20px;
-                padding: 15px;
-                border-radius: 8px 8px 0 0;
-                margin: -25px -25px 15px -25px;
-            }
-            .horario-card p {
-                font-size: 16px;
-                color:rgb(8, 16, 34);
-                margin: 10px 0;
-                text-align: left;
-                padding: 5px;
-                border-bottom: 1px solid #ddd;
-
-            }
-            
-            /* Aca termina*/
+            .horario-card:hover {
+            transform: scale(1.05);
+            border radius: 5px;
         }
+        .horario-card h3 {
+            background: #1f53c5;
+            color: white;
+            font-size: 20px;
+            padding: 15px;
+            border-radius: 8px 8px 0 0;
+            margin: -25px -25px 15px -25px;
+            }
+        .horario-card p {
+            font-size: 16px;
+            color:rgb(8, 16, 34);
+            margin: 10px 0;
+            text-align: left;
+            padding: 5px;
+            border-bottom: 1px solid #ddd;
+
+            }
+            /* Aca termina*/
 
         /* Media Queries para pantallas pequeñas (móviles) */
         @media (max-width: 768px) {

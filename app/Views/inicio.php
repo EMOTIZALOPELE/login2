@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/6f93a4b68f.js" crossorigin="anonymous"></script>
     <title>Inicio</title>
     <style>
         /* Reset de estilos básicos */
@@ -14,8 +15,8 @@
 
         header{
             width: 100%;
-            height: 80px;
-            margin-top: 10px;
+            height: 70px;
+            margin-top: 15px;
             position: fixed;
             z-index: 1;
         }
@@ -27,59 +28,72 @@
             height: 100vh;
         }
         /* Menú lateral */
-        .container_botones {
-            max-width: 1000px;
+        .container__menu{
+            max-width: 1800px;
             height: 100%;
+            width: 100%;
             margin: auto;
-            display: flex;  
-            justify-content: space-between;
-        }
-        .botonesmenulateral{
             display: flex;
-            margin-left: 900px;
-            align-items:center; 
+            justify-content: space-between;
+            background:rgba(34, 31, 31, 0.51);
+            
+        }       
+        .menu{
+            display: flex;
+            align-items: center;
         }
-        .botonesmenulateral ul {
-           display: flex;
-           justify-content: space-around; /* Espaciado igual entre los botones */            gap: 20px; /* Espacio entre botones */
-           gap: 20px; /* Espaciado fijo entre botones */
+        .menu ul{
+            display: flex;
+           justify-content: space-around; /* Espaciado igual entre los botones */           
+           gap: 1px; /* Espaciado fijo entre botones */
         }
             
-        .botonesmenulateral ul li {
+        .menu ul li{
             list-style: none;
+            margin-left: 20px;
         }
 
-        .botonesmenulateral ul li a{
-            text-decoration: none;
-            font-size: 16px;
-            color:rgb(255, 255, 255);
-            text-transform: uppercase;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.5s ease-in-out;
-            padding: 15px 20px; /* Espaciado interno */
-            border-radius: 10px; /* Bordes redondeados */
-            display: inline-block; /* Para evitar problemas de tamaño */
-        }
-            .botonesmenulateral ul li a:hover {
+        .menu ul li a{
+          text-decoration: none;
+          font-size: 16px;
+          color:rgb(255, 255, 255);
+          text-transform: uppercase;
+          text-align: center;
+          cursor: pointer;
+          transition: all 0.5s ease-in-out;
+          padding: 15px 20px; /* Espaciado interno */
+          border-radius: 10px; /* Bordes redondeados */
+          display: inline-block; /* Para evitar problemas de tamaño */
+      }
+        .menu ul li a:hover {
                 transform: translateY(-5px) scale(1.05); /* Levanta y agranda el botón */
                 background: rgba(255, 255, 255, 0.2); /* Fondo semitransparente */
                 box-shadow: -1px 1px 25px rgba(255, 255, 255, 0.4);
                 border-radius: 15px; /* Aumenta el redondeo para mayor suavidad */
         }
-        #selected {
-            background: #123123;
-            padding: 15px 30px;
+      
+        #selected{
+            background: #F6615D;
+            padding: 10px 40px;
             border-radius: 50px;
         }
+        
+        
+        .menu nav img{
+            display: none;
+        }
+
+        .menu #btn_menu{
+            display: none;
+        }
+                 
         /* Contenido principal */
-        .content {
-            margin-left: 250px;
+        .container__card {
             display: flex;
+            flex-wrap: wrap; /* Permite que las tarjetas se acomoden solas */
             justify-content: center;
-            align-items: center;
+            gap: 20px; /* Espaciado entre tarjetas */
             padding: 20px;
-            width: calc(100% - 250px);
         }
         /* Todo esto es el style de las cards*/
         .horarios-container {
@@ -93,11 +107,9 @@
             padding: 25px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            width: 300px;
-            margin-left: -1700px;
-            margin-top: -520px; 
+            width: 100%;
+            max-width: 300px; /* No crece más de 300px */
             text-align: center;
-            display: block;
             transition: all 0.5s ease-in-out;
             }
             .horario-card:hover {
@@ -123,20 +135,113 @@
             }
             /* Aca termina*/   
 
-        /*TODO RESPONSIVE*/
-        @media screen and (max-width:1000px){
+        /*Haciendo la página Responsive*/
+
+        @media screen and (max-width:1200px){
+
             header{
                 padding: 40px;
             }
+
         }
+        
+
+        @media screen and (max-width: 720px){
+        
+            .menu nav{
+                position: fixed;
+                top: 0;
+                right: -250px;
+                background:rgba(10, 10, 12, 0.76);
+                width: 250px;
+                height: 100vh;
+                padding: 40px;
+                z-index: 1;
+                transition: all 300ms;
+            }
+
+            .menu ul{
+                flex-direction: column;
+                margin-top: 40px;
+            }
+
+            .menu ul li{
+                margin-top: 30px;
+                margin-left: 0;
+            }
+
+            .menu ul li a{
+                color: #bebebe;
+            }
+
+            #selected{
+                background: none;
+                padding: 1px;
+                border-radius: none;
+                color: #F6615D;
+            }
+
+            .menu nav img{
+                display: block;
+                width: 60px;
+            }
+
+            #back_menu{
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100vh;
+                background: rgba(0,0,0,0.5);
+                display: none;
+            }
+
+            .menu #btn_menu{
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 50px;
+                height: 50px;
+                background: rgba(255, 255, 255, 0.1);
+                font-size: 24px;
+                border-radius: 50px;
+                cursor: pointer;
+                transition: all 300ms;
+            }
+
+
+            .menu #btn_menu:hover{
+                background: rgba(255, 255, 255, 0.2);
+            }
+        }
+        @media screen and (max-width: 720px) {
+            .horarios-container {
+                flex-direction: column; /* Acomoda las tarjetas en columna */
+                align-items: center; /* Centra las tarjetas */
+            }
+         
+            .horario-card {
+                width: 80%; /* Ocuparán el 80% del ancho en celulares */
+                max-width: 400px; /* Se limita a 400px máximo */
+            }
+        }
+
     </style>
 </head>
 <body>
 
     <header>
 
-        <div class="container_botones">    
-            <nav class="botonesmenulateral">
+
+    <div class="container__menu">
+        <div class="logo">
+            <img src="images/logo-magtimus-v2.3-1.png" alt="">
+        </div>
+        <div class="menu">
+            <i class="fas fa-bars" id="btn_menu"></i>
+            <div id="back_menu"></div>
+            <nav id="nav">
+                <img src="images/logo-magtimus-v2.3-1.png" alt="">
                 <ul>
                     <li><a id="selected">Inicio</a></li>
                     <li><a href="<?= base_url('configuracion') ?>">Configuración</a></li>
@@ -145,9 +250,11 @@
                 </ul>
             </nav>
         </div>
+    </div>
+  
     </header>
         <!-- Contenido principal -->
-        <div class="content">
+        <div class="containter__card">
                 <div class="horarios-container">
                     <?php foreach ($horarios as $horario): ?>
                         <div class="horario-card">
@@ -166,9 +273,24 @@
 
 
     <script>
-        document.querySelector('.menu-toggle').addEventListener('click', function() {
-            document.querySelector('.botonesmenulateral').classList.toggle('show');
-        });
+        document.getElementById("btn_menu").addEventListener("click", mostrar_menu);
+
+        document.getElementById("back_menu").addEventListener("click", ocultar_menu);
+
+        nav = document.getElementById("nav");
+        background_menu = document.getElementById("back_menu");
+
+        function mostrar_menu(){
+
+            nav.style.right = "0px";
+            background_menu.style.display = "block";
+        }
+
+        function ocultar_menu(){
+
+            nav.style.right = "-250px";
+            background_menu.style.display = "none";
+        }
     </script>
 </body>
 </html>

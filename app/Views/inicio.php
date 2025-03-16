@@ -54,29 +54,31 @@
         }
 
         .menu ul li a{
-            text-decoration: none;
-            font-size: 16px;
-            color:rgb(255, 255, 255);
-            text-transform: uppercase;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.5s ease-in-out;
-            padding: 15px 20px; /* Espaciado interno */
-            border-radius: 10px; /* Bordes redondeados */
-            display: inline-block; /* Para evitar problemas de tamaño */
-        }
-            .menu ul li a:hover {
+          text-decoration: none;
+          font-size: 16px;
+          color:rgb(255, 255, 255);
+          text-transform: uppercase;
+          text-align: center;
+          cursor: pointer;
+          transition: all 0.5s ease-in-out;
+          padding: 15px 20px; /* Espaciado interno */
+          border-radius: 10px; /* Bordes redondeados */
+          display: inline-block; /* Para evitar problemas de tamaño */
+      }
+        .menu ul li a:hover {
                 transform: translateY(-5px) scale(1.05); /* Levanta y agranda el botón */
                 background: rgba(255, 255, 255, 0.2); /* Fondo semitransparente */
                 box-shadow: -1px 1px 25px rgba(255, 255, 255, 0.4);
                 border-radius: 15px; /* Aumenta el redondeo para mayor suavidad */
         }
+      
         #selected{
             background: #F6615D;
             padding: 10px 40px;
             border-radius: 50px;
         }
-
+        
+        
         .menu nav img{
             display: none;
         }
@@ -84,7 +86,7 @@
         .menu #btn_menu{
             display: none;
         }
-
+                 
         /* Contenido principal */
         .container__card {
             display: flex;
@@ -217,7 +219,7 @@
                 flex-direction: column; /* Acomoda las tarjetas en columna */
                 align-items: center; /* Centra las tarjetas */
             }
-
+         
             .horario-card {
                 width: 80%; /* Ocuparán el 80% del ancho en celulares */
                 max-width: 400px; /* Se limita a 400px máximo */
@@ -229,6 +231,7 @@
 <body>
 
     <header>
+
 
     <div class="container__menu">
         <div class="logo">

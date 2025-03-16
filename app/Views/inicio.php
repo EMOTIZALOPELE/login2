@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/6f93a4b68f.js" crossorigin="anonymous"></script>
     <title>Inicio</title>
     <style>
         /* Reset de estilos básicos */
@@ -12,210 +13,245 @@
             box-sizing: border-box;
         }
 
+        header{
+            width: 100%;
+            height: 70px;
+            margin-top: 15px;
+            position: fixed;
+            z-index: 1;
+        }
+
         body {
-            background: url(<?= base_url("img/fondo.jpg") ?>) no-repeat center center fixed;
+            background: url(<?= base_url("img/fondo4.jpg") ?>) no-repeat center center fixed;
             background-size: cover;        
             font-family: Arial, sans-serif;        
             height: 100vh;
         }
-
-        .container {
-            display: flex;
-            flex-direction: row; /* Por defecto en PCs */
-            width: 100%;
-            height: 100%;
-        }
-
         /* Menú lateral */
-        .botonesmenulateral {
-            width: 250px; /* Ancho fijo para pantallas grandes */
-            background-color: #333;
-            padding: 20px 0;
-            position: fixed;
+        .container__menu{
+            max-width: 1800px;
             height: 100%;
+            width: 100%;
+            margin: auto;
+            display: flex;
+            justify-content: space-between;
+            background:rgba(34, 31, 31, 0.51);
+            
+        }       
+        .menu{
+            display: flex;
+            align-items: center;
+        }
+        .menu ul{
+            display: flex;
+           justify-content: space-around; /* Espaciado igual entre los botones */           
+           gap: 1px; /* Espaciado fijo entre botones */
+        }
+            
+        .menu ul li{
+            list-style: none;
+            margin-left: 20px;
         }
 
-        .botonesmenulateral ul {
-            list-style-type: none;
-        }
-
-        .botonesmenulateral ul li {
-            margin: 20px 0;
-        }
-
-        .botonesmenulateral ul li a {
-            color: white;
+        .menu ul li a{
             text-decoration: none;
-            font-size: 18px;
-            padding: 10px 20px;
-            display: block;
-            transition: all 0.3s ease-in-out;
+            font-size: 16px;
+            color:rgb(255, 255, 255);
+            text-transform: uppercase;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.5s ease-in-out;
+            padding: 15px 20px; /* Espaciado interno */
+            border-radius: 10px; /* Bordes redondeados */
+            display: inline-block; /* Para evitar problemas de tamaño */
+        }
+            .menu ul li a:hover {
+                transform: translateY(-5px) scale(1.05); /* Levanta y agranda el botón */
+                background: rgba(255, 255, 255, 0.2); /* Fondo semitransparente */
+                box-shadow: -1px 1px 25px rgba(255, 255, 255, 0.4);
+                border-radius: 15px; /* Aumenta el redondeo para mayor suavidad */
+        }
+        #selected{
+            background: #F6615D;
+            padding: 10px 40px;
+            border-radius: 50px;
         }
 
-        .botonesmenulateral ul li a:hover {
-            background-color: #1f53c5;
-            transform: scale(1.05);
-            border radius: 5px;
+        .menu nav img{
+            display: none;
+        }
+
+        .menu #btn_menu{
+            display: none;
         }
 
         /* Contenido principal */
-        .content {
-            margin-left: 250px;
+        .container__card {
+            display: flex;
+            flex-wrap: wrap; /* Permite que las tarjetas se acomoden solas */
+            justify-content: center;
+            gap: 20px; /* Espaciado entre tarjetas */
+            padding: 20px;
+        }
+        /* Todo esto es el style de las cards*/
+        .horarios-container {
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
-            width: calc(100% - 250px);
+            height: 100vh;
+            }
+        .horario-card {
+            background:rgb(231, 230, 235);
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 300px; /* No crece más de 300px */
+            text-align: center;
+            transition: all 0.5s ease-in-out;
+            }
+            .horario-card:hover {
+            transform: scale(1.05);
+            border radius: 5px;
         }
-        .menu-toggle {
-               
-            position: fixed; /* Fijar el botón en la pantalla */
-            top: -10px; /* Espacio desde arriba */
-            left: 0px; /* Espacio desde la izquierda */
-            z-index: 1001; /* Asegura que esté por encima del menú */
-            background: rgb(73, 76, 83);
+        .horario-card h3 {
+            background: #1f53c5;
             color: white;
-            border: none;
-            font-size: 30px;
-            padding: 10px;
-            cursor: pointer;
-            width: 40px;
-            height: 40px;
-            border-radius: 5px;
-      
+            font-size: 20px;
+            padding: 15px;
+            border-radius: 8px 8px 0 0;
+            margin: -25px -25px 15px -25px;
+            }
+        .horario-card p {
+            font-size: 16px;
+            color:rgb(8, 16, 34);
+            margin: 10px 0;
+            text-align: left;
+            padding: 5px;
+            border-bottom: 1px solid #ddd;
+
+            }
+            /* Aca termina*/   
+
+        /*Haciendo la página Responsive*/
+
+        @media screen and (max-width:1200px){
+
+            header{
+                padding: 40px;
+            }
+
         }
-        .menu {
-            width: 20px;
-            background-color:rgb(87, 84, 84);
-            padding: 20px 0;
-            height: 10%;
-        }
-        .botonesmenulateral {
-            width: 200px;
-            background-color:rgb(78, 73, 76);
-            height: 100%;
-            position: fixed;
-            left: -250px;
-            top: 0;
-            transition: left 0.5s ease-in-out;
-        }
-        .botonesmenulateral.show {
-            left: 0;
-        }
-        @media (max-width: 768px) {
-            .menu {
-                transform: translateX(-100%); /* Oculta el menú fuera de pantalla */
-                position: absolute;
+        
+
+        @media screen and (max-width: 720px){
+        
+            .menu nav{
+                position: fixed;
+                top: 0;
+                right: -250px;
+                background:rgba(10, 10, 12, 0.76);
+                width: 250px;
+                height: 100vh;
+                padding: 40px;
+                z-index: 1;
+                transition: all 300ms;
+            }
+
+            .menu ul{
+                flex-direction: column;
+                margin-top: 40px;
+            }
+
+            .menu ul li{
+                margin-top: 30px;
+                margin-left: 0;
+            }
+
+            .menu ul li a{
+                color: #bebebe;
+            }
+
+            #selected{
+                background: none;
+                padding: 1px;
+                border-radius: none;
+                color: #F6615D;
+            }
+
+            .menu nav img{
+                display: block;
+                width: 60px;
+            }
+
+            #back_menu{
+                position: fixed;
                 top: 0;
                 left: 0;
-                width: 250px;
-                height: 100%;
-            }
-            .menu.show {
-                transform: translateX(0); /* Muestra el menú */
-            }
-    }
-
-        /* Media Queries para pantallas medianas (tablets) */
-        @media (max-width: 1024px) {
-            .menu {
-                width: 200px;
+                width: 100%;
+                height: 100vh;
+                background: rgba(0,0,0,0.5);
+                display: none;
             }
 
-            .content {
-                margin-left: 200px;
-                width: calc(100% - 200px);
-            }
-            /* Todo esto es el style de las cards*/
-            .horarios-container {
+            .menu #btn_menu{
                 display: flex;
-                justify-content: center;
                 align-items: center;
-                padding: 20px;
+                justify-content: center;
+                width: 50px;
+                height: 50px;
+                background: rgba(255, 255, 255, 0.1);
+                font-size: 24px;
+                border-radius: 50px;
+                cursor: pointer;
+                transition: all 300ms;
             }
+
+
+            .menu #btn_menu:hover{
+                background: rgba(255, 255, 255, 0.2);
+            }
+        }
+        @media screen and (max-width: 720px) {
+            .horarios-container {
+                flex-direction: column; /* Acomoda las tarjetas en columna */
+                align-items: center; /* Centra las tarjetas */
+            }
+
             .horario-card {
-                background:rgb(231, 230, 235);
-                padding: 25px;
-                border-radius: 10px;
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-                width: 300px;
-                transform: translateX(-254px); 
-                margin-top: -300px; 
-                text-align: center;
-                transition: transform 0.3s ease-in-out;
-            }
-            .horario-card h3 {
-                background: #1f53c5;
-                color: white;
-                font-size: 20px;
-                padding: 15px;
-                border-radius: 8px 8px 0 0;
-                margin: -25px -25px 15px -25px;
-            }
-            .horario-card p {
-                font-size: 16px;
-                color:rgb(8, 16, 34);
-                margin: 10px 0;
-                text-align: left;
-                padding: 5px;
-                border-bottom: 1px solid #ddd;
-
-            }
-            
-            /* Aca termina*/
-        }
-
-        /* Media Queries para pantallas pequeñas (móviles) */
-        @media (max-width: 768px) {
-            .container {
-                flex-direction: column; /* Cambia a apilado */
-            }
-
-            .menu {
-                width: 100%;
-                height: auto;
-                position: relative; /* No fijo */
-                padding: 10px 0;
-            }
-
-            .menu ul {
-                display: flex;
-                flex-direction: row; /* Menú horizontal */
-                justify-content: space-around;
-            }
-
-            .menu ul li {
-                margin: 0; /* Sin márgenes verticales */
-            }
-
-            .menu ul li a {
-                font-size: 16px;
-                padding: 10px;
-            }
-
-            .content {
-                margin-left: 0;
-                width: 100%;
-                margin-top: 10px; /* Separación del menú */
+                width: 80%; /* Ocuparán el 80% del ancho en celulares */
+                max-width: 400px; /* Se limita a 400px máximo */
             }
         }
+
     </style>
 </head>
 <body>
-    <div class="container">
-        
-        <!-- Menú lateral (o superior en móviles) -->
-            <button class="menu-toggle">☰</button>
-                <nav class="botonesmenulateral">
-                    <ul>
-                        <li><a href="configuracion">Configuración</a></li>
-                        <li><a href="<?= base_url('pele') ?>">Diseña tu sistema</a></li>
-                        <li><a href="<?= base_url('logout') ?>">Cerrar Sesión</a></li>
-                    </ul>
-                </nav>
-       
+
+    <header>
+
+    <div class="container__menu">
+        <div class="logo">
+            <img src="images/logo-magtimus-v2.3-1.png" alt="">
+        </div>
+        <div class="menu">
+            <i class="fas fa-bars" id="btn_menu"></i>
+            <div id="back_menu"></div>
+            <nav id="nav">
+                <img src="images/logo-magtimus-v2.3-1.png" alt="">
+                <ul>
+                    <li><a id="selected">Inicio</a></li>
+                    <li><a href="<?= base_url('configuracion') ?>">Configuración</a></li>
+                    <li><a href="<?= base_url('pele') ?>">Diseño</a></li>
+                    <li><a href="<?= base_url('logout') ?>">salir</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+  
+    </header>
         <!-- Contenido principal -->
-        <div class="content">
+        <div class="containter__card">
                 <div class="horarios-container">
                     <?php foreach ($horarios as $horario): ?>
                         <div class="horario-card">
@@ -230,12 +266,28 @@
                     <?php endforeach; ?>
                 </div>
         </div>
-    </div>
+    
+
 
     <script>
-        document.querySelector('.menu-toggle').addEventListener('click', function() {
-            document.querySelector('.botonesmenulateral').classList.toggle('show');
-        });
+        document.getElementById("btn_menu").addEventListener("click", mostrar_menu);
+
+        document.getElementById("back_menu").addEventListener("click", ocultar_menu);
+
+        nav = document.getElementById("nav");
+        background_menu = document.getElementById("back_menu");
+
+        function mostrar_menu(){
+
+            nav.style.right = "0px";
+            background_menu.style.display = "block";
+        }
+
+        function ocultar_menu(){
+
+            nav.style.right = "-250px";
+            background_menu.style.display = "none";
+        }
     </script>
 </body>
 </html>

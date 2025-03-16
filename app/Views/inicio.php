@@ -12,52 +12,66 @@
             box-sizing: border-box;
         }
 
+        header{
+            width: 100%;
+            height: 80px;
+            margin-top: 10px;
+            position: fixed;
+            z-index: 1;
+        }
+
         body {
-            background: url(<?= base_url("img/fondo.jpg") ?>) no-repeat center center fixed;
+            background: url(<?= base_url("img/fondo4.jpg") ?>) no-repeat center center fixed;
             background-size: cover;        
             font-family: Arial, sans-serif;        
             height: 100vh;
         }
-
-        .container {
-            display: flex;
-            flex-direction: row; /* Por defecto en PCs */
-            width: 100%;
-            height: 100%;
-        }
-
         /* Menú lateral */
-        .botonesmenulateral {
-            width: 250px; /* Ancho fijo para pantallas grandes */
-            background-color: #333;
-            padding: 20px 0;
-            position: fixed;
+        .container_botones {
+            max-width: 1000px;
             height: 100%;
+            margin: auto;
+            display: flex;  
+            justify-content: space-between;
         }
-
+        .botonesmenulateral{
+            display: flex;
+            margin-left: 900px;
+            align-items:center; 
+        }
         .botonesmenulateral ul {
-            list-style-type: none;
+           display: flex;
+           justify-content: space-around; /* Espaciado igual entre los botones */            gap: 20px; /* Espacio entre botones */
+           gap: 20px; /* Espaciado fijo entre botones */
         }
-
+            
         .botonesmenulateral ul li {
-            margin: 20px 0;
+            list-style: none;
         }
 
-        .botonesmenulateral ul li a {
-            color: white;
+        .botonesmenulateral ul li a{
             text-decoration: none;
-            font-size: 18px;
-            padding: 10px 20px;
-            display: block;
-            transition: all 0.3s ease-in-out;
+            font-size: 16px;
+            color:rgb(255, 255, 255);
+            text-transform: uppercase;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.5s ease-in-out;
+            padding: 15px 20px; /* Espaciado interno */
+            border-radius: 10px; /* Bordes redondeados */
+            display: inline-block; /* Para evitar problemas de tamaño */
         }
-
-        .botonesmenulateral ul li a:hover {
-            background-color: #1f53c5;
-            transform: scale(1.05);
-            border radius: 5px;
+            .botonesmenulateral ul li a:hover {
+                transform: translateY(-5px) scale(1.05); /* Levanta y agranda el botón */
+                background: rgba(255, 255, 255, 0.2); /* Fondo semitransparente */
+                box-shadow: -1px 1px 25px rgba(255, 255, 255, 0.4);
+                border-radius: 15px; /* Aumenta el redondeo para mayor suavidad */
         }
-
+        #selected {
+            background: #123123;
+            padding: 15px 30px;
+            border-radius: 50px;
+        }
         /* Contenido principal */
         .content {
             margin-left: 250px;
@@ -67,64 +81,6 @@
             padding: 20px;
             width: calc(100% - 250px);
         }
-        @media (min-width: 1025px) {
-            .content {
-                margin-left: auto;
-                width: 100%;
-    }
-}
-        .menu-toggle {
-               
-            position: fixed; /* Fijar el botón en la pantalla */
-            top: -10px; /* Espacio desde arriba */
-            left: 0px; /* Espacio desde la izquierda */
-            z-index: 1001; /* Asegura que esté por encima del menú */
-            background: rgb(78, 73, 76);
-            color: white;
-            border: none;
-            font-size: 30px;
-            padding: 10px;
-            cursor: pointer;
-            width: 45px;
-            height: 50px;
-            border-radius: 5px;
-      
-        }
-        .menu {
-            width: 20px;
-            background-color:rgb(87, 84, 84);
-            padding: 20px 0;
-            height: 10%;
-        }
-        .botonesmenulateral {
-            width: 200px;
-            background-color:rgb(78, 73, 76);
-            height: 100%;
-            position: fixed;
-            left: -250px;
-            top: 0;
-            transition: left 0.5s ease-in-out;
-        }
-        .botonesmenulateral.show {
-            left: 0;
-        }
-        @media (max-width: 768px) {
-            .menu {
-                transform: translateX(-100%); /* Oculta el menú fuera de pantalla */
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 250px;
-                height: 100%;
-            }
-            .menu.show {
-                transform: translateX(0); /* Muestra el menú */
-            }
-    }
-        .content {
-            margin-left: 200px;
-            width: calc(100% - 200px);
-            }
         /* Todo esto es el style de las cards*/
         .horarios-container {
             display: flex;
@@ -138,7 +94,7 @@
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             width: 300px;
-            margin-left: -400px;
+            margin-left: -1700px;
             margin-top: -520px; 
             text-align: center;
             display: block;
@@ -165,57 +121,31 @@
             border-bottom: 1px solid #ddd;
 
             }
-            /* Aca termina*/
+            /* Aca termina*/   
 
-        /* Media Queries para pantallas pequeñas (móviles) */
-        @media (max-width: 768px) {
-            .container {
-                flex-direction: column; /* Cambia a apilado */
-            }
-
-            .menu {
-                width: 100%;
-                height: auto;
-                position: relative; /* No fijo */
-                padding: 10px 0;
-            }
-
-            .menu ul {
-                display: flex;
-                flex-direction: row; /* Menú horizontal */
-                justify-content: space-around;
-            }
-
-            .menu ul li {
-                margin: 0; /* Sin márgenes verticales */
-            }
-
-            .menu ul li a {
-                font-size: 16px;
-                padding: 10px;
-            }
-
-            .content {
-                margin-left: 0;
-                width: 100%;
-                margin-top: 10px; /* Separación del menú */
+        /*TODO RESPONSIVE*/
+        @media screen and (max-width:1000px){
+            header{
+                padding: 40px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        
-        <!-- Menú lateral (o superior en móviles) -->
-            <button class="menu-toggle">☰</button>
-                <nav class="botonesmenulateral">
-                    <ul>
-                        <li><a href="configuracion">Configuración</a></li>
-                        <li><a href="<?= base_url('pele') ?>">Diseña tu sistema</a></li>
-                        <li><a href="<?= base_url('logout') ?>">Cerrar Sesión</a></li>
-                    </ul>
-                </nav>
-       
+
+    <header>
+
+        <div class="container_botones">    
+            <nav class="botonesmenulateral">
+                <ul>
+                    <li><a id="selected">Inicio</a></li>
+                    <li><a href="<?= base_url('configuracion') ?>">Configuración</a></li>
+                    <li><a href="<?= base_url('pele') ?>">Diseño</a></li>
+                    <li><a href="<?= base_url('logout') ?>">salir</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
         <!-- Contenido principal -->
         <div class="content">
                 <div class="horarios-container">
@@ -232,7 +162,8 @@
                     <?php endforeach; ?>
                 </div>
         </div>
-    </div>
+    
+
 
     <script>
         document.querySelector('.menu-toggle').addEventListener('click', function() {

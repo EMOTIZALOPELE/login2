@@ -133,6 +133,24 @@
             border-bottom: 1px solid #ddd;
 
             }
+        .config-button {
+            display: block;
+            margin-top: 15px;
+            padding: 10px 20px;
+            background: #1f53c5;
+            color: white;
+            text-align: center;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease-in-out;
+            }
+
+        .config-button:hover {
+            background: #163a94;
+            transform: scale(1.05);
+            }
+
             /* Aca termina*/   
 
         /*Haciendo la página Responsive*/
@@ -244,7 +262,6 @@
                 <img src="images/logo-magtimus-v2.3-1.png" alt="">
                 <ul>
                     <li><a id="selected">Inicio</a></li>
-                    <li><a href="<?= base_url('configuracion') ?>">Configuración</a></li>
                     <li><a href="<?= base_url('pele') ?>">Diseño</a></li>
                     <li><a href="<?= base_url('logout') ?>">salir</a></li>
                 </ul>
@@ -256,15 +273,22 @@
         <!-- Contenido principal -->
         <div class="containter__card">
                 <div class="horarios-container">
+                     <!-- Botón para agregar nueva tarjeta -->
+                    <button id="add-card-btn">Añadir Tarjeta</button>
                     <?php foreach ($horarios as $horario): ?>
                         <div class="horario-card">
-                            <h3>Horario de <?= session()->get('nombre'); ?></h3>
+                          <!--  <h3>Horario de <?= session()->get('nombre'); ?></h3> -->
                             <p><strong>Ventana Apertura:</strong> <?= esc($horario['ventana_apertura']); ?></p>
                             <p><strong>Ventana Cierre:</strong> <?= esc($horario['ventana_cierre']); ?></p>
                             <p><strong>Cortina Apertura:</strong> <?= esc($horario['cortina_apertura']); ?></p>
                             <p><strong>Cortina Cierre:</strong> <?= esc($horario['cortina_cierre']); ?></p>
                             <p><strong>Postigón Apertura:</strong> <?= esc($horario['postigon_apertura']); ?></p>
                             <p><strong>Postigón Cierre:</strong> <?= esc($horario['postigon_cierre']); ?></p>
+                            <a href="<?= base_url('configuracion') ?>" class="config-button">Configuración</a>
+                             <!-- Sección donde se agregarán las tarjetas dinámicamente -->
+                            <div id="cards-container">
+                            <!-- Aquí se agregarán las tarjetas dinámicamente -->
+                            </div>
                         </div>
                     <?php endforeach; ?>
                 </div>
@@ -292,5 +316,55 @@
             background_menu.style.display = "none";
         }
     </script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const cardsContainer = document.getElementById("cards-container");
+        const addCardBtn = document.getElementById("add-card-btn");
+
+        // Cargar tarjetas almacenadas en localStorage
+        let tarjetas = JSON.parse(localStorage.getItem("tarjetas")) || [];
+
+        function renderizarTarjetas() {
+            cardsContainer.innerHTML = ""; // Limpiar contenedor
+            tarjetas.forEach((tarjeta, index) => {
+                const card = document.createElement("div");
+                card.classList.add("horario-card");
+                card.innerHTML = `
+                    <h3>${tarjeta.nombre}</h3>
+                    <p><strong>Ventana Apertura:</strong> ${tarjeta.ventana_apertura}</p>
+                    <p><strong>Ventana Cierre:</strong> ${tarjeta.ventana_cierre}</p>
+                    <button class="delete-card" data-index="${index}">Eliminar</button>
+                `;
+                cardsContainer.appendChild(card);
+            });
+        }
+
+        addCardBtn.addEventListener("click", function () {
+            const nombre = prompt("Ingresa el nombre de la nueva tarjeta:");
+            if (nombre) {
+                const nuevaTarjeta = {
+                    nombre: nombre,
+                    ventana_apertura: "08:00 AM",
+                    ventana_cierre: "06:00 PM",
+                };
+                tarjetas.push(nuevaTarjeta);
+                localStorage.setItem("tarjetas", JSON.stringify(tarjetas));
+                renderizarTarjetas();
+            }
+        });
+
+        // Eliminar tarjetas
+        cardsContainer.addEventListener("click", function (event) {
+            if (event.target.classList.contains("delete-card")) {
+                const index = event.target.getAttribute("data-index");
+                tarjetas.splice(index, 1);
+                localStorage.setItem("tarjetas", JSON.stringify(tarjetas));
+                renderizarTarjetas();
+            }
+        });
+
+        renderizarTarjetas();
+    });
+</script>
 </body>
 </html>

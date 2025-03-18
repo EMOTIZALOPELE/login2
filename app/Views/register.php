@@ -10,7 +10,7 @@
         .form-register {
     width: 450px;
     background-color: #24303c;
-    padding: 30px ;
+    padding: 10px 15px 10px 15px ;
     position: absolute;
     top: 50%;
     left: 50%;

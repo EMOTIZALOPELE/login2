@@ -1,156 +1,199 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Diseño de Artículos</title>
-    <script src="https://cdn.jsdelivr.net/npm/konva@8.0.3/konva.min.js"></script>
+  <meta charset="UTF-8">
+  <title>Diseño de Artículos</title>
+  <script src="https://cdn.jsdelivr.net/npm/konva@8.0.3/konva.min.js"></script>
+  <script src="https://kit.fontawesome.com/6f93a4b68f.js" crossorigin="anonymous"></script>
+  <style>
+    body {
+      background: url(<?= base_url("img/fondo4.jpg") ?>) no-repeat center center fixed;
+      background-size: cover;        
+            font-family: Arial, sans-serif;        
+            height: 100vh;
+
+    }
+
+    h1 {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 32px;
+    }
+
+    .contenedor {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 40px;
+    }
+
+    form {
+      flex: 1;
+      max-width: 400px;
+      padding-right: 40px;
+    }
+   
+    label{
+      display: block;
+      color: white;
+      text-decoration: none;
+      font-size: 14px;
+      width: 100%;
+      font-size: 18px;
+      margin-bottom: 15px;
+    }
+    select, input {
+      display: block;
+      width: 100%;
+      font-size: 18px;
+      margin-bottom: 15px;
+    }
+    button {
+      font-size: 18px;
+      padding: 10px 20px;
+      cursor: pointer;
+    }
+
+    #container {
+      flex: 2;
+      border: 1px solid #ccc;
+      width: 800px;
+      height: 600px;
+      background-color: #f5f5f5;
+    }
+  </style>
 </head>
 <body>
-    <h1>Diseña tu Ventana, Cortina y Postigón</h1>
 
-    <!-- Formulario para ingresar el nombre y opciones SI/NO -->
-    <form id="designForm">
-        <label for="Nombreventana">Nombre de tu diseño:</label>
-        <input type="text" id="Nombreventana" required>
-        <br>
-        <label for="ventana">Ventana:</label>
-        <select id="ventana">
-            <option value="si">Sí</option>
-            <option value="no">No</option>
-        </select>
-        <br>
-        <label for="cortina">Cortina:</label>
-        <select id="cortina">
-            <option value="si">Sí</option>
-            <option value="no">No</option>
-        </select>
-        <br>
-        <label for="postigon">Postigón:</label>
-        <select id="postigon">
-            <option value="si">Sí</option>
-            <option value="no">No</option>
-        </select>
-        <br>
-        <button type="submit">Guardar Diseño</button>
+  <h1>Diseña tu Artículo</h1>
+
+  <div class="contenedor">
+  <form id="designForm" method="post" action="<?= base_url('diseno/guardar') ?>">
+      <label for="nombre">Nombre del diseño:</label>
+      <input type="text" id="nombre" required>
+
+      <label for="cortina">Cortina:</label>
+      <select id="cortina">
+        <option value="si">Sí</option>
+        <option value="no">No</option>
+      </select>
+
+      <label for="ventana">Ventana:</label>
+      <select id="ventana">
+        <option value="si">Sí</option>
+        <option value="no">No</option>
+      </select>
+
+      <label for="postigon">Postigón:</label>
+      <select id="postigon">
+        <option value="si">Sí</option>
+        <option value="no">No</option>
+      </select>
+      <input class="botons" type="submit" value="Cargar al inicio">
     </form>
 
-    <!-- Área de diseño de los artículos -->
     <div id="container"></div>
+  </div>
 
-    <script>
-        // Crear la etapa de Konva
-        var stage = new Konva.Stage({
-            container: 'container',
-            width: 600,
-            height: 400,
-        });
+  <script>
+    const stage = new Konva.Stage({
+      container: 'container',
+      width: 800,
+      height: 600,
+    });
 
-        var layer = new Konva.Layer();
-        stage.add(layer);
+    const layer = new Konva.Layer();
+    stage.add(layer);
 
-        // Función para crear los artículos de acuerdo a la selección
-        function crearArticulos() {
-            var ventana = document.getElementById('ventana').value;
-            var cortina = document.getElementById('cortina').value;
-            var postigon = document.getElementById('postigon').value;
+    function cargarImagen(src, callback) {
+      const img = new Image();
+      img.onload = () => callback(img);
+      img.onerror = () => console.error('Error al cargar: ' + src);
+      img.src = src;
+    }
 
-            // Limpiar la capa
-            layer.destroyChildren();
+    function mostrarDiseño() {
+      const nombre = document.getElementById('nombre').value;
+      const cortina = document.getElementById('cortina').value;
+      const ventana = document.getElementById('ventana').value;
+      const postigon = document.getElementById('postigon').value;
 
-            // Crear "ventana" si está seleccionada
-            if (ventana === 'si') {
-                var ventanaRect = new Konva.Rect({
-                    x: 50,
-                    y: 50,
-                    width: 200,
-                    height: 150,
-                    fill: 'lightblue',
-                    stroke: 'black',
-                    strokeWidth: 2
-                });
-                layer.add(ventanaRect);
-            }
+      layer.destroyChildren(); // limpiar canvas
 
-            // Crear "cortina" si está seleccionada
-            if (cortina === 'si') {
-                var cortinaRect = new Konva.Rect({
-                    x: 60,
-                    y: 60,
-                    width: 180,
-                    height: 120,
-                    fill: 'lightgray',
-                    stroke: 'black',
-                    strokeWidth: 2
-                });
-                layer.add(cortinaRect);
-            }
+      const texto = new Konva.Text({
+        x: 20,
+        y: 10,
+        text: nombre,
+        fontSize: 28,
+        fill: 'black',
+      });
+      layer.add(texto);
 
-            // Crear "postigón" si está seleccionado
-            if (postigon === 'si') {
-                var postigonRect = new Konva.Rect({
-                    x: 300,
-                    y: 50,
-                    width: 200,
-                    height: 150,
-                    fill: 'brown',
-                    stroke: 'black',
-                    strokeWidth: 2
-                });
-                layer.add(postigonRect);
-            }
+      const yBase = 80;
+      const xBase = 100;
+      const ancho = 600;
+      const alto = 400;
 
-            // Redibujar la capa
-            layer.draw();
+      const cargarTodo = () => {
+        let promesas = [];
+
+        if (postigon === 'si') {
+          promesas.push(new Promise(resolve => {
+            cargarImagen('img/postigon.png', function (img) {
+              const imagen = new Konva.Image({
+                opacity: 1,
+                image: img, x: xBase, y: yBase, width: ancho, height: alto
+              });
+              layer.add(imagen);
+              resolve();
+            });
+          }));
         }
 
-        // Llamar a la función para crear los artículos al cargar la página
-        crearArticulos();
-
-        // Actualizar la vista cuando el usuario cambia las opciones
-        document.getElementById('ventana').addEventListener('change', crearArticulos);
-        document.getElementById('cortina').addEventListener('change', crearArticulos);
-        document.getElementById('postigon').addEventListener('change', crearArticulos);
-
-        // Guardar los datos al hacer submit
-        document.getElementById('designForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-
-            var Nombreventana = document.getElementById('Nombreventana').value;
-            var ventana = document.getElementById('ventana').value;
-            var cortina = document.getElementById('cortina').value;
-            var postigon = document.getElementById('postigon').value;
-
-            // Aquí puedes enviar estos datos al servidor o guardarlos localmente
-            console.log({
-                Nombreventana: Nombreventana,
-                ventana: ventana,
-                cortina: cortina,
-                postigon: postigon
+        if (ventana === 'si') {
+          promesas.push(new Promise(resolve => {
+            cargarImagen('img/ventana.png', function (img) {
+              const imagen = new Konva.Image({
+                opacity: 0.8,
+                image: img, x: xBase, y: yBase, width: ancho, height: alto
+              });
+              layer.add(imagen);
+              resolve();
             });
+          }));
+        }
 
-            // Enviar a la base de datos en el futuro con AJAX
-            fetch('/design/saveDesign', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    Nombreventana: Nombreventana,
-                    ventana: ventana,
-                    cortina: cortina,
-                    postigon: postigon
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    alert('Diseño guardado correctamente');
-                } else {
-                    alert('Hubo un error al guardar el diseño');
-                }
+        if (cortina === 'si') {
+          promesas.push(new Promise(resolve => {
+            cargarImagen('img/cortina.png', function (img) {
+              const imagen = new Konva.Image({
+                opacity: 0.6,
+                image: img, x: xBase, y: yBase, width: ancho, height: alto
+              });
+              layer.add(imagen);
+              resolve();
             });
+          }));
+        }
+
+        Promise.all(promesas).then(() => {
+          layer.draw();
         });
-    </script>
+      };
+
+      cargarTodo();
+    }
+
+    document.querySelectorAll('select, input').forEach(el => {
+      el.addEventListener('change', mostrarDiseño);
+    });
+
+    mostrarDiseño();
+
+    document.getElementById('designForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      alert('Diseño guardado: ' + document.getElementById('nombre').value);
+    });
+  </script>
 </body>
 </html>

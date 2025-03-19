@@ -4,12 +4,14 @@
   <meta charset="UTF-8">
   <title>Diseño de Artículos</title>
   <script src="https://cdn.jsdelivr.net/npm/konva@8.0.3/konva.min.js"></script>
+  <script src="https://kit.fontawesome.com/6f93a4b68f.js" crossorigin="anonymous"></script>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background-color: #fff;
-      margin: 0;
-      padding: 0;
+      background: url(<?= base_url("img/fondo4.jpg") ?>) no-repeat center center fixed;
+      background-size: cover;        
+            font-family: Arial, sans-serif;        
+            height: 100vh;
+
     }
 
     h1 {
@@ -30,14 +32,22 @@
       max-width: 400px;
       padding-right: 40px;
     }
-
-    label, select, input {
+   
+    label{
+      display: block;
+      color: white;
+      text-decoration: none;
+      font-size: 14px;
+      width: 100%;
+      font-size: 18px;
+      margin-bottom: 15px;
+    }
+    select, input {
       display: block;
       width: 100%;
       font-size: 18px;
       margin-bottom: 15px;
     }
-
     button {
       font-size: 18px;
       padding: 10px 20px;
@@ -58,18 +68,18 @@
   <h1>Diseña tu Artículo</h1>
 
   <div class="contenedor">
-    <form id="designForm">
+  <form id="designForm" method="post" action="<?= base_url('diseno/guardar') ?>">
       <label for="nombre">Nombre del diseño:</label>
       <input type="text" id="nombre" required>
 
-      <label for="ventana">Ventana:</label>
-      <select id="ventana">
+      <label for="cortina">Cortina:</label>
+      <select id="cortina">
         <option value="si">Sí</option>
         <option value="no">No</option>
       </select>
 
-      <label for="cortina">Cortina:</label>
-      <select id="cortina">
+      <label for="ventana">Ventana:</label>
+      <select id="ventana">
         <option value="si">Sí</option>
         <option value="no">No</option>
       </select>
@@ -79,8 +89,7 @@
         <option value="si">Sí</option>
         <option value="no">No</option>
       </select>
-
-      <button type="submit">Guardar Diseño</button>
+      <input class="botons" type="submit" value="Cargar al inicio">
     </form>
 
     <div id="container"></div>
@@ -105,8 +114,8 @@
 
     function mostrarDiseño() {
       const nombre = document.getElementById('nombre').value;
-      const ventana = document.getElementById('ventana').value;
       const cortina = document.getElementById('cortina').value;
+      const ventana = document.getElementById('ventana').value;
       const postigon = document.getElementById('postigon').value;
 
       layer.destroyChildren(); // limpiar canvas

@@ -39,4 +39,6 @@ $routes->get('/pantalla', 'Home::iniciar2');
 
 // PLANOS VENTANAS
 $routes->get('/pele', 'Home::iradiseño');
-$routes->post('design/saveDesign', 'DesignController::saveDesign');
+$routes->get('diseno', 'DisenoController::crear');
+$routes->post('diseno/guardar', 'DisenoController::guardar'); // Guarda el diseño en la BD
+

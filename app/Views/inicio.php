@@ -164,7 +164,7 @@
         }
         
 
-        @media screen and (max-width: 720px){
+        @media screen and (max-width: 550px){
         
             .menu nav{
                 position: fixed;
@@ -232,7 +232,7 @@
                 background: rgba(255, 255, 255, 0.2);
             }
         }
-        @media screen and (max-width: 720px) {
+        @media screen and (max-width: 550px) {
             .horarios-container {
                 flex-direction: column; /* Acomoda las tarjetas en columna */
                 align-items: center; /* Centra las tarjetas */
@@ -240,7 +240,7 @@
          
             .horario-card {
                 width: 80%; /* Ocuparán el 80% del ancho en celulares */
-                max-width: 400px; /* Se limita a 400px máximo */
+                max-width: 300px; /* Se limita a 400px máximo */
             }
         }
 
@@ -262,6 +262,7 @@
                 <img src="images/logo-magtimus-v2.3-1.png" alt="">
                 <ul>
                     <li><a id="selected">Inicio</a></li>
+                    <li><a id="add-card-btn">Añadir Tarjeta</a></li>
                     <li><a href="<?= base_url('pele') ?>">Diseño</a></li>
                     <li><a href="<?= base_url('logout') ?>">salir</a></li>
                 </ul>
@@ -273,8 +274,6 @@
         <!-- Contenido principal -->
         <div class="containter__card">
                 <div class="horarios-container">
-                     <!-- Botón para agregar nueva tarjeta -->
-                    <button id="add-card-btn">Añadir Tarjeta</button>
                     <?php foreach ($horarios as $horario): ?>
                         <div class="horario-card">
                           <!--  <h3>Horario de <?= session()->get('nombre'); ?></h3> -->

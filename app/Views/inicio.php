@@ -262,7 +262,7 @@
                 <img src="images/logo-magtimus-v2.3-1.png" alt="">
                 <ul>
                     <li><a id="selected">Inicio</a></li>
-                    <li><a id="add-card-btn">Añadir Tarjeta</a></li>
+                    <li><a href="<?= base_url('addtarjeta') ?>">Añadir Tarjeta</a></li>
                     <li><a href="<?= base_url('pele') ?>">Diseño</a></li>
                     <li><a href="<?= base_url('logout') ?>">salir</a></li>
                 </ul>
@@ -283,11 +283,14 @@
                             <p><strong>Cortina Cierre:</strong> <?= esc($horario['cortina_cierre']); ?></p>
                             <p><strong>Postigón Apertura:</strong> <?= esc($horario['postigon_apertura']); ?></p>
                             <p><strong>Postigón Cierre:</strong> <?= esc($horario['postigon_cierre']); ?></p>
-                            <a href="<?= base_url('configuracion') ?>" class="config-button">Configuración</a>
-                             <!-- Sección donde se agregarán las tarjetas dinámicamente -->
-                            <div id="cards-container">
-                            <!-- Aquí se agregarán las tarjetas dinámicamente -->
-                            </div>
+                            <form action="<?= site_url('configurar/' . esc($horario['idhorario'])) ?>" method="POST">
+                                <button type="submit" class="config-button">Configurar</button>
+                            </form>
+                            <!-- Botón de eliminar tarjeta -->
+                            <form action="<?= site_url('borrar_tarjeta/' . esc($horario['idhorario'])) ?>" method="POST" onsubmit="return confirm('¿Seguro que quieres eliminar esta tarjeta?');">
+                                <button type="submit" class="delete-button">Eliminar</button>
+                            </form>
+                            
                         </div>
                     <?php endforeach; ?>
                 </div>
@@ -315,55 +318,5 @@
             background_menu.style.display = "none";
         }
     </script>
-    <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const cardsContainer = document.getElementById("cards-container");
-        const addCardBtn = document.getElementById("add-card-btn");
-
-        // Cargar tarjetas almacenadas en localStorage
-        let tarjetas = JSON.parse(localStorage.getItem("tarjetas")) || [];
-
-        function renderizarTarjetas() {
-            cardsContainer.innerHTML = ""; // Limpiar contenedor
-            tarjetas.forEach((tarjeta, index) => {
-                const card = document.createElement("div");
-                card.classList.add("horario-card");
-                card.innerHTML = `
-                    <h3>${tarjeta.nombre}</h3>
-                    <p><strong>Ventana Apertura:</strong> ${tarjeta.ventana_apertura}</p>
-                    <p><strong>Ventana Cierre:</strong> ${tarjeta.ventana_cierre}</p>
-                    <button class="delete-card" data-index="${index}">Eliminar</button>
-                `;
-                cardsContainer.appendChild(card);
-            });
-        }
-
-        addCardBtn.addEventListener("click", function () {
-            const nombre = prompt("Ingresa el nombre de la nueva tarjeta:");
-            if (nombre) {
-                const nuevaTarjeta = {
-                    nombre: nombre,
-                    ventana_apertura: "08:00 AM",
-                    ventana_cierre: "06:00 PM",
-                };
-                tarjetas.push(nuevaTarjeta);
-                localStorage.setItem("tarjetas", JSON.stringify(tarjetas));
-                renderizarTarjetas();
-            }
-        });
-
-        // Eliminar tarjetas
-        cardsContainer.addEventListener("click", function (event) {
-            if (event.target.classList.contains("delete-card")) {
-                const index = event.target.getAttribute("data-index");
-                tarjetas.splice(index, 1);
-                localStorage.setItem("tarjetas", JSON.stringify(tarjetas));
-                renderizarTarjetas();
-            }
-        });
-
-        renderizarTarjetas();
-    });
-</script>
 </body>
 </html>

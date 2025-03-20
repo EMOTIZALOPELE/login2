@@ -150,8 +150,7 @@
     <div class="container">
         <h2>Configuración de Horarios</h2>
 
-        <form action="<?= base_url('guardar_horarios') ?>" method="post">
-            <input type="hidden" name="idhorario" value="<?= isset($horario['idhorario']) ? esc($horario['idhorario']) : '' ?>">
+        <form action="<?= base_url('savetarjeta') ?>" method="post">
             <div class="form-group">
                 <label for="ventana_apertura">Apertura de Ventanas:</label>
                 <input type="time" id="ventana_apertura" name="ventana_apertura" value="<?= isset($horario['ventana_apertura']) ? esc($horario['ventana_apertura']) : '' ?>" required>
@@ -182,7 +181,7 @@
                 <input type="time" id="postigon_cierre" name="postigon_cierre" value="<?= isset($horario['postigon_cierre']) ? esc($horario['postigon_cierre']) : '' ?>" required>
             </div>
 
-            <button type="submit">Guardar Horarios</button>
+            <button type="submit">Crear Horario</button>
         </form>
 
         <h2>Control del Servo</h2>

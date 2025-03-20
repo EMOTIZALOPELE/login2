@@ -193,32 +193,20 @@ class Home extends Controller
             return 'Usuario no logueado'; 
         }
 
-        // Validar los datos del formulario
-        if (!$this->validate([
-            'ventana_apertura' => 'required',
-            'ventana_cierre' => 'required',
-            'cortina_apertura' => 'required',
-            'cortina_cierre' => 'required',
-            'postigon_apertura' => 'required',
-            'postigon_cierre' => 'required'
-        ])) {
-            return 'Validación fallida'; 
-        }
-
         $data = [
-            'ventana_apertura' => $this->request->getPost('ventana_apertura'),
-            'ventana_cierre' => $this->request->getPost('ventana_cierre'),
-            'cortina_apertura' => $this->request->getPost('cortina_apertura'),
-            'cortina_cierre' => $this->request->getPost('cortina_cierre'),
+            'idhorario'         => $this->request->getPost('idhorario'),
+            'ventana_apertura'  => $this->request->getPost('ventana_apertura'),
+            'ventana_cierre'    => $this->request->getPost('ventana_cierre'),
+            'cortina_apertura'  => $this->request->getPost('cortina_apertura'),
+            'cortina_cierre'    => $this->request->getPost('cortina_cierre'),
             'postigon_apertura' => $this->request->getPost('postigon_apertura'),
-            'postigon_cierre' => $this->request->getPost('postigon_cierre'),
-            'usuario_id' => $usuario_id
+            'postigon_cierre'   => $this->request->getPost('postigon_cierre'),
         ];
 
         $horariosModel = new \App\Models\HorariosModel();
 
         // Actualizar los horarios existentes
-        $existingHorario = $horariosModel->where('usuario_id', $usuario_id)->first();
+        $existingHorario = $horariosModel->where('idhorario', $data['idhorario'])->first();
         if ($existingHorario) {
             $horariosModel->update($existingHorario['idhorario'], $data); 
         } else {
@@ -227,7 +215,7 @@ class Home extends Controller
             }
         }
 
-        return redirect()->to(base_url('configuracion'))->with('status', 'Horarios guardados correctamente.');
+        return redirect()->to(base_url('irainicio'))->with('status', 'Horarios guardados correctamente.');
     }
 
     public function mostrarHorarios()
@@ -251,6 +239,4 @@ class Home extends Controller
     // Pasar los datos a la vista
     return view('horarios_view', ['horarios' => $horarios]);
 }
-
-
 }

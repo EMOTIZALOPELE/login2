@@ -111,8 +111,24 @@ public function borrarTarjeta($idhorario)
         $horariosModel->delete($idhorario);
         return redirect()->to(base_url('irainicio'))->with('message', 'Tarjeta eliminada correctamente.');
     } else {
-        return redirect()->to('/')->with('error', 'La tarjeta no existe.');
+        return redirect()->to('irainicio')->with('error', 'La tarjeta no existe.');
     }
 }
+    
+public function addname($idhorario)
+{
+    $horariosModel = new \App\Models\HorariosModel();
+
+    // Validar la entrada
+    $nombre_tarjeta = $this->request->getPost('nombre_tarjeta');
+
+    if ($nombre_tarjeta) {
+        $horariosModel->update($idhorario, ['nombre_tarjeta' => $nombre_tarjeta]);
+        return redirect()->to('irainicio')->with('message', 'Nombre de la tarjeta actualizado correctamente.');
+    } else {
+        return redirect()->to('irainicio')->with('error', 'El nombre de la tarjeta no puede estar vacío.');
+    }
+}
+
 
 } 

@@ -15,6 +15,7 @@ class DisenoModel extends Model
         'ventana',
         'postigon',
         'usuario_id',
+        
     ];
 
     protected $useTimestamps = true;

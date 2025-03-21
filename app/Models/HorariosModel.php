@@ -16,6 +16,7 @@ class HorariosModel extends Model
         'postigon_apertura',
         'postigon_cierre',
         'usuario_id',
+        'nombre_tarjeta',
     ];
     protected $useTimestamps = true;         // Para gestionar created_at y updated_at
 }

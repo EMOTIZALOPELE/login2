@@ -91,13 +91,14 @@
         .container__card {
             display: flex;
             flex-wrap: wrap; /* Permite que las tarjetas se acomoden solas */
-            justify-content: center;
-            gap: 20px; /* Espaciado entre tarjetas */
+            gap: 5px; /* Espaciado entre tarjetas */
             padding: 20px;
+            justify-content: space-around; /* Alinea las tarjetas a la izquierda */
         }
         /* Todo esto es el style de las cards*/
         .horarios-container {
             display: flex;
+            gap: 15px;
             justify-content: center;
             align-items: center;
             height: 100vh;
@@ -107,7 +108,7 @@
             padding: 25px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            width: 100%;
+            width: calc(33.33% - 10px);
             max-width: 300px; /* No crece más de 300px */
             text-align: center;
             transition: all 0.5s ease-in-out;
@@ -177,12 +178,15 @@
 
         .add-name-button,
         .save-name-button {
-            background-color: #007bff;
+            display: block;
+            margin-top: 15px;
+            padding: 10px 20px;
+            background: #1f53c5;
             color: white;
-            padding: 10px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
+            text-align: center;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
         }
 
         .add-name-button:hover,
@@ -323,7 +327,10 @@
                 <div class="horarios-container">
                     <?php foreach ($horarios as $horario): ?>
                         <div class="horario-card">
-                          <!--  <h3>Horario de <?= session()->get('nombre'); ?></h3> -->
+                        <h3><?= isset($horario['nombre_tarjeta']) && !empty($horario['nombre_tarjeta']) 
+                            ? esc($horario['nombre_tarjeta']) 
+                            : 'Horario de ' . session()->get('nombre'); ?></h3>
+
                             <p><strong>Ventana Apertura:</strong> <?= esc($horario['ventana_apertura']); ?></p>
                             <p><strong>Ventana Cierre:</strong> <?= esc($horario['ventana_cierre']); ?></p>
                             <p><strong>Cortina Apertura:</strong> <?= esc($horario['cortina_apertura']); ?></p>
@@ -331,26 +338,25 @@
                             <p><strong>Postigón Apertura:</strong> <?= esc($horario['postigon_apertura']); ?></p>
                             <p><strong>Postigón Cierre:</strong> <?= esc($horario['postigon_cierre']); ?></p>
 
-                        <div class="button-container">
-                            <form action="<?= site_url('configurar/' . esc($horario['idhorario'])) ?>" method="POST">
-                                <button type="submit" class="config-button">Configurar</button>
-                            </form>
+                            <div class="button-container">
+                                <form action="<?= site_url('configurar/' . esc($horario['idhorario'])) ?>" method="POST">
+                                    <button type="submit" class="config-button">Configurar</button>
+                                </form>
 
-                                <button class="add-name-button" onclick="toggleNameForm('form-<?= $horario['idhorario'] ?>')">Añadir Nombre</button>
+                                    <button class="add-name-button" onclick="toggleNameForm('form-<?= $horario['idhorario'] ?>')">Añadir Nombre</button>
 
-                            <form action="<?= site_url('add_name/' . esc($horario['idhorario'])) ?>" method="POST" class="name-form" id="form-<?= $horario['idhorario'] ?>" style="display: none;">
-                                <input type="text" name="ad_name" placeholder="Nuevo nombre" required>
-                                <button type="submit" class="save-name-button">Guardar</button>
-                            </form>
-                        </div>
-
-
-                            <!-- Botón de eliminar tarjeta -->
-                            <form action="<?= site_url('add_name/' . esc($horario['idhorario'])) ?>" method="POST" onsubmit="return confirm('¿Seguro que quieres eliminar esta tarjeta?');">
-                                <button type="submit" class="delete-button">Eliminar</button>
-                            </form>
+                                <form action="<?= site_url('add_name/' . esc($horario['idhorario'])) ?>" method="POST" class="name-form" id="form-<?= $horario['idhorario'] ?>" style="display: none;">
+                                    <input type="text" name="nombre_tarjeta" placeholder="Nuevo nombre" required>
+                                    <button type="submit" class="save-name-button">Guardar</button>
+                                </form>                   
+                            </div> 
                             
-                        </div>
+                            <!-- Botón de eliminar tarjeta -->
+                                <form action="<?= site_url('borrar_tarjeta/' . esc($horario['idhorario'])) ?>" method="POST" onsubmit="return confirm('¿Seguro que quieres eliminar esta tarjeta?');">
+                                    <button type="submit" class="delete-button">Eliminar</button>
+                                </form>
+                         
+                    </div>
                     <?php endforeach; ?>
                 </div>
         </div>

@@ -151,6 +151,53 @@
             transform: scale(1.05);
             }
 
+        .delete-button {
+            width: 100%;
+            display: block;
+            margin-top: 20px;
+            padding: 10px;
+            background:rgb(197, 31, 31);
+            color: white;
+            text-align: center;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease-in-out;
+            }
+
+            .delete-button:hover {
+                background-color:rgb(197, 31, 31);
+                transform: scale(1.05);
+            }
+
+        .button-container {
+            display: flex;
+            gap: 10px;
+        }
+
+        .add-name-button,
+        .save-name-button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .add-name-button:hover,
+        .save-name-button:hover {
+            background-color: #0056b3;
+        }
+
+        .name-form input {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+
+        
             /* Aca termina*/   
 
         /*Haciendo la página Responsive*/
@@ -283,11 +330,23 @@
                             <p><strong>Cortina Cierre:</strong> <?= esc($horario['cortina_cierre']); ?></p>
                             <p><strong>Postigón Apertura:</strong> <?= esc($horario['postigon_apertura']); ?></p>
                             <p><strong>Postigón Cierre:</strong> <?= esc($horario['postigon_cierre']); ?></p>
+
+                        <div class="button-container">
                             <form action="<?= site_url('configurar/' . esc($horario['idhorario'])) ?>" method="POST">
                                 <button type="submit" class="config-button">Configurar</button>
                             </form>
+
+                                <button class="add-name-button" onclick="toggleNameForm('form-<?= $horario['idhorario'] ?>')">Añadir Nombre</button>
+
+                            <form action="<?= site_url('add_name/' . esc($horario['idhorario'])) ?>" method="POST" class="name-form" id="form-<?= $horario['idhorario'] ?>" style="display: none;">
+                                <input type="text" name="ad_name" placeholder="Nuevo nombre" required>
+                                <button type="submit" class="save-name-button">Guardar</button>
+                            </form>
+                        </div>
+
+
                             <!-- Botón de eliminar tarjeta -->
-                            <form action="<?= site_url('borrar_tarjeta/' . esc($horario['idhorario'])) ?>" method="POST" onsubmit="return confirm('¿Seguro que quieres eliminar esta tarjeta?');">
+                            <form action="<?= site_url('add_name/' . esc($horario['idhorario'])) ?>" method="POST" onsubmit="return confirm('¿Seguro que quieres eliminar esta tarjeta?');">
                                 <button type="submit" class="delete-button">Eliminar</button>
                             </form>
                             
@@ -318,5 +377,11 @@
             background_menu.style.display = "none";
         }
     </script>
+    <script>
+    function toggleNameForm(formId) {
+        const form = document.getElementById(formId);
+        form.style.display = form.style.display === 'none' ? 'block' : 'none';
+    }
+</script>
 </body>
 </html>

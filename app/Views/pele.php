@@ -66,31 +66,33 @@
 <body>
 
   <h1>Diseña tu Artículo</h1>
-
+  <li><a href="irainicio">Volver</a></li>
+  <a href="<?= base_url('configuracion') ?>" class="config-button">Configuración</a>
   <div class="contenedor">
   <form id="designForm" method="post" action="<?= base_url('diseno/guardar') ?>">
-      <label for="nombre">Nombre del diseño:</label>
-      <input type="text" id="nombre" required>
+  <label for="nombre">Nombre del diseño:</label>
+  <input type="text" id="nombre" name="nombre" required>
 
-      <label for="cortina">Cortina:</label>
-      <select id="cortina">
-        <option value="si">Sí</option>
-        <option value="no">No</option>
-      </select>
+  <label for="cortina">Cortina:</label>
+  <select id="cortina" name="cortina">
+    <option value="si">Sí</option>
+    <option value="no">No</option>
+  </select>
 
-      <label for="ventana">Ventana:</label>
-      <select id="ventana">
-        <option value="si">Sí</option>
-        <option value="no">No</option>
-      </select>
+  <label for="ventana">Ventana:</label>
+  <select id="ventana" name="ventana">
+    <option value="si">Sí</option>
+    <option value="no">No</option>
+  </select>
 
-      <label for="postigon">Postigón:</label>
-      <select id="postigon">
-        <option value="si">Sí</option>
-        <option value="no">No</option>
-      </select>
-      <input class="botons" type="submit" value="Cargar al inicio">
-    </form>
+  <label for="postigon">Postigón:</label>
+  <select id="postigon" name="postigon">
+    <option value="si">Sí</option>
+    <option value="no">No</option>
+  </select>
+
+  <input class="botons" type="submit" value="Cargar al inicio">
+</form>
 
     <div id="container"></div>
   </div>
@@ -191,7 +193,6 @@
     mostrarDiseño();
 
     document.getElementById('designForm').addEventListener('submit', function (e) {
-      e.preventDefault();
       alert('Diseño guardado: ' + document.getElementById('nombre').value);
     });
   </script>

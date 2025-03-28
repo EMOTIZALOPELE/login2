@@ -7,9 +7,10 @@
         <title>Inicio</title>
 
         <!-- Agregar Bootstrap para el modal -->
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 
         <style>
             /* Reset de estilos básicos */
@@ -206,31 +207,78 @@
                 border-radius: 5px;
                 margin-right: 10px;
             }
+            .open-modal-btn {
+        background-color: #1f53c5;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease-in-out;
+    }
 
-            .modal-content {
-                background-color: rgb(231, 230, 235);  /* Similar al fondo de tus tarjetas */
-                border-radius: 10px;                   /* Bordes redondeados */
-                padding: 20px;                         /* Espaciado interno */
-            }
+    .open-modal-btn:hover {
+        background-color: #163a94;
+    }
 
-            .modal-header {
-                background-color: #1f53c5;             /* Fondo azul similar a las tarjetas */
-                color: white;                          /* Texto blanco */
-                border-bottom: none;                   /* Quitar la línea de separación */
-            }
+    .modal-overlay {
+        display: none; /* Oculto por defecto */
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+    }
 
-            .modal-title {
-                font-size: 20px;                       /* Tamaño del título */
-                font-weight: bold;
-            }
+    .modal {
+        background-color: white;
+        padding: 20px;
+        width: 100%;
+        max-width: 400px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        text-align: center;
+    }
 
-            .modal-footer .btn-primary {
-                background-color: #1f53c5;             /* Botón con tu azul */
-            }
+    .modal-header {
+        font-size: 20px;
+        font-weight: bold;
+        margin-bottom: 15px;
+    }
 
-            .modal-footer .btn-primary:hover {
-                background-color: #163a94;             /* Un azul más oscuro al pasar el cursor */
-            }
+    .modal-body {
+        font-size: 16px;
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    .modal-footer button {
+        background-color: #1f53c5;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        margin-right: 10px;
+    }
+
+    .modal-footer .close-btn {
+        background-color: rgb(197, 31, 31);
+    }
+
+    .modal-footer .confirm-btn:hover {
+        background-color: #163a94;
+    }
+
+    .modal-footer .close-btn:hover {
+        background-color: rgb(150, 0, 0);
+    }
+           
                 /* Aca termina*/   
 
             /*Haciendo la página Responsive*/
@@ -371,34 +419,8 @@
                                     <form action="<?= site_url('configurar/' . esc($horario['idhorario'])) ?>" method="POST">
                                         <button type="submit" class="config-button">Configurar</button>
                                     </form>
-                                
-                                        <!-- Botón que activa el modal -->
-                                <button type="button" class="add-name-button" data-toggle="modal" data-target="#modalNombre-<?= $horario['idhorario'] ?>">Añadir Nombre</button>
-                                </div>
-                                
-                                <!-- Modal para añadir nombre -->
-                                <div class="modal fade" id="modalNombre-<?= $horario['idhorario'] ?>" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title">Añadir Nombre a la Tarjeta</h5>
-                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                        <span aria-hidden="true">&times;</span>
-                                                    </button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <form action="<?= site_url('add_name/' . esc($horario['idhorario'])) ?>" method="POST">
-                                                        <div class="form-group">
-                                                            <label for="nombre_tarjeta">Nuevo Nombre</label>
-                                                            <input type="text" name="nombre_tarjeta" class="form-control" required placeholder="Nuevo nombre de tarjeta">
-                                                        </div>
-                                                        <button type="submit" class="btn btn-primary">Guardar</button>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div> 
-                                
+                                </div>  
+                           
                                 <!-- Botón de eliminar tarjeta -->
                                     <form action="<?= site_url('borrar_tarjeta/' . esc($horario['idhorario'])) ?>" method="POST" onsubmit="return confirm('¿Seguro que quieres eliminar esta tarjeta?');">
                                         <button type="submit" class="delete-button">Eliminar</button>
@@ -409,5 +431,24 @@
                     </div>
             </div>
         
-    </body>
-    </html>
+    <script>
+        const openModalBtn = document.getElementById('openModal');
+        const modalOverlay = document.getElementById('modalOverlay');
+        const closeModalBtn = document.getElementById('closeModal');
+
+        openModalBtn.addEventListener('click', () => {
+            modalOverlay.style.display = 'flex'; // Muestra el modal
+        });
+
+        closeModalBtn.addEventListener('click', () => {
+            modalOverlay.style.display = 'none'; // Oculta el modal
+        });
+
+        window.addEventListener('click', (event) => {
+            if (event.target === modalOverlay) {
+                modalOverlay.style.display = 'none'; // Cierra el modal si se hace clic fuera
+            }
+        });
+    </script>
+</body>
+</html>

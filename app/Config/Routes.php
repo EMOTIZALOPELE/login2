@@ -21,7 +21,8 @@ $routes->post('/reset-password', 'Home::resetPassword');
 // PAGINA DE INICIO
 $routes->get('/configuracion', 'Home::iraconfiguracion'); 
 $routes->get('/irainicio', 'HorariosController::index'); 
-$routes->post('/guardar_horarios', 'Home::guardar_horarios'); 
+$routes->post('/guardar_horarios', 'HorariosController::guardar_horarios'); 
+$routes->get('configuracion/(:num)', 'HorariosController::configuracion/$1');
 
 // PÁGINA DE HORARIOS
 $routes->get('/horarios', 'Home::mostrarHorarios');  // Ruta para mostrar los horarios configurados
@@ -36,6 +37,7 @@ $routes->get('/iniciovalogin', 'Home::iralogin');
 $routes->get('/iniciovaregister', 'Home::inicioregister');
 $routes->get('/tercon', 'HorariosController::terminoscondiciones');
 $routes->get('/pantalla', 'Home::iniciar2');
+
 
 // PLANOS VENTANAS
 $routes->get('/pele', 'Home::iradiseño');

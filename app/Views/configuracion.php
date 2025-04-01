@@ -1,3 +1,21 @@
+<?php
+
+$session = \Config\Services::session();
+
+if (!$session->has('id')) {
+    return redirect()->to(base_url('login'));
+}
+
+$disenoModel = new \App\Models\DisenoModel();
+$usuario_id = $session->get('id');
+$diseno = $disenoModel->where('usuario_id', $usuario_id)->first();
+
+if (!$diseno) {
+    echo "No tienes un diseño configurado.";
+    return;
+}
+
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -150,39 +168,49 @@
     <div class="container">
         <h2>Configuración de Horarios</h2>
 
-        <form action="<?= base_url('guardar_horarios') ?>" method="post">
-            <div class="form-group">
-                <label for="ventana_apertura">Apertura de Ventanas:</label>
-                <input type="time" id="ventana_apertura" name="ventana_apertura" value="<?= isset($horario['ventana_apertura']) ? esc($horario['ventana_apertura']) : '' ?>" required>
-            </div>
+        <?php if (isset($diseno)): ?>
+    <p>Diseño seleccionado: <strong><?= esc($diseno['nombre']) ?></strong></p>
 
-            <div class="form-group">
-                <label for="ventana_cierre">Cierre de Ventanas:</label>
-                <input type="time" id="ventana_cierre" name="ventana_cierre" value="<?= isset($horario['ventana_cierre']) ? esc($horario['ventana_cierre']) : '' ?>" required>
-            </div>
+    <form action="<?= base_url('guardar_horarios') ?>" method="post">
+        <input type="hidden" name="id_diseno" value="<?= esc($diseno['id_diseno']) ?>">
 
-            <div class="form-group">
-                <label for="cortina_apertura">Apertura de Cortinas:</label>
-                <input type="time" id="cortina_apertura" name="cortina_apertura" value="<?= isset($horario['cortina_apertura']) ? esc($horario['cortina_apertura']) : '' ?>" required>
-            </div>
+        <table border="1">
+            <tr>
+                <th>Elemento</th>
+                <th>Hora de Apertura</th>
+                <th>Hora de Cierre</th>
+            </tr>
 
-            <div class="form-group">
-                <label for="cortina_cierre">Cierre de Cortinas:</label>
-                <input type="time" id="cortina_cierre" name="cortina_cierre" value="<?= isset($horario['cortina_cierre']) ? esc($horario['cortina_cierre']) : '' ?>" required>
-            </div>
+            <?php if ($diseno['ventana'] == 'SI'): ?>
+                <tr>
+                    <td>Ventana</td>
+                    <td><input type="time" name="ventana_apertura"></td>
+                    <td><input type="time" name="ventana_cierre"></td>
+                </tr>
+            <?php endif; ?>
 
-            <div class="form-group">
-                <label for="postigon_apertura">Apertura de Postigones:</label>
-                <input type="time" id="postigon_apertura" name="postigon_apertura" value="<?= isset($horario['postigon_apertura']) ? esc($horario['postigon_apertura']) : '' ?>" required>
-            </div>
+            <?php if ($diseno['cortina'] == 'SI'): ?>
+                <tr>
+                    <td>Cortina</td>
+                    <td><input type="time" name="cortina_apertura"></td>
+                    <td><input type="time" name="cortina_cierre"></td>
+                </tr>
+            <?php endif; ?>
 
-            <div class="form-group">
-                <label for="postigon_cierre">Cierre de Postigones:</label>
-                <input type="time" id="postigon_cierre" name="postigon_cierre" value="<?= isset($horario['postigon_cierre']) ? esc($horario['postigon_cierre']) : '' ?>" required>
-            </div>
+            <?php if ($diseno['postigon'] == 'SI'): ?>
+                <tr>
+                    <td>Postigón</td>
+                    <td><input type="time" name="postigon_apertura"></td>
+                    <td><input type="time" name="postigon_cierre"></td>
+                </tr>
+            <?php endif; ?>
+        </table>
 
-            <button type="submit">Guardar Horarios</button>
-        </form>
+        <button type="submit">Guardar Horarios</button>
+    </form>
+<?php else: ?>
+    <p>No se encontró un diseño guardado.</p>
+<?php endif; ?>
 
         <h2>Control del Servo</h2>
         <div class="servo-controls">

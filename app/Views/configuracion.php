@@ -6,96 +6,84 @@
     <title>Configuración de Ventanas, Cortinas y Postigones</title>
     <style>
         /* Estilos generales */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-            display: flex;
-            flex-direction: column;
-        }
+        * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+            header{
+                width: 100%;
+                height: 70px;
+                margin-top: 15px;
+                position: fixed;
+                z-index: 1;
+            }
 
-        /* Contenedor principal */
-        .container {
-            margin: 20px;
-            padding: 20px;
-            background-color: white;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-        }
+            body {
+                background: url(<?= base_url("img/fondo4.jpg") ?>) no-repeat center center fixed;
+                background-size: cover;        
+                font-family: Arial, sans-serif;        
+                height: 100vh;
+            }
+            /* Menú lateral */
+            .container__menu{
+                max-width: 1800px;
+                height: 100%;
+                width: 100%;
+                margin: auto;
+                display: flex;
+                justify-content: space-between;
+                background:rgba(34, 31, 31, 0.51);
+                
+            }       
+            .menu{
+                display: flex;
+                align-items: center;
+            }
+            .menu ul{
+                display: flex;
+            justify-content: space-around; /* Espaciado igual entre los botones */           
+            gap: 1px; /* Espaciado fijo entre botones */
+            }
+                
+            .menu ul li{
+                list-style: none;
+                margin-left: 20px;
+            }
 
-        h1, h2 {
-            text-align: center;
-            color: #333;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        label {
-            font-weight: bold;
-            display: block;
-            margin-bottom: 5px;
-        }
-
-        input[type="time"] {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-
-        button {
-            background-color: #28a745;
-            color: white;
-            padding: 10px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-top: 10px;
-            width: 100%;
-        }
-
-        button:hover {
-            background-color: #218838;
-        }
-
-        /* Estilos del menú superior */
-        .menu {
-            width: 100%;
-            background-color: #333;
-            padding: 10px 0;
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 1000;
-        }
-
-        .menu ul {
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
-            display: flex;
-            justify-content: space-between; /* Separar Perfil y Cerrar Sesión */
-            align-items: center;
-        }
-
-        .menu ul li {
-            margin: 0 10px; /* Espaciado entre elementos */
-        }
-
-        .menu ul li a {
-            color: white;
+            .menu ul li a{
             text-decoration: none;
-            font-size: 18px;
-            padding: 10px 20px;
-            display: block;
+            font-size: 16px;
+            color:rgb(255, 255, 255);
+            text-transform: uppercase;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.5s ease-in-out;
+            padding: 15px 20px; /* Espaciado interno */
+            border-radius: 10px; /* Bordes redondeados */
+            display: inline-block; /* Para evitar problemas de tamaño */
         }
+            .menu ul li a:hover {
+                    transform: translateY(-5px) scale(1.05); /* Levanta y agranda el botón */
+                    background: rgba(255, 255, 255, 0.2); /* Fondo semitransparente */
+                    box-shadow: -1px 1px 25px rgba(255, 255, 255, 0.4);
+                    border-radius: 15px; /* Aumenta el redondeo para mayor suavidad */
+            }
+        
+            #selected{
+                background: #F6615D;
+                padding: 10px 40px;
+                border-radius: 50px;
+            }
+            
+            
+            .menu nav img{
+                display: none;
+            }
 
-        .menu ul li a:hover {
-            background-color: #575757;
-        }
+            .menu #btn_menu{
+                display: none;
+            }
 
         /* Ajustes para botones del servo */
         .servo-controls {
@@ -138,14 +126,26 @@
 </head>
 <body>
 
-    <!-- Menú superior -->
-    <nav class="menu">
-        <ul>
-            <li><a href="irainicio">Perfil</a></li>
-            <li><a href="<?= base_url('logout') ?>">Cerrar Sesión</a></li>
-        </ul>
-    </nav>
+     <header>
 
+
+        <div class="container__menu">
+            <div class="logo">
+                <img src="images/logo-magtimus-v2.3-1.png" alt="">
+            </div>
+            <div class="menu">
+                <i class="fas fa-bars" id="btn_menu"></i>
+                <div id="back_menu"></div>
+                <nav id="nav">
+                    <img src="images/logo-magtimus-v2.3-1.png" alt="">
+                    <ul>
+                        <li><a href="irainicio">Perfil</a></li>
+                        <li><a id="selected">Añadir Tarjeta</a></li>
+                        <li><a href="<?= base_url('logout') ?>">Cerrar Sesión</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
     <!-- Contenedor principal -->
     <div class="container">
         <h2>Configuración de Horarios</h2>

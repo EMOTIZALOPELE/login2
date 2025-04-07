@@ -111,6 +111,7 @@
                 height: 100vh;
                 }
             .horario-card {
+                margin-top: 40px;
                 background:rgb(231, 230, 235);
                 padding: 25px;
                 border-radius: 10px;
@@ -135,7 +136,7 @@
             .horario-card p {
                 font-size: 16px;
                 color:rgb(8, 16, 34);
-                margin: 10px 0;
+                margin: 10px 1px 10px 10px;
                 text-align: left;
                 padding: 5px;
                 border-bottom: 1px solid #ddd;
@@ -207,77 +208,7 @@
                 border-radius: 5px;
                 margin-right: 10px;
             }
-            .open-modal-btn {
-        background-color: #1f53c5;
-        color: white;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 16px;
-        transition: background-color 0.3s ease-in-out;
-    }
-
-    .open-modal-btn:hover {
-        background-color: #163a94;
-    }
-
-    .modal-overlay {
-        display: none; /* Oculto por defecto */
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.5);
-        justify-content: center;
-        align-items: center;
-    }
-
-    .modal {
-        background-color: white;
-        padding: 20px;
-        width: 100%;
-        max-width: 400px;
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        text-align: center;
-    }
-
-    .modal-header {
-        font-size: 20px;
-        font-weight: bold;
-        margin-bottom: 15px;
-    }
-
-    .modal-body {
-        font-size: 16px;
-        color: #333;
-        margin-bottom: 20px;
-    }
-
-    .modal-footer button {
-        background-color: #1f53c5;
-        color: white;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 16px;
-        margin-right: 10px;
-    }
-
-    .modal-footer .close-btn {
-        background-color: rgb(197, 31, 31);
-    }
-
-    .modal-footer .confirm-btn:hover {
-        background-color: #163a94;
-    }
-
-    .modal-footer .close-btn:hover {
-        background-color: rgb(150, 0, 0);
-    }
+            
            
                 /* Aca termina*/   
 
@@ -430,25 +361,5 @@
                         <?php endforeach; ?>
                     </div>
             </div>
-        
-    <script>
-        const openModalBtn = document.getElementById('openModal');
-        const modalOverlay = document.getElementById('modalOverlay');
-        const closeModalBtn = document.getElementById('closeModal');
-
-        openModalBtn.addEventListener('click', () => {
-            modalOverlay.style.display = 'flex'; // Muestra el modal
-        });
-
-        closeModalBtn.addEventListener('click', () => {
-            modalOverlay.style.display = 'none'; // Oculta el modal
-        });
-
-        window.addEventListener('click', (event) => {
-            if (event.target === modalOverlay) {
-                modalOverlay.style.display = 'none'; // Cierra el modal si se hace clic fuera
-            }
-        });
-    </script>
 </body>
 </html>

@@ -18,8 +18,9 @@ class HorariosModel extends Model
         'cortina_cierre',
         'postigon_apertura',
         'postigon_cierre',
-        'diseno_id',
-        'usuario_id'
+        'dias_semana',
+        'usuario_id',
+        'diseno_id'
     ];
     
     // Habilitar la protección contra modificaciones masivas
@@ -45,5 +46,25 @@ class HorariosModel extends Model
         return $this->where('usuario_id', $usuario_id)
                     ->where('diseno_id', $diseno_id)
                     ->first(); // O usar ->findAll() si se requieren múltiples resultados
+    }
+
+    public function getHorariosByDiseno($disenoId)
+    {
+        return $this->where('diseno_id', $disenoId)->first();
+    }
+
+    public function getEstadoVentana($disenoId)
+    {
+        $horario = $this->getHorariosByDiseno($disenoId);
+        if (!$horario) {
+            return null;
+        }
+
+        return [
+            'hora_actual' => date('H:i:s'),
+            'ventana_apertura' => $horario['ventana_apertura'],
+            'ventana_cierre' => $horario['ventana_cierre'],
+            'dias_semana' => $horario['dias_semana']
+        ];
     }
 }

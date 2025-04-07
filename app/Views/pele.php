@@ -117,26 +117,38 @@
     </header>
 
     <div class="contenedor">
-        <form id="designForm" method="post" action="<?= base_url('diseno/guardar') ?>">
+        <?php if (session()->has('error')): ?>
+            <div class="alert alert-danger">
+                <?= session('error') ?>
+            </div>
+        <?php endif; ?>
+
+        <?php if (session()->has('mensaje')): ?>
+            <div class="alert alert-success">
+                <?= session('mensaje') ?>
+            </div>
+        <?php endif; ?>
+
+        <form id="designForm" method="post" action="<?= base_url('diseno/guardar') ?>" onsubmit="return validarFormulario()">
             <label for="nombre">Nombre del diseño:</label>
-            <input type="text" id="nombre" name="nombre" required>
+            <input type="text" id="nombre" name="nombre" required minlength="3" value="<?= old('nombre') ?>">
 
             <label for="cortina">Cortina:</label>
-            <select id="cortina" name="cortina" onchange="mostrarDiseño()">
-                <option value="si">Sí</option>
-                <option value="no">No</option>
+            <select id="cortina" name="cortina" onchange="mostrarDiseño()" required>
+                <option value="si" <?= old('cortina') === 'si' ? 'selected' : '' ?>>Sí</option>
+                <option value="no" <?= old('cortina') === 'no' ? 'selected' : '' ?>>No</option>
             </select>
 
             <label for="ventana">Ventana:</label>
-            <select id="ventana" name="ventana" onchange="mostrarDiseño()">
-                <option value="si">Sí</option>
-                <option value="no">No</option>
+            <select id="ventana" name="ventana" onchange="mostrarDiseño()" required>
+                <option value="si" <?= old('ventana') === 'si' ? 'selected' : '' ?>>Sí</option>
+                <option value="no" <?= old('ventana') === 'no' ? 'selected' : '' ?>>No</option>
             </select>
 
             <label for="postigon">Postigón:</label>
-            <select id="postigon" name="postigon" onchange="mostrarDiseño()">
-                <option value="si">Sí</option>
-                <option value="no">No</option>
+            <select id="postigon" name="postigon" onchange="mostrarDiseño()" required>
+                <option value="si" <?= old('postigon') === 'si' ? 'selected' : '' ?>>Sí</option>
+                <option value="no" <?= old('postigon') === 'no' ? 'selected' : '' ?>>No</option>
             </select>
 
             <input class="botons" type="submit" value="Cargar al inicio">
@@ -279,6 +291,16 @@
             document.getElementById('nombre').addEventListener('input', mostrarDiseño);
             mostrarDiseño();
         });
+
+        function validarFormulario() {
+            const nombre = document.getElementById('nombre').value.trim();
+            if (nombre.length < 3) {
+                alert('El nombre debe tener al menos 3 caracteres');
+                return false;
+            }
+            return true;
+        }
     </script>
 </body>
 </html>
+

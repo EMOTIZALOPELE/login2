@@ -44,3 +44,17 @@ $routes->get('/pele', 'Home::iradiseño');
 $routes->get('diseno', 'DisenoController::crear');
 $routes->post('diseno/guardar', 'DisenoController::guardar'); // Guarda el diseño en la BD
 
+// Rutas para horarios de ventana
+$routes->get('horario-ventana/configurar/(:num)', 'HorarioVentanaController::configurar/$1');
+$routes->get('api/horario-ventana/(:num)', 'HorarioVentanaController::index/$1');
+$routes->put('api/horario-ventana/(:num)', 'HorarioVentanaController::update/$1');
+$routes->get('api/horario-ventana/estado', 'HorarioVentanaController::getEstadoVentana');
+
+// Rutas para diseños
+$routes->get('diseno/crear', 'DisenoController::crear');
+$routes->post('diseno/guardar', 'DisenoController::guardar');
+
+// Rutas para horarios
+$routes->get('horarios/configuracion/(:num)', 'HorariosController::configuracion/$1');
+$routes->post('horarios/guardar', 'HorariosController::guardar');
+

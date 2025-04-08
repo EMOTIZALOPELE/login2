@@ -1,0 +1,128 @@
+INFO - 2025-04-08 11:54:45 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-08 11:54:46 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-08 11:54:52 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-08 11:54:52 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-08 11:54:53 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-08 11:54:58 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-04-08 11:54:58 --> === INTENTANDO GUARDAR DISEÑO ===
+DEBUG - 2025-04-08 11:54:58 --> Nombre: tralalero lalala
+DEBUG - 2025-04-08 11:54:58 --> Cortina: si
+DEBUG - 2025-04-08 11:54:58 --> Ventana: si
+DEBUG - 2025-04-08 11:54:58 --> Postigon: si
+DEBUG - 2025-04-08 11:54:58 --> Usuario ID: 6
+DEBUG - 2025-04-08 11:54:58 --> Diseño guardado con ID: 84
+INFO - 2025-04-08 11:54:58 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-04-08 11:54:58 --> === DATOS DEL DISEÑO ANTES DE PASAR A LA VISTA ===
+DEBUG - 2025-04-08 11:54:58 --> ID: 84
+DEBUG - 2025-04-08 11:54:58 --> Nombre: tralalero lalala
+DEBUG - 2025-04-08 11:54:58 --> Ventana (raw): [si]
+DEBUG - 2025-04-08 11:54:58 --> Cortina (raw): [si]
+DEBUG - 2025-04-08 11:54:58 --> Postigon (raw): [si]
+DEBUG - 2025-04-08 11:54:58 --> Ventana === "si": true
+DEBUG - 2025-04-08 11:54:58 --> Cortina === "si": true
+DEBUG - 2025-04-08 11:54:58 --> Postigon === "si": true
+DEBUG - 2025-04-08 11:54:58 --> Longitud Ventana: 2
+DEBUG - 2025-04-08 11:54:58 --> Longitud Cortina: 2
+DEBUG - 2025-04-08 11:54:58 --> Longitud Postigon: 2
+DEBUG - 2025-04-08 11:54:58 --> === FIN DATOS DEL DISEÑO ===
+INFO - 2025-04-08 11:56:53 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-08 11:56:53 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-08 11:56:53 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-08 11:56:58 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-08 11:57:02 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-08 11:57:03 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-08 11:57:04 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-08 11:57:13 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-04-08 11:57:13 --> === INTENTANDO GUARDAR DISEÑO ===
+DEBUG - 2025-04-08 11:57:13 --> Nombre: bombardilo cocodrilo
+DEBUG - 2025-04-08 11:57:13 --> Cortina: no
+DEBUG - 2025-04-08 11:57:13 --> Ventana: si
+DEBUG - 2025-04-08 11:57:13 --> Postigon: si
+DEBUG - 2025-04-08 11:57:13 --> Usuario ID: 6
+DEBUG - 2025-04-08 11:57:13 --> Diseño guardado con ID: 85
+INFO - 2025-04-08 11:57:13 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-04-08 11:57:13 --> === DATOS DEL DISEÑO ANTES DE PASAR A LA VISTA ===
+DEBUG - 2025-04-08 11:57:13 --> ID: 85
+DEBUG - 2025-04-08 11:57:13 --> Nombre: bombardilo cocodrilo
+DEBUG - 2025-04-08 11:57:13 --> Ventana (raw): [si]
+DEBUG - 2025-04-08 11:57:13 --> Cortina (raw): [no]
+DEBUG - 2025-04-08 11:57:13 --> Postigon (raw): [si]
+DEBUG - 2025-04-08 11:57:13 --> Ventana === "si": true
+DEBUG - 2025-04-08 11:57:13 --> Cortina === "si": false
+DEBUG - 2025-04-08 11:57:13 --> Postigon === "si": true
+DEBUG - 2025-04-08 11:57:13 --> Longitud Ventana: 2
+DEBUG - 2025-04-08 11:57:13 --> Longitud Cortina: 2
+DEBUG - 2025-04-08 11:57:13 --> Longitud Postigon: 2
+DEBUG - 2025-04-08 11:57:13 --> === FIN DATOS DEL DISEÑO ===
+INFO - 2025-04-08 11:57:30 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-08 11:59:37 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-08 11:59:38 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-04-08 11:59:38 --> === DATOS DEL DISEÑO ANTES DE PASAR A LA VISTA ===
+DEBUG - 2025-04-08 11:59:38 --> ID: 85
+DEBUG - 2025-04-08 11:59:38 --> Nombre: bombardilo cocodrilo
+DEBUG - 2025-04-08 11:59:38 --> Ventana (raw): [si]
+DEBUG - 2025-04-08 11:59:38 --> Cortina (raw): [no]
+DEBUG - 2025-04-08 11:59:38 --> Postigon (raw): [si]
+DEBUG - 2025-04-08 11:59:38 --> Ventana === "si": true
+DEBUG - 2025-04-08 11:59:38 --> Cortina === "si": false
+DEBUG - 2025-04-08 11:59:38 --> Postigon === "si": true
+DEBUG - 2025-04-08 11:59:38 --> Longitud Ventana: 2
+DEBUG - 2025-04-08 11:59:38 --> Longitud Cortina: 2
+DEBUG - 2025-04-08 11:59:38 --> Longitud Postigon: 2
+DEBUG - 2025-04-08 11:59:38 --> === FIN DATOS DEL DISEÑO ===
+INFO - 2025-04-08 11:59:39 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-08 11:59:40 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-08 11:59:42 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-08 11:59:47 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-04-08 11:59:47 --> === INTENTANDO GUARDAR DISEÑO ===
+DEBUG - 2025-04-08 11:59:47 --> Nombre: 435454353453
+DEBUG - 2025-04-08 11:59:47 --> Cortina: si
+DEBUG - 2025-04-08 11:59:47 --> Ventana: si
+DEBUG - 2025-04-08 11:59:47 --> Postigon: no
+DEBUG - 2025-04-08 11:59:47 --> Usuario ID: 6
+DEBUG - 2025-04-08 11:59:47 --> Diseño guardado con ID: 86
+INFO - 2025-04-08 11:59:47 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-04-08 11:59:47 --> === DATOS DEL DISEÑO ANTES DE PASAR A LA VISTA ===
+DEBUG - 2025-04-08 11:59:47 --> ID: 86
+DEBUG - 2025-04-08 11:59:47 --> Nombre: 435454353453
+DEBUG - 2025-04-08 11:59:47 --> Ventana (raw): [si]
+DEBUG - 2025-04-08 11:59:47 --> Cortina (raw): [si]
+DEBUG - 2025-04-08 11:59:47 --> Postigon (raw): [no]
+DEBUG - 2025-04-08 11:59:47 --> Ventana === "si": true
+DEBUG - 2025-04-08 11:59:47 --> Cortina === "si": true
+DEBUG - 2025-04-08 11:59:47 --> Postigon === "si": false
+DEBUG - 2025-04-08 11:59:47 --> Longitud Ventana: 2
+DEBUG - 2025-04-08 11:59:47 --> Longitud Cortina: 2
+DEBUG - 2025-04-08 11:59:47 --> Longitud Postigon: 2
+DEBUG - 2025-04-08 11:59:47 --> === FIN DATOS DEL DISEÑO ===
+INFO - 2025-04-08 11:59:54 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-08 12:00:31 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-08 12:00:35 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-08 12:00:36 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-08 12:00:37 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-08 12:00:44 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-04-08 12:00:44 --> === INTENTANDO GUARDAR DISEÑO ===
+DEBUG - 2025-04-08 12:00:44 --> Nombre: lirililarila
+DEBUG - 2025-04-08 12:00:44 --> Cortina: no
+DEBUG - 2025-04-08 12:00:44 --> Ventana: si
+DEBUG - 2025-04-08 12:00:44 --> Postigon: no
+DEBUG - 2025-04-08 12:00:44 --> Usuario ID: 6
+DEBUG - 2025-04-08 12:00:44 --> Diseño guardado con ID: 87
+INFO - 2025-04-08 12:00:45 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-04-08 12:00:45 --> === DATOS DEL DISEÑO ANTES DE PASAR A LA VISTA ===
+DEBUG - 2025-04-08 12:00:45 --> ID: 87
+DEBUG - 2025-04-08 12:00:45 --> Nombre: lirililarila
+DEBUG - 2025-04-08 12:00:45 --> Ventana (raw): [si]
+DEBUG - 2025-04-08 12:00:45 --> Cortina (raw): [no]
+DEBUG - 2025-04-08 12:00:45 --> Postigon (raw): [no]
+DEBUG - 2025-04-08 12:00:45 --> Ventana === "si": true
+DEBUG - 2025-04-08 12:00:45 --> Cortina === "si": false
+DEBUG - 2025-04-08 12:00:45 --> Postigon === "si": false
+DEBUG - 2025-04-08 12:00:45 --> Longitud Ventana: 2
+DEBUG - 2025-04-08 12:00:45 --> Longitud Cortina: 2
+DEBUG - 2025-04-08 12:00:45 --> Longitud Postigon: 2
+DEBUG - 2025-04-08 12:00:45 --> === FIN DATOS DEL DISEÑO ===
+INFO - 2025-04-08 12:00:49 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-08 12:00:50 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-08 12:00:54 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-08 12:01:19 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.

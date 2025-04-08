@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 07-04-2025 a las 18:50:58
+-- Tiempo de generación: 08-04-2025 a las 14:03:58
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.2.4
 
@@ -90,7 +90,30 @@ INSERT INTO `disenos` (`id_diseno`, `nombre`, `cortina`, `ventana`, `postigon`, 
 (61, 'r4', 'no', 'si', 'no', 6, '2025-04-01 19:22:08', '2025-04-01 19:22:08'),
 (62, 'fff', 'si', 'si', 'si', 6, '2025-04-01 19:29:46', '2025-04-01 19:29:46'),
 (63, 'fffddd', 'si', 'si', 'si', 6, '2025-04-01 19:41:06', '2025-04-01 19:41:06'),
-(64, '333333', 'si', 'si', 'si', 6, '2025-04-07 19:21:15', '2025-04-07 19:21:15');
+(64, '333333', 'si', 'si', 'si', 6, '2025-04-07 19:21:15', '2025-04-07 19:21:15'),
+(65, '33312', 'si', 'si', 'si', 6, '2025-04-07 20:27:06', '2025-04-07 20:27:06'),
+(66, 'calculadora', 'si', 'si', 'no', 6, '2025-04-07 20:27:30', '2025-04-07 20:27:30'),
+(67, 'esopele17', 'si', 'si', 'si', 6, '2025-04-07 20:30:28', '2025-04-07 20:30:28'),
+(68, 'larecalcadavacagorda', 'si', 'si', 'si', 6, '2025-04-07 20:38:48', '2025-04-07 20:38:48'),
+(69, 'xlr8', 'si', 'si', 'no', 6, '2025-04-07 20:39:47', '2025-04-07 20:39:47'),
+(70, 'gaga', 'si', 'si', 'si', 6, '2025-04-07 20:41:50', '2025-04-07 20:41:50'),
+(71, 'gagaggg', 'si', 'si', 'si', 6, '2025-04-07 20:42:03', '2025-04-07 20:42:03'),
+(72, '3434', 'no', 'no', 'no', 6, '2025-04-07 20:46:56', '2025-04-07 20:46:56'),
+(73, '4444444', 'si', 'si', 'no', 6, '2025-04-07 20:47:11', '2025-04-07 20:47:11'),
+(74, 'tralaliro lalala', 'si', 'si', 'si', 6, '2025-04-07 20:53:47', '2025-04-07 20:53:47'),
+(75, 'esotilin182', 'no', 'si', 'si', 6, '2025-04-07 20:54:07', '2025-04-07 20:54:07'),
+(76, 'esogerson18', 'no', 'si', 'si', 15, '2025-04-07 20:54:42', '2025-04-07 20:54:42'),
+(77, 'esogerson18', 'si', 'si', 'si', 15, '2025-04-07 20:55:03', '2025-04-07 20:55:03'),
+(78, 'esogerson18', 'si', 'si', 'no', 15, '2025-04-07 20:55:09', '2025-04-07 20:55:09'),
+(79, 'lavacacalculacalculos', 'si', 'si', 'no', 15, '2025-04-07 21:08:04', '2025-04-07 21:08:04'),
+(80, 'dddddd', 'si', 'si', 'si', 6, '2025-04-07 21:10:21', '2025-04-07 21:10:21'),
+(81, 'fgfgfggffgfgfgfg', 'si', 'si', 'si', 15, '2025-04-07 21:11:42', '2025-04-07 21:11:42'),
+(82, '324334', 'si', 'no', 'si', 6, '2025-04-08 14:27:48', '2025-04-08 14:27:48'),
+(83, '444444 esopeel', 'si', 'si', 'no', 6, '2025-04-08 14:30:12', '2025-04-08 14:30:12'),
+(84, 'tralalero lalala', 'si', 'si', 'si', 6, '2025-04-08 14:54:58', '2025-04-08 14:54:58'),
+(85, 'bombardilo cocodrilo', 'no', 'si', 'si', 6, '2025-04-08 14:57:13', '2025-04-08 14:57:13'),
+(86, '435454353453', 'si', 'si', 'no', 6, '2025-04-08 14:59:47', '2025-04-08 14:59:47'),
+(87, 'lirililarila', 'no', 'si', 'no', 6, '2025-04-08 15:00:44', '2025-04-08 15:00:44');
 
 -- --------------------------------------------------------
 
@@ -107,6 +130,8 @@ CREATE TABLE `horarios` (
   `cortina_cierre` time DEFAULT NULL,
   `postigon_apertura` time DEFAULT NULL,
   `postigon_cierre` time DEFAULT NULL,
+  `dias_semana` varchar(100) DEFAULT 'Lunes,Martes,Miércoles,Jueves,Viernes,Sábado,Domingo',
+  `estado_actual` varchar(20) DEFAULT 'cerrada',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `usuario_id` int(11) DEFAULT NULL
@@ -190,13 +215,13 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `disenos`
 --
 ALTER TABLE `disenos`
-  MODIFY `id_diseno` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=65;
+  MODIFY `id_diseno` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=88;
 
 --
 -- AUTO_INCREMENT de la tabla `horarios`
 --
 ALTER TABLE `horarios`
-  MODIFY `idhorario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `idhorario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`

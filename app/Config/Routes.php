@@ -28,6 +28,7 @@ $routes->get('configuracion/(:num)', 'HorariosController::configuracion/$1');
 $routes->get('/horarios', 'Home::mostrarHorarios');  // Ruta para mostrar los horarios configurados
 $routes->get('mishorarios', 'MisHorarios::horariosmodifica');
 
+
 // PÁGINA DE SERVO
 $routes->post('/servo/open', 'ServoController::openServo'); 
 $routes->post('/servo/close', 'ServoController::closeServo'); 

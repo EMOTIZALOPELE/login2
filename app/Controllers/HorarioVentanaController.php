@@ -30,6 +30,17 @@ class HorarioVentanaController extends ResourceController
             return $this->fail('ID de diseño no proporcionado');
         }
 
+        $json = $this->request->getJSON();
+        
+        if ($json && isset($json->estado)) {
+            // Actualizar solo el estado
+            if ($this->model->actualizarEstado($disenoId, $json->estado)) {
+                return $this->respond(['message' => 'Estado actualizado correctamente']);
+            }
+            return $this->fail('Error al actualizar el estado');
+        }
+
+        // Actualizar horarios
         $data = [
             'hora_apertura' => $this->request->getPost('hora_apertura'),
             'hora_cierre' => $this->request->getPost('hora_cierre'),
@@ -45,8 +56,10 @@ class HorarioVentanaController extends ResourceController
 
     public function getEstadoVentana()
     {
-        $horaActual = date('H:i:s');
         $disenoId = $this->request->getGet('diseno_id');
+        if (!$disenoId) {
+            return $this->fail('ID de diseño requerido');
+        }
 
         $horario = $this->model->getHorariosByDiseno($disenoId);
         if ($horario === null) {
@@ -54,9 +67,11 @@ class HorarioVentanaController extends ResourceController
         }
 
         $estado = [
-            'hora_actual' => $horaActual,
+            'estado_actual' => $horario['estado_actual'],
+            'hora_actual' => date('H:i:s'),
             'ventana_apertura' => $horario['hora_apertura'],
-            'ventana_cierre' => $horario['hora_cierre']
+            'ventana_cierre' => $horario['hora_cierre'],
+            'dias_semana' => $horario['dias_semana']
         ];
 
         return $this->respond($estado);
@@ -64,7 +79,6 @@ class HorarioVentanaController extends ResourceController
 
     public function configurar($disenoId)
     {
-        // Redirigir a la vista de configuración existente
         return redirect()->to(base_url('configuracion/' . $disenoId));
     }
 } 

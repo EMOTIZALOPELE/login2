@@ -2,7 +2,10 @@
 #include <HTTPClient.h>
 #include <ArduinoJson.h>
 #include <ESP32Servo.h>
+#include <NTPClient.h>
+#include <WiFiUdp.h>
 
+// Configuración WiFi
 const char* ssid = "ITR3-6";
 const char* password = "archivado";
 
@@ -11,32 +14,74 @@ Servo servoVentana;
 const uint8_t pinServoVentana = 2;
 bool ventanaAbierta = false;
 
+// Configuración NTP para obtener hora actual
+WiFiUDP ntpUDP;
+NTPClient timeClient(ntpUDP, "pool.ntp.org");
+
 // Configuración de la API
-const char* serverName = "http://tudominio.com/horarios/getEstadoVentana";
+const char* serverName = "http://localhost/login2"; // Ajustar según tu configuración
 const int intervaloConsulta = 30000; // Consultar cada 30 segundos
 
 // Configuración del servidor web para control manual
 WebServer server(80);
 
+// Variables para el diseño actual
+int disenoId = 0; // Se actualizará con el ID del diseño configurado
+
 void handleRoot() {
   String html = "<html><body>";
   html += "<h1>Control de Ventana</h1>";
   html += "<p>Estado actual: " + String(ventanaAbierta ? "Abierta" : "Cerrada") + "</p>";
+  html += "<p>ID Diseño: " + String(disenoId) + "</p>";
   html += "<p><a href='/abrir'>Abrir Ventana</a></p>";
   html += "<p><a href='/cerrar'>Cerrar Ventana</a></p>";
   server.send(200, "text/html", html);
 }
 
 void handleAbrir() {
-  servoVentana.write(180);
-  ventanaAbierta = true;
+  abrirVentana();
   server.send(200, "text/plain", "Ventana abierta");
 }
 
 void handleCerrar() {
+  cerrarVentana();
+  server.send(200, "text/plain", "Ventana cerrada");
+}
+
+void abrirVentana() {
+  servoVentana.write(180);
+  ventanaAbierta = true;
+  actualizarEstadoEnBD("abierta");
+}
+
+void cerrarVentana() {
   servoVentana.write(0);
   ventanaAbierta = false;
-  server.send(200, "text/plain", "Ventana cerrada");
+  actualizarEstadoEnBD("cerrada");
+}
+
+void actualizarEstadoEnBD(String estado) {
+  if (WiFi.status() == WL_CONNECTED) {
+    HTTPClient http;
+    String url = String(serverName) + "/api/horario-ventana/" + String(disenoId);
+    
+    http.begin(url);
+    http.addHeader("Content-Type", "application/json");
+    
+    DynamicJsonDocument doc(200);
+    doc["estado"] = estado;
+    
+    String jsonString;
+    serializeJson(doc, jsonString);
+    
+    int httpCode = http.PUT(jsonString);
+    if (httpCode == 200) {
+      Serial.println("Estado actualizado correctamente");
+    } else {
+      Serial.println("Error al actualizar el estado");
+    }
+    http.end();
+  }
 }
 
 void setup() {
@@ -57,6 +102,10 @@ void setup() {
   Serial.print("Dirección IP: ");
   Serial.println(WiFi.localIP());
 
+  // Inicializar cliente NTP
+  timeClient.begin();
+  timeClient.setTimeOffset(-10800); // Ajustar según tu zona horaria
+
   // Configurar rutas del servidor web
   server.on("/", handleRoot);
   server.on("/abrir", handleAbrir);
@@ -66,24 +115,25 @@ void setup() {
 
 void loop() {
   server.handleClient();
+  timeClient.update();
   
   if (WiFi.status() == WL_CONNECTED) {
     HTTPClient http;
     
-    // Agregar el ID del diseño como parámetro
-    String url = String(serverName) + "?diseno_id=1"; // Cambiar el ID según corresponda
+    // Obtener estado actual de la ventana
+    String url = String(serverName) + "/api/horario-ventana/estado";
     http.begin(url);
     
     int httpCode = http.GET();
     if (httpCode == 200) {
       String payload = http.getString();
       
-      // Parsear JSON
       DynamicJsonDocument doc(1024);
       deserializeJson(doc, payload);
       
-      // Obtener hora actual y horarios
-      String horaActual = doc["hora_actual"];
+      // Obtener estado y horarios
+      String estado = doc["estado"];
+      String horaActual = timeClient.getFormattedTime();
       String apertura = doc["ventana_apertura"];
       String cierre = doc["ventana_cierre"];
       String diasSemana = doc["dias_semana"];
@@ -95,15 +145,15 @@ void loop() {
       if (diasSemana.indexOf(diaActual) >= 0) {
         // Comparar horas
         if (horaActual >= apertura && horaActual <= cierre && !ventanaAbierta) {
-          servoVentana.write(180);
-          ventanaAbierta = true;
+          abrirVentana();
           Serial.println("Ventana abierta automáticamente");
         } else if ((horaActual < apertura || horaActual > cierre) && ventanaAbierta) {
-          servoVentana.write(0);
-          ventanaAbierta = false;
+          cerrarVentana();
           Serial.println("Ventana cerrada automáticamente");
         }
       }
+    } else {
+      Serial.println("Error al obtener estado de la ventana");
     }
     http.end();
   }
@@ -113,7 +163,5 @@ void loop() {
 
 String getDiaActual() {
   const char* dias[] = {"Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"};
-  time_t now = time(nullptr);
-  struct tm* timeinfo = localtime(&now);
-  return String(dias[timeinfo->tm_wday]);
+  return String(dias[timeClient.getDay()]);
 }

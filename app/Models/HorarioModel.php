@@ -4,17 +4,21 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class HorarioVentanaModel extends Model
+class HorarioModel extends Model
 {
-    protected $table = 'horarios_ventana';
-    protected $primaryKey = 'id';
+    protected $table = 'horarios';
+    protected $primaryKey = 'idhorario';
+    protected $useAutoIncrement = true;
+    protected $returnType = 'array';
+    protected $useSoftDeletes = false;
     protected $allowedFields = [
-        'diseno_id', 
-        'hora_apertura', 
-        'hora_cierre', 
+        'diseno_id',
+        'ventana_apertura',
+        'ventana_cierre',
         'dias_semana',
         'estado_actual'
     ];
+
     protected $useTimestamps = true;
     protected $createdField = 'created_at';
     protected $updatedField = 'updated_at';
@@ -24,21 +28,10 @@ class HorarioVentanaModel extends Model
         return $this->where('diseno_id', $disenoId)->first();
     }
 
-    public function updateHorarios($disenoId, $data)
-    {
-        return $this->where('diseno_id', $disenoId)->set($data)->update();
-    }
-
     public function actualizarEstado($disenoId, $estado)
     {
         return $this->where('diseno_id', $disenoId)
                     ->set('estado_actual', $estado)
                     ->update();
-    }
-
-    public function getEstadoActual($disenoId)
-    {
-        $horario = $this->where('diseno_id', $disenoId)->first();
-        return $horario ? $horario['estado_actual'] : null;
     }
 } 

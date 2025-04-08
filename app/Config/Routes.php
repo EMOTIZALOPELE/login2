@@ -59,3 +59,18 @@ $routes->post('diseno/guardar', 'DisenoController::guardar');
 $routes->get('horarios/configuracion/(:num)', 'HorariosController::configuracion/$1');
 $routes->post('horarios/guardar', 'HorariosController::guardar');
 
+// Rutas para la API de horarios
+$routes->group('api', function($routes) {
+    $routes->group('horarios', function($routes) {
+        $routes->get('getHorarios', 'Api\HorarioController::getHorarios');
+        $routes->post('actualizarEstado', 'Api\HorarioController::actualizarEstado');
+    });
+});
+
+// Rutas para la API de la ventana
+$routes->group('api', function($routes) {
+    $routes->get('horario-ventana/estado', 'HorarioVentanaController::getEstadoVentana');
+    $routes->put('horario-ventana/(:num)', 'HorarioVentanaController::update/$1');
+    $routes->get('horario-ventana/(:num)', 'HorarioVentanaController::index/$1');
+});
+

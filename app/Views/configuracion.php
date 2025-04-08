@@ -6,33 +6,99 @@
     <title>Configuración de Horarios</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body {
-            background-color: #f8f9fa;
-            padding-top: 2rem;
+        /* Estilos generales */
+        * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+            header{
+                width: 100%;
+                height: 70px;
+                margin-top: 15px;
+                position: fixed;
+                z-index: 1;
+            }
+
+            body {
+                background: url(<?=base_url("img/fondo4.jpg") ?>) no-repeat center center fixed;
+                background-size: cover;        
+                font-family: Arial, sans-serif;        
+                height: 100vh;
+            }
+            /* Menú lateral */
+            .container__menu{
+                max-width: 1800px;
+                height: 100%;
+                width: 100%;
+                margin: auto;
+                display: flex;
+                justify-content: space-between;
+                background:rgba(34, 31, 31, 0.51);
+                
+            }       
+            .menu{
+                display: flex;
+                align-items: center;
+            }
+            .menu ul{
+                display: flex;
+            justify-content: space-around; /* Espaciado igual entre los botones */           
+            gap: 1px; /* Espaciado fijo entre botones */
+            }
+                
+            .menu ul li{
+                list-style: none;
+                margin-left: 20px;
+            }
+
+            .menu ul li a{
+            text-decoration: none;
+            font-size: 16px;
+            color:rgb(255, 255, 255);
+            text-transform: uppercase;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.5s ease-in-out;
+            padding: 15px 20px; /* Espaciado interno */
+            border-radius: 10px; /* Bordes redondeados */
+            display: inline-block; /* Para evitar problemas de tamaño */
         }
-        .container {
-            max-width: 800px;
-            margin: auto;
-            background-color: white;
-            padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            .menu ul li a:hover {
+                    transform: translateY(-5px) scale(1.05); /* Levanta y agranda el botón */
+                    background: rgba(255, 255, 255, 0.2); /* Fondo semitransparente */
+                    box-shadow: -1px 1px 25px rgba(255, 255, 255, 0.4);
+                    border-radius: 15px; /* Aumenta el redondeo para mayor suavidad */
+            }
+        
+            #selected{
+                background: #F6615D;
+                padding: 10px 40px;
+                border-radius: 50px;
+            }
+            
+            
+            .menu nav img{
+                display: none;
+            }
+
+            .menu #btn_menu{
+                display: none;
+            }
+
+        /* Ajustes para botones del servo */
+        .servo-controls {
+            margin: 20px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
-        .card {
-            margin-bottom: 1.5rem;
-            border: none;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .card-header {
-            background-color: #f8f9fa;
-            border-bottom: none;
-            padding: 1rem;
-        }
-        .card-body {
-            padding: 1.5rem;
-        }
-        .btn-primary {
-            background-color: #0d6efd;
+
+        .buttonservo {
+            background-color: #3498db;
+            color: white;
+            padding: 15px;
+            font-size: 18px;
             border: none;
             padding: 0.75rem 1.5rem;
         }

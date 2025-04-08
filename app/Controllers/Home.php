@@ -180,7 +180,3 @@ class Home extends Controller
         }
     }
 
-    
-
- 
-}

@@ -27,6 +27,11 @@ $routes->get('configuracion/(:num)', 'HorariosController::configuracion/$1');
 // PÁGINA DE HORARIOS
 $routes->get('/horarios', 'Home::mostrarHorarios');  // Ruta para mostrar los horarios configurados
 $routes->get('mishorarios', 'MisHorarios::horariosmodifica');
+$routes->post('configurar/(:any)', 'HorariosController::configurarHorario/$1');  // Ruta para configurar un horario
+$routes->get('addtarjeta', 'HorariosController::añadirtarjeta');  // Ruta para configurar un horario
+$routes->post('savetarjeta', 'HorariosController::savehorario');  // Ruta para configurar un horario
+$routes->post('borrar_tarjeta/(:num)', 'HorariosController::borrarTarjeta/$1');
+$routes->post('add_name/(:num)', 'HorariosController::addname/$1');
 
 
 // PÁGINA DE SERVO

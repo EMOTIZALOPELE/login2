@@ -3,90 +3,232 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://www.paypal.com/sdk/js?client-id=test&currency=USD"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
         }
 
         body {
-            font-family: Arial, sans-serif;
-            background-color: #222;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2c3e50 100%);
             color: white;
-            
+            min-height: 100vh;
+            overflow-x: hidden;
         }
 
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px;
-            background-color: #222;
+            padding: 20px 5%;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
         }
 
         .logo {
-            font-size: 36px;
-            font-weight: bold;
-            text-align: center;
-            flex: 1;
-            color: white;
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #1f53c5, #00b4d8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
         }
 
         .login-btn, .register-btn {
             text-decoration: none;
             color: white;
-            border: 2px solid #1f53c5;
-            padding: 10px 20px;
-            border-radius: 5px;
-            transition: background-color 0.3s, color 0.3s;
+            padding: 12px 30px;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            margin: 0 10px;
+        }
+
+        .login-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .register-btn {
+            background: linear-gradient(45deg, #1f53c5, #00b4d8);
+            border: none;
+            box-shadow: 0 4px 15px rgba(31, 83, 197, 0.4);
         }
 
         .login-btn:hover, .register-btn:hover {
-            background-color: #1f53c5;
-            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(31, 83, 197, 0.6);
+            transform: translateY(-5px) scale(1.05); /* Levanta y agranda el botón */              box-shadow: -1px 1px 25px rgba(255, 255, 255, 0.4);
+            border-radius: 15px; /* Aumenta el redondeo para mayor suavidad */
         }
 
         .hero {
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 80vh;
-            text-align: center;
-            background-image: url('fondo.jpg');
+            min-height: 100vh;
+            padding: 0 5%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('<?= base_url("img/fondo4.jpg") ?>') no-repeat center center;
+            background-size: cover;
+            opacity: 0.2;
+            z-index: -1;
         }
 
         .hero-content {
-            max-width: 600px;
+            max-width: 800px;
+            text-align: center;
+            animation: fadeIn 1s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .hero h2 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
+            margin-top: 100px;
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            line-height: 1.2;
+            background: linear-gradient(45deg, #fff, #00b4d8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
         }
 
         .hero p {
-            font-size: 1.2rem;
-            margin-bottom: 20px;
+            font-size: 1.3rem;
+            margin-bottom: 40px;
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.6;
         }
 
-        .buttons {
+        .features {
             display: flex;
-            gap: 20px;
             justify-content: center;
+            gap: 30px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
         }
 
-        .hero-btn {
-            text-decoration: none;
-            background-color: #1f53c5;
+        .feature-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 1.0s ease;
+            width: 200px;
+        }
+
+        .feature-item:hover {
+                    transform: translateY(-5px) scale(1.05); /* Levanta y agranda el botón */
+                    background: rgba(119, 101, 101, 0.2); /* Fondo semitransparente */
+                    box-shadow: -1px 1px 25px rgba(255, 255, 255, 0.4);
+                    border-radius: 15px; /* Aumenta el redondeo para mayor suavidad */
+            }
+
+        .feature-item i {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, #1f53c5, #00b4d8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .paypal-container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            max-width: 400px;
+            margin: 0 auto;
+            transition: all 0.3s ease;
+        }
+
+        .paypal-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .precio-container {
+            background: linear-gradient(45deg, #1f53c5, #00b4d8);
             color: white;
-            padding: 10px 20px;
-            border-radius: 5px;
-            transition: background-color 0.3s;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            font-size: 2rem;
+            font-weight: bold;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(31, 83, 197, 0.4);
         }
 
-        .hero-btn:hover {
-            background-color: #333;
+        .precio-descripcion {
+            font-size: 1rem;
+            margin-top: 10px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .benefits {
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .benefit-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .benefit-item i {
+            margin-right: 10px;
+            color: #00b4d8;
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 15px;
+            }
+
+            .logo {
+                font-size: 2rem;
+            }
+
+            .hero h2 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+
+            .feature-item {
+                width: 100%;
+                max-width: 300px;
+            }
         }
     </style>
 </head>
@@ -96,15 +238,89 @@
         <h1 class="logo">VECOPO</h1>
         <a href="<?= base_url('/tercon') ?>" class="register-btn">Registrarse</a>
     </header>
+
     <section class="hero">
         <div class="hero-content">
+            
             <h2>Automatización Inteligente para tu Hogar</h2>
             <p>La mejor solución en automatización de ventanas, cortinas y postigones.</p>
 
-      
-               
+            <div class="features">
+
+                <div class="feature-item">
+                    <i class="fas fa-window-maximize"></i>
+                    <h3>Cortinas</h3>
+                    <p>Automatización inteligente</p>
+                </div>
+
+                <div class="feature-item">
+                    <i class=" fa-solid fa-table-cells-large"></i>
+                    <h3>Ventanas</h3>
+                    <p>Control total de tus ventanas</p>
+                </div>
+                
+                <div class="feature-item">
+                    <i class="fa-solid fa-table-cells"></i>
+                    <h3>Postigones</h3>
+                    <p>Control remoto completo</p>
+                </div>
+            </div>
+
+            <div class="paypal-container">
+                <div class="precio-container">
+                    $19.99
+                    <div class="precio-descripcion">Plan Premium - Acceso Completo</div>
+                </div>
+                
+                <div class="benefits">
+                    <div class="benefit-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Control total de dispositivos</span>
+                    </div>
+                    <div class="benefit-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Programación avanzada</span>
+                    </div>
+                    <div class="benefit-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Soporte 24/7</span>
+                    </div>
+                </div>
+
+                <div id="paypal-button-container"></div>
             </div>
         </div>
     </section>
+
+    <script>
+        paypal.Buttons({
+            createOrder: function(data, actions) {
+                return actions.order.create({
+                    purchase_units: [{
+                        amount: {
+                            value: '19.99'
+                        },
+                        description: 'Plan Premium VECOPO'
+                    }]
+                });
+            },
+            onApprove: function(data, actions) {
+                return actions.order.capture().then(function(details) {
+                    alert('¡Pago completado! Gracias ' + details.payer.name.given_name);
+                    window.location.href = '<?= base_url('/iniciovalogin') ?>';
+                });
+            },
+            onError: function(err) {
+                alert('Ocurrió un error durante el proceso de pago');
+                console.error(err);
+            },
+            style: {
+                layout: 'vertical',
+                color:  'gold',
+                shape:  'pill',
+                label:  'pay'
+            }
+        }).render('#paypal-button-container');
+    </script>
 </body>
 </html>

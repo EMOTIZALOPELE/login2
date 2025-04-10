@@ -6,9 +6,12 @@ use CodeIgniter\Model;
 
 class HorariosModel extends Model
 {
-    protected $table = 'horarios';           // Nombre de la tabla
-    protected $primaryKey = 'idhorario';     // Clave primaria
-    protected $allowedFields = [             // Campos que se pueden insertar/actualizar
+    // Definir la tabla y los campos
+    protected $table = 'horarios';
+    protected $primaryKey = 'idhorario';
+    
+    // Definir los campos que se pueden insertar/actualizar
+    protected $allowedFields = [
         'ventana_apertura',
         'ventana_cierre',
         'cortina_apertura',
@@ -17,6 +20,5 @@ class HorariosModel extends Model
         'postigon_cierre',
         'usuario_id',
         'nombre_tarjeta',
-    ];
-    protected $useTimestamps = true;         // Para gestionar created_at y updated_at
+    ]; 
 }

@@ -180,8 +180,6 @@ class Home extends Controller
         }
     }
 
-    
-
     // GESTIÓN DE HORARIOS
 
     public function guardar_horarios()
@@ -219,24 +217,25 @@ class Home extends Controller
     }
 
     public function mostrarHorarios()
-{
-    $session = session();
-    if (!$session->get('logged_in')) {
-        return redirect()->to('/login'); // Redirigir si no está logueado
+    {
+        $session = session();
+        if (!$session->get('logged_in')) {
+            return redirect()->to('/login'); // Redirigir si no está logueado
+        }
+
+        $horariosModel = new HorariosModel();
+        $usuarioId = $session->get('id'); // Obtener el ID del usuario de la sesión
+
+        // Obtener horarios del usuario usando where para filtrar por usuario_id
+        $horarios = $horariosModel->where('usuario_id', $usuarioId)->findAll();
+
+        // Comprobar si se obtuvieron horarios
+        if (empty($horarios)) {
+            return view('horarios_view', ['error' => 'No se encontraron horarios.']);
+        }
+
+        // Pasar los datos a la vista
+        return view('horarios_view', ['horarios' => $horarios]);
     }
 
-    $horariosModel = new HorariosModel();
-    $usuarioId = $session->get('id'); // Obtener el ID del usuario de la sesión
-
-    // Obtener horarios del usuario
-    $horarios = $horariosModel->getHorariosByUserId($usuarioId);
-
-    // Comprobar si se obtuvieron horarios
-    if (empty($horarios)) {
-        return view('horarios_view', ['error' => 'No se encontraron horarios.']);
-    }
-
-    // Pasar los datos a la vista
-    return view('horarios_view', ['horarios' => $horarios]);
-}
 }

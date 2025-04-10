@@ -7,7 +7,7 @@ use CodeIgniter\Model;
 class DisenoModel extends Model
 {
     protected $table = 'disenos';
-    protected $primaryKey = 'id';
+    protected $primaryKey = 'id_diseno';
 
     protected $allowedFields = [
         'nombre',

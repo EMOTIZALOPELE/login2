@@ -124,6 +124,63 @@
             line-height: 1.6;
         }
 
+        .aboutus {
+            width: 100vw; /* Ancho total de la ventana */
+            margin-left: 0;
+            margin-right: 0;
+            padding: 60px 5%;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 0; /* Elimina bordes redondeados */
+            backdrop-filter: blur(5px);
+            text-align: center;
+            color: white;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+
+        .aboutus h3 {
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #00b4d8, #1f53c5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .aboutus p {
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .about-grid {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .about-item {
+            background: rgba(255, 255, 255, 0.08);
+            padding: 20px;
+            border-radius: 15px;
+            width: 250px;
+            transition: transform 0.3s ease;
+        }
+
+        .about-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(255, 255, 255, 0.2);
+        }
+
+        .about-item i {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: #00b4d8;
+        }
+
+        .about-item h4 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
         .features {
             display: flex;
             justify-content: center;
@@ -163,7 +220,7 @@
             border-radius: 20px;
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            max-width: 400px;
+            max-width: 450px;
             margin: 0 auto;
             transition: all 0.3s ease;
         }
@@ -265,8 +322,33 @@
                     <p>Control remoto completo</p>
                 </div>
             </div>
+    </section>
 
-            <div class="paypal-container">
+    <section class="aboutus">
+        <div class="aboutus-content">
+                <h3>SOBRE NOSOTROS</h3>
+                <p>En VECOPO nos dedicamos a crear soluciones inteligentes para el confort del hogar. Con tecnología de punta, buscamos simplificar la vida cotidiana mediante la automatización de ventanas, cortinas y postigones.</p>
+                <div class="about-grid">
+                    <div class="about-item">
+                    <i class="fas fa-lightbulb"></i>
+                    <h4>Innovación</h4>
+                    <p>Desarrollamos tecnología moderna para hogares inteligentes.</p>
+                </div>
+                <div class="about-item">
+                    <i class="fas fa-shield-alt"></i>
+                    <h4>Seguridad</h4>
+                    <p>Protegemos tu hogar con automatizaciones seguras y confiables.</p>
+                </div>
+                <div class="about-item">
+                    <i class="fas fa-users"></i>
+                    <h4>Compromiso</h4>
+                    <p>Atención personalizada y soporte técnico 24/7 para nuestros clientes.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="paypal-container">
                 <div class="precio-container">
                     $19.99
                     <div class="precio-descripcion">Plan Premium - Acceso Completo</div>
@@ -290,8 +372,6 @@
                 <div id="paypal-button-container"></div>
             </div>
         </div>
-    </section>
-
     <script>
         paypal.Buttons({
             createOrder: function(data, actions) {

@@ -24,14 +24,11 @@ class HorariosController extends BaseController
             return redirect()->to(base_url('login'));
         }
 
-        $usuarioId = $session->get('id');
+        // Obtener datos de horarios asociados al usuario autenticado
+        $horariosModel = new HorariosModel();
+        $horarios = $horariosModel->where('usuario_id', $usuarioId)->findAll();
 
-        // Asegurarse de que solo se obtengan los horarios del usuario actual
-        $horarios = $this->horariosModel
-            ->where('usuario_id', $usuarioId)
-            ->orderBy('idhorario', 'DESC')
-            ->findAll();
-
+        // Preparar datos para enviar a la vista
         $data = [
             'title' => 'Página de Inicio',
             'horarios' => $horarios,

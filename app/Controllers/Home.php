@@ -234,8 +234,7 @@ class Home extends Controller
             return view('horarios_view', ['error' => 'No se encontraron horarios.']);
         }
 
-        // Pasar los datos a la vista
-        return view('horarios_view', ['horarios' => $horarios]);
-    }
-
+    // Pasar los datos a la vista
+    return view('horarios_view', ['horarios' => $horarios]);
+}
 }

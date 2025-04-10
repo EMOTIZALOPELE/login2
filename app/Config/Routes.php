@@ -35,8 +35,11 @@ $routes->post('add_name/(:num)', 'HorariosController::addname/$1');
 
 
 // PÁGINA DE SERVO
-$routes->post('/servo/open', 'ServoController::openServo'); 
-$routes->post('/servo/close', 'ServoController::closeServo'); 
+$routes->get('/funcional', 'ServoController::nazi');
+$routes->get('/funcional/actualizarEstado/(:any)', 'ServoController::actualizarEstado/$1');
+$routes->get('/funcional/obtenerUltimoEstado', 'ServoController::obtenerUltimoEstado');
+$routes->get('/funcional/obtenerEstado', 'ServoController::obtenerEstado');
+$routes->get('/masivo', 'ServoController::estado');
 
 // INICIO 2
 $routes->get('/iniciovalogin', 'Home::iralogin');

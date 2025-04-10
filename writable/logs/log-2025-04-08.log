@@ -286,3 +286,4 @@ DEBUG - 2025-04-08 16:27:49 --> Longitud Postigon: 2
 DEBUG - 2025-04-08 16:27:49 --> === FIN DATOS DEL DISEÑO ===
 INFO - 2025-04-08 16:27:56 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
 INFO - 2025-04-08 16:27:56 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-08 16:33:36 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.

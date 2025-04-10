@@ -324,6 +324,7 @@
                         <li><a href="<?= base_url('addtarjeta') ?>">Añadir Tarjeta</a></li>
                         <li><a href="<?= base_url('pele') ?>">Diseño</a></li>
                         <li><a href="<?= base_url('logout') ?>">salir</a></li>
+                        <li><a href="<?= base_url('/masivo') ?>">SERVO</a></li>
                     </ul>
                 </nav>
             </div>

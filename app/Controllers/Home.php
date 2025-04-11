@@ -180,4 +180,61 @@ class Home extends Controller
         }
     }
 
+    // GESTIÓN DE HORARIOS
+
+    public function guardar_horarios()
+    {
+        $usuario_id = session()->get('id');
+
+        // Verifica si el ID de usuario está en la sesión
+        if (!$usuario_id) {
+            return 'Usuario no logueado'; 
+        }
+
+        $data = [
+            'idhorario'         => $this->request->getPost('idhorario'),
+            'ventana_apertura'  => $this->request->getPost('ventana_apertura'),
+            'ventana_cierre'    => $this->request->getPost('ventana_cierre'),
+            'cortina_apertura'  => $this->request->getPost('cortina_apertura'),
+            'cortina_cierre'    => $this->request->getPost('cortina_cierre'),
+            'postigon_apertura' => $this->request->getPost('postigon_apertura'),
+            'postigon_cierre'   => $this->request->getPost('postigon_cierre'),
+        ];
+
+        $horariosModel = new \App\Models\HorariosModel();
+
+        // Actualizar los horarios existentes
+        $existingHorario = $horariosModel->where('idhorario', $data['idhorario'])->first();
+        if ($existingHorario) {
+            $horariosModel->update($existingHorario['idhorario'], $data); 
+        } else {
+            if (!$horariosModel->insert($data)) {
+                return 'Error al guardar los horarios';
+            }
+        }
+
+        return redirect()->to(base_url('irainicio'))->with('status', 'Horarios guardados correctamente.');
+    }
+
+    public function mostrarHorarios()
+    {
+        $session = session();
+        if (!$session->get('logged_in')) {
+            return redirect()->to('/login'); // Redirigir si no está logueado
+        }
+
+        $horariosModel = new HorariosModel();
+        $usuarioId = $session->get('id'); // Obtener el ID del usuario de la sesión
+
+        // Obtener horarios del usuario usando where para filtrar por usuario_id
+        $horarios = $horariosModel->where('usuario_id', $usuarioId)->findAll();
+
+        // Comprobar si se obtuvieron horarios
+        if (empty($horarios)) {
+            return view('horarios_view', ['error' => 'No se encontraron horarios.']);
+        }
+
+    // Pasar los datos a la vista
+    return view('horarios_view', ['horarios' => $horarios]);
+}
 }

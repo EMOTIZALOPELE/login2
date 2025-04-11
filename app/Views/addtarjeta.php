@@ -102,6 +102,7 @@
         }
 
         .form-container {
+            margin-top: 100px;
             background: rgb(231, 230, 235);
             padding: 20px;
             border-radius: 10px;
@@ -206,7 +207,7 @@
 
     <div class="container">
         <div class="form-container">
-            <h2>Configuración de Horarios</h2>
+            <h2>Crea un nuevo Horario</h2>
             <form action="<?= base_url('savetarjeta') ?>" method="post">
                 <div class="form-group">
                     <label for="ventana_apertura">Apertura de Ventanas:</label>

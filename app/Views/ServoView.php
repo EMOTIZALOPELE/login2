@@ -12,17 +12,26 @@
 
   <script>
     function cambiarEstado(estado) {
-      fetch(`/funcional/actualizarEstado/${estado}`)
-        .then(response => response.json())
-        .then(data => {
-          if (data.status === 'ok') {
-            document.getElementById('estado').textContent = data.estado;
-          }
-        });
+      // Enviar estado al servidor CodeIgniter
+      fetch(`/login2/public/funcional/actualizarEstado/${estado}`)
+      .then(response => response.json())
+      .then(data => {
+        if (data.status === 'ok') {
+          document.getElementById('estado').textContent = data.estado;
+          // También enviar comando al ESP32
+          fetch(`http://10.81.11.241/servo${estado === 'abierto' ? 'Open' : 'Close'}`)
+            .then(response => {
+              if (!response.ok) {
+                console.error('Error al comunicar con ESP32');
+              }
+            });
+        }
+      })
+      .catch(error => console.error('Error:', error));
     }
 
     setInterval(() => {
-      fetch('/funcional/obtenerUltimoEstado')
+      fetch('/login2/public/funcional/obtenerUltimoEstado')
         .then(res => res.json())
         .then(data => {
           document.getElementById('estado').textContent = data.estado;

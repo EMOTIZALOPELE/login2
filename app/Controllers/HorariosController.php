@@ -26,7 +26,11 @@ class HorariosController extends BaseController
 
         // Obtener datos de horarios asociados al usuario autenticado
         $horariosModel = new HorariosModel();
+        $usuarioId = $session->get('id'); // Obtener el ID del usuario de la sesión
+
+        // Obtener horarios del usuario usando where para filtrar por usuario_id
         $horarios = $horariosModel->where('usuario_id', $usuarioId)->findAll();
+
 
         // Preparar datos para enviar a la vista
         $data = [

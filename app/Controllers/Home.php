@@ -107,7 +107,7 @@ class Home extends Controller
 
             $emailService = \Config\Services::email();
             $emailService->setTo($user['email']);
-            $emailService->setFrom('valentinsalomone2001@gmail.com', 'Thewildproyect');
+            $emailService->setFrom('valentinsalomone2001@gmail.com', 'VECOPO');
             $emailService->setSubject('Recuperación de contraseña');
             $emailService->setMessage("Haz clic en este enlace para recuperar tu contraseña: " . $resetLink);
 

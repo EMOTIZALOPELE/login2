@@ -123,7 +123,7 @@
                 }
                 .horario-card:hover {
                 transform: scale(1.05);
-                border radius: 5px;
+                border-radius: 5px;
             }
             .horario-card h3 {
                 background: #1f53c5;

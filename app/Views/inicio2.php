@@ -137,6 +137,7 @@
             box-shadow: 0 4px 20px rgba(0,0,0,0.2);
         }
 
+        
         .aboutus h3 {
             font-size: 2.2rem;
             margin-bottom: 20px;
@@ -163,24 +164,75 @@
             padding: 20px;
             border-radius: 15px;
             width: 250px;
-            transition: transform 0.3s ease;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .about-item::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                135deg,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0.1) 25%,
+                rgba(255, 255, 255, 0.5) 50%,
+                rgba(255, 255, 255, 0.1) 75%,
+                rgba(255, 255, 255, 0) 100%
+            );
+            transform: rotate(45deg);
+            transition: 0.6s;
+            opacity: 0;
+        }
+
+        .about-item:hover::before {
+            animation: shine 1.5s;
+        }
+
+        @keyframes shine {
+            0% {
+                transform: translate(-100%, -100%) rotate(45deg);
+                opacity: 0;
+            }
+            50% {
+                opacity: 0.5;
+            }
+            100% {
+                transform: translate(100%, 100%) rotate(45deg);
+                opacity: 0;
+            }
         }
 
         .about-item:hover {
             transform: translateY(-5px);
             box-shadow: 0 6px 20px rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.12);
         }
 
         .about-item i {
             font-size: 2.5rem;
             margin-bottom: 10px;
             color: #00b4d8;
+            position: relative;
+            z-index: 1;
         }
 
         .about-item h4 {
             font-size: 1.3rem;
             margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
         }
+
+        .about-item p {
+            position: relative;
+            z-index: 1;
+        }
+
         .features {
             display: flex;
             justify-content: center;
@@ -214,6 +266,17 @@
             -webkit-text-fill-color: transparent;
         }
 
+        .paypal {
+            margin: 30px auto;
+            width: 700px; /* Ancho total de la ventana */
+            padding: 60px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 0; /* Elimina bordes redondeados */
+            backdrop-filter: blur(5px);
+            text-align: center;
+            color: white;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
         .paypal-container {
             background: rgba(255, 255, 255, 0.1);
             padding: 30px;
@@ -222,12 +285,14 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
             max-width: 450px;
             margin: 0 auto;
-            transition: all 0.3s ease;
+            transition: all 1s ease;
         }
 
         .paypal-container:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            transform: translateY(-5px) scale(1.05); /* Levanta y agranda el botón */
+            background: rgba(119, 101, 101, 0.2); /* Fondo semitransparente */
+            box-shadow: -1px 1px 25px rgba(255, 255, 255, 0.4);
+            border-radius: 15px; /* Aumenta el redondeo para mayor suavidad */
         }
 
         .precio-container {
@@ -263,6 +328,15 @@
         .benefit-item i {
             margin-right: 10px;
             color: #00b4d8;
+        }
+
+        .copyright {
+            text-align: center;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            position: relative;
+            bottom: 0;
+            width: 100%;
         }
 
         @media (max-width: 768px) {
@@ -348,6 +422,7 @@
         </div>
     </section>
 
+    <section class="paypal">
     <div class="paypal-container">
                 <div class="precio-container">
                     $19.99
@@ -371,6 +446,11 @@
 
                 <div id="paypal-button-container"></div>
             </div>
+        </div>
+    </section>
+    <footer>
+        <div class="copyright">
+            <p>&copy; 2025 VECOPO. Todos los derechos reservados.</p>
         </div>
     <script>
         paypal.Buttons({

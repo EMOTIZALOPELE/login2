@@ -51,8 +51,8 @@
             }
             .menu ul{
                 display: flex;
-            justify-content: space-around; /* Espaciado igual entre los botones */           
-            gap: 1px; /* Espaciado fijo entre botones */
+                justify-content: space-around; /* Espaciado igual entre los botones */           
+                gap: 1px; /* Espaciado fijo entre botones */
             }
                 
             .menu ul li{
@@ -73,10 +73,10 @@
             display: inline-block; /* Para evitar problemas de tamaño */
         }
             .menu ul li a:hover {
-                    transform: translateY(-5px) scale(1.05); /* Levanta y agranda el botón */
-                    background: rgba(255, 255, 255, 0.2); /* Fondo semitransparente */
-                    box-shadow: -1px 1px 25px rgba(255, 255, 255, 0.4);
-                    border-radius: 15px; /* Aumenta el redondeo para mayor suavidad */
+                transform: translateY(-5px) scale(1.05); /* Levanta y agranda el botón */
+                background: rgba(255, 255, 255, 0.2); /* Fondo semitransparente */
+                box-shadow: -1px 1px 25px rgba(255, 255, 255, 0.4);
+                border-radius: 15px; /* Aumenta el redondeo para mayor suavidad */
             }
         
             #selected{
@@ -84,16 +84,7 @@
                 padding: 10px 40px;
                 border-radius: 50px;
             }
-            
-            
-            .menu nav img{
-                display: none;
-            }
-
-            .menu #btn_menu{
-                display: none;
-            }
-                    
+                
             /* Contenido principal */
             .container__card {
                 display: flex;

@@ -72,7 +72,8 @@
             border-radius: 15px; /* Aumenta el redondeo para mayor suavidad */
         }
 
-        .hero {
+        .presentation {
+            margin: 0 auto;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -82,7 +83,12 @@
             overflow: hidden;
         }
 
-        .hero::before {
+        .presentation-content {
+            max-width: 800px;
+            text-align: center;
+        }
+
+        .presentation::before {
             content: '';
             position: absolute;
             top: 0;
@@ -95,18 +101,7 @@
             z-index: -1;
         }
 
-        .hero-content {
-            max-width: 800px;
-            text-align: center;
-            animation: fadeIn 1s ease-out;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .hero h2 {
+        .presentation h2 {
             margin-top: 100px;
             font-size: 3.5rem;
             margin-bottom: 20px;
@@ -117,7 +112,7 @@
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
         }
 
-        .hero p {
+        .presentation p {
             font-size: 1.3rem;
             margin-bottom: 40px;
             color: rgba(255, 255, 255, 0.9);
@@ -125,19 +120,24 @@
         }
 
         .aboutus {
+            min-height: 95vh;
+            display: flex;
             width: 100vw; /* Ancho total de la ventana */
-            margin-left: 0;
-            margin-right: 0;
-            padding: 60px 5%;
+            padding: 60px;
             background: rgba(255, 255, 255, 0.05);
             border-radius: 0; /* Elimina bordes redondeados */
             backdrop-filter: blur(5px);
+            flex-direction: column;
+            justify-content: center;    
             text-align: center;
             color: white;
             box-shadow: 0 4px 20px rgba(0,0,0,0.2);
         }
 
-        
+        .aboutus-content{
+            
+        }
+
         .aboutus h3 {
             font-size: 2.2rem;
             margin-bottom: 20px;
@@ -153,6 +153,7 @@
         }
 
         .about-grid {
+            
             display: flex;
             justify-content: center;
             gap: 40px;
@@ -233,7 +234,7 @@
             z-index: 1;
         }
 
-        .features {
+        .coverletter {
             display: flex;
             justify-content: center;
             gap: 30px;
@@ -241,7 +242,7 @@
             flex-wrap: wrap;
         }
 
-        .feature-item {
+        .coverletter-item {
             background: rgba(255, 255, 255, 0.1);
             padding: 20px;
             border-radius: 15px;
@@ -251,14 +252,14 @@
             width: 200px;
         }
 
-        .feature-item:hover {
+        .coverletter-item:hover {
                     transform: translateY(-5px) scale(1.05); /* Levanta y agranda el botón */
                     background: rgba(119, 101, 101, 0.2); /* Fondo semitransparente */
                     box-shadow: -1px 1px 25px rgba(255, 255, 255, 0.4);
                     border-radius: 15px; /* Aumenta el redondeo para mayor suavidad */
             }
 
-        .feature-item i {
+        .coverletter-item i {
             font-size: 2rem;
             margin-bottom: 15px;
             background: linear-gradient(45deg, #1f53c5, #00b4d8);
@@ -267,30 +268,39 @@
         }
 
         .paypal {
-            margin: 30px auto;
-            width: 700px; /* Ancho total de la ventana */
+            min-height: 90vh;
+            display: flex; /* Convierte en contenedor flex */
+            justify-content: center; /* Centra horizontalmente los ítems en fila */
+            align-items: center; /* Centra verticalmente los ítems en fila */
+            width: 100vw;
             padding: 60px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 0; /* Elimina bordes redondeados */
+            background: rgba(231, 221, 221, 0.25);
+            border-radius: 0;
             backdrop-filter: blur(5px);
-            text-align: center;
+            text-align: center; /* Esto ya no será necesario para centrar los ítems flex */
             color: white;
             box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-        }
+            flex-wrap: wrap; /* Agrega esto si quieres que los elementos salten de línea en pantallas pequeñas */
+            gap: 40px; /* Agrega espacio entre los elementos */
+}
         .paypal-container {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(112, 110, 110, 0.88);
             padding: 30px;
-            border-radius: 20px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            max-width: 450px;
-            margin: 0 auto;
-            transition: all 1s ease;
+            border-radius: 15px;
+            height: 450px;
+            width: 350px; /* Ancho similar */
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            margin-top: 60px;
+            text-align: center;
+            border: none; /* Eliminamos el borde */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Sombra similar */
         }
 
         .paypal-container:hover {
             transform: translateY(-5px) scale(1.05); /* Levanta y agranda el botón */
-            background: rgba(119, 101, 101, 0.2); /* Fondo semitransparente */
+
             box-shadow: -1px 1px 25px rgba(255, 255, 255, 0.4);
             border-radius: 15px; /* Aumenta el redondeo para mayor suavidad */
         }
@@ -313,24 +323,27 @@
             color: rgba(255, 255, 255, 0.9);
         }
 
-        .benefits {
-            margin-top: 20px;
+        .paypalcard {
+   
+            margin-top: 0px;
             text-align: left;
         }
 
-        .benefit-item {
+        .paypalcard-item {
+            
             display: flex;
             align-items: center;
             margin-bottom: 10px;
             color: rgba(255, 255, 255, 0.9);
         }
 
-        .benefit-item i {
+        .paypalcard-item i {
             margin-right: 10px;
             color: #00b4d8;
         }
 
         .copyright {
+            margin-top: 20px;
             text-align: center;
             padding: 20px;
             background: rgba(0, 0, 0, 0.2);
@@ -348,17 +361,29 @@
                 font-size: 2rem;
             }
 
-            .hero h2 {
+            .presentation {
+                width: 700px;
+            }
+
+
+            .presentation h2 {
                 font-size: 2.5rem;
             }
 
-            .hero p {
+            .presentation p {
                 font-size: 1.1rem;
             }
 
-            .feature-item {
+            .aboutus{
+                width: 700px;
+            }
+            .coverletter-item {
                 width: 100%;
                 max-width: 300px;
+            }
+
+            .copyright {
+                width: 700px;
             }
         }
     </style>
@@ -370,27 +395,27 @@
         <a href="<?= base_url('/tercon') ?>" class="register-btn">Registrarse</a>
     </header>
 
-    <section class="hero">
-        <div class="hero-content">
+    <section class="presentation">
+        <div class="presentation-content">
             
             <h2>Automatización Inteligente para tu Hogar</h2>
             <p>La mejor solución en automatización de ventanas, cortinas y postigones.</p>
 
-            <div class="features">
+            <div class="coverletter">
 
-                <div class="feature-item">
+                <div class="coverletter-item">
                     <i class="fas fa-window-maximize"></i>
                     <h3>Cortinas</h3>
                     <p>Automatización inteligente</p>
                 </div>
 
-                <div class="feature-item">
+                <div class="coverletter-item">
                     <i class=" fa-solid fa-table-cells-large"></i>
                     <h3>Ventanas</h3>
                     <p>Control total de tus ventanas</p>
                 </div>
                 
-                <div class="feature-item">
+                <div class="coverletter-item">
                     <i class="fa-solid fa-table-cells"></i>
                     <h3>Postigones</h3>
                     <p>Control remoto completo</p>
@@ -407,51 +432,93 @@
                     <i class="fas fa-lightbulb"></i>
                     <h4>Innovación</h4>
                     <p>Desarrollamos tecnología moderna para hogares inteligentes.</p>
-                </div>
-                <div class="about-item">
+                    </div>
+                    <div class="about-item">
                     <i class="fas fa-shield-alt"></i>
                     <h4>Seguridad</h4>
                     <p>Protegemos tu hogar con automatizaciones seguras y confiables.</p>
-                </div>
-                <div class="about-item">
+                    </div>
+                    <div class="about-item">
                     <i class="fas fa-users"></i>
                     <h4>Compromiso</h4>
                     <p>Atención personalizada y soporte técnico 24/7 para nuestros clientes.</p>
+                    </div>
                 </div>
             </div>
-        </div>
     </section>
 
     <section class="paypal">
-    <div class="paypal-container">
-                <div class="precio-container">
-                    $19.99
-                    <div class="precio-descripcion">Plan Premium - Acceso Completo</div>
-                </div>
-                
-                <div class="benefits">
-                    <div class="benefit-item">
+        <div class="paypal-container">
+            <div class="precio-container">
+                $19.99
+                <div class="precio-descripcion">Plan Premium - Acceso Completo</div>
+            </div>
+                <div class="paypalcard">
+                    <div class="paypalcard-item">
                         <i class="fas fa-check-circle"></i>
                         <span>Control total de dispositivos</span>
                     </div>
-                    <div class="benefit-item">
+                    <div class="paypalcard-item">
                         <i class="fas fa-check-circle"></i>
                         <span>Programación avanzada</span>
                     </div>
-                    <div class="benefit-item">
+                    <div class="paypalcard-item">
                         <i class="fas fa-check-circle"></i>
                         <span>Soporte 24/7</span>
                     </div>
                 </div>
+            <div id="paypal-button-container"></div>
+        </div>
+        
+        <div class="paypal-container">
+                <div class="precio-container">
+                    $50.00
+                    <div class="precio-descripcion">Plan Premium - Acceso Completo</div>
+                </div>
+                <div class="paypalcard">
+                    <div class="paypalcard-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Control total de dispositivos</span>
+                    </div>
+                    <div class="paypalcard-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Programación avanzada</span>
+                    </div>
+                    <div class="paypalcard-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Soporte 24/7</span>
+                    </div>
+                </div>
+            <div id="paypal-button-container"></div>
+        </div>
 
-                <div id="paypal-button-container"></div>
-            </div>
+        <div class="paypal-container">
+                <div class="precio-container">
+                    $100.00
+                    <div class="precio-descripcion">Plan Premium - Acceso Completo</div>
+                </div>
+                <div class="paypalcard">
+                    <div class="paypalcard-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Control total de dispositivos</span>
+                    </div>
+                    <div class="paypalcard-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Programación avanzada</span>
+                    </div>
+                    <div class="paypalcard-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Soporte 24/7</span>
+                    </div>
+                </div>
+            <div id="paypal-button-container"></div>
         </div>
     </section>
     <footer>
         <div class="copyright">
             <p>&copy; 2025 VECOPO. Todos los derechos reservados.</p>
         </div>
+    </footer>
     <script>
         paypal.Buttons({
             createOrder: function(data, actions) {

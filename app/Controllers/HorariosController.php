@@ -17,29 +17,42 @@ class HorariosController extends BaseController
     }
 
     public function index()
-    {
-        $session = \Config\Services::session();
+{
+    $session = \Config\Services::session();
 
-        if (!$session->has('id')) {
-            return redirect()->to(base_url('login'));
-        }
+    if (!$session->has('id')) {
+        return redirect()->to(base_url('login'));
+    }
 
-        // Obtener datos de horarios asociados al usuario autenticado
-        $horariosModel = new HorariosModel();
-        $usuarioId = $session->get('id'); // Obtener el ID del usuario de la sesión
+    $usuarioId = $session->get('id');
 
-        // Obtener horarios del usuario usando where para filtrar por usuario_id
-        $horarios = $horariosModel->where('usuario_id', $usuarioId)->findAll();
+    try {
+        // Esta línea solo limpiaba la sesión ANTES de guardar, no es la causa principal del problema
+        // $session->remove('horarios');
 
+        // Obtener horarios del usuario actual
+        $horarios = $this->horariosModel
+            ->where('usuario_id', $usuarioId)
+            ->orderBy('idhorario', 'DESC')
+            ->findAll();
+
+        // *** ELIMINA LA SIGUIENTE LÍNEA ***
+        // $session->set('horarios', $horarios); // <-- ESTA ES LA LÍNEA SOSPECHOSA
 
         // Preparar datos para enviar a la vista
         $data = [
             'title' => 'Página de Inicio',
-            'horarios' => $horarios,
+            'horarios' => $horarios, // Pasa los horarios obtenidos DIRECTAMENTE a la vista
+            'usuario_id' => $usuarioId,
+            'nombre_usuario' => $session->get('nombre')
         ];
 
         return view('inicio', $data);
+    } catch (\Exception $e) {
+        log_message('error', 'Error al obtener horarios: ' . $e->getMessage());
+        return redirect()->to(base_url('login'))->with('error', 'Error al cargar los horarios');
     }
+}
 
     public function configuracion($id)
     {

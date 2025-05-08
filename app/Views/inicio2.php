@@ -28,17 +28,22 @@
             align-items: center;
             padding: 20px 5%;
             background: rgba(0, 0, 0, 0.2);
-            backdrop-filter: blur(10px);
+            background: linear-gradient(to right, rgb(17, 17, 17) 0%, rgb(19, 63, 71) 50%, rgb(17, 17, 17) 100%);            backdrop-filter: blur(10px);
             position: fixed;
             width: 100%;
             z-index: 1000;
             box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        header:hover {
+            background: linear-gradient(to right, rgb(17, 17, 17) 0%, rgb(19, 63, 71) 50%, rgb(17, 17, 17) 100%);
         }
 
         .logo {
             font-size: 2.5rem;
             font-weight: 700;
-            background: linear-gradient(45deg, #1f53c5, #00b4d8);
+            background: linear-gradient(45deg,rgb(51, 116, 255),rgb(0, 213, 255));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
@@ -86,6 +91,7 @@
         .presentation-content {
             max-width: 800px;
             text-align: center;
+            animation: fadeIn 1s ease-in;
         }
 
         .presentation::before {
@@ -120,9 +126,9 @@
         }
 
         .aboutus {
-            min-height: 95vh;
+            min-height: 100%;
             display: flex;
-            width: 100vw; /* Ancho total de la ventana */
+            width: 100%; /* Ancho total de la ventana */
             padding: 60px;
             background: rgba(255, 255, 255, 0.05);
             border-radius: 0; /* Elimina bordes redondeados */
@@ -168,6 +174,7 @@
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
+            animation: slideIn 0.5s ease-out;
         }
 
         .about-item::before {
@@ -250,6 +257,7 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
             transition: all 1.0s ease;
             width: 200px;
+            animation: slideIn 0.5s ease-out;
         }
 
         .coverletter-item:hover {
@@ -268,24 +276,25 @@
         }
 
         .paypal {
-            min-height: 90vh;
+            min-height: 100%;
             display: flex; /* Convierte en contenedor flex */
             justify-content: center; /* Centra horizontalmente los ítems en fila */
             align-items: center; /* Centra verticalmente los ítems en fila */
-            width: 100vw;
+            width: 100%;
             padding: 60px;
             background: rgba(231, 221, 221, 0.25);
             border-radius: 0;
+            background: linear-gradient(to right,rgb(0, 0, 0),rgb(4, 121, 145));
             backdrop-filter: blur(5px);
             text-align: center; /* Esto ya no será necesario para centrar los ítems flex */
             color: white;
             box-shadow: 0 4px 20px rgba(0,0,0,0.2);
             flex-wrap: wrap; /* Agrega esto si quieres que los elementos salten de línea en pantallas pequeñas */
             gap: 40px; /* Agrega espacio entre los elementos */
-}
+        }
         .paypal-container {
-            background: rgba(112, 110, 110, 0.88);
-            padding: 30px;
+            background: linear-gradient(to left,rgb(39, 38, 38),rgb(3, 74, 88));
+            padding: 0px 0px 60px 00px;
             border-radius: 15px;
             height: 450px;
             width: 350px; /* Ancho similar */
@@ -295,32 +304,54 @@
             margin-top: 60px;
             text-align: center;
             border: none; /* Eliminamos el borde */
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Sombra similar */
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2); /* Sombra similar */
         }
 
         .paypal-container:hover {
-            transform: translateY(-5px) scale(1.05); /* Levanta y agranda el botón */
-
-            box-shadow: -1px 1px 25px rgba(255, 255, 255, 0.4);
-            border-radius: 15px; /* Aumenta el redondeo para mayor suavidad */
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
         }
 
         .precio-container {
-            background: linear-gradient(45deg, #1f53c5, #00b4d8);
+            background: rgba(43, 63, 104, 0.78);            
             color: white;
             padding: 20px;
-            border-radius: 15px;
             margin-bottom: 20px;
-            font-size: 2rem;
+            font-size: 2.5rem;
             font-weight: bold;
             text-align: center;
-            box-shadow: 0 4px 15px rgba(31, 83, 197, 0.4);
+            box-shadow: 0 4px 15px rgba(13, 13, 14, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .precio-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s;
+        }
+
+        .precio-container:hover::before {
+            transform: translateX(100%);
+        }
+
+        .precio-simbolo {
+            font-size: 1.5rem;
+            vertical-align: super;
+            margin-right: 5px;
         }
 
         .precio-descripcion {
-            font-size: 1rem;
+            font-size: 1.2rem;
             margin-top: 10px;
             color: rgba(255, 255, 255, 0.9);
+            font-weight: normal;
         }
 
         .paypalcard {
@@ -330,61 +361,117 @@
         }
 
         .paypalcard-item {
-            
+            padding: 10px 20px;
             display: flex;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             color: rgba(255, 255, 255, 0.9);
+            transition: transform 0.3s ease;
         }
 
-        .paypalcard-item i {
-            margin-right: 10px;
+        .paypalcard-item:hover {
+            transform: translateX(10px);
             color: #00b4d8;
         }
 
+        .paypalcard-item i {
+            margin-right: 15px;
+            color: #00b4d8;
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .paypalcard-item:hover i {
+            transform: scale(1.2);
+        }
+
         .copyright {
-            margin-top: 20px;
+            background: linear-gradient(to right, rgba(0, 0, 0, 0.8), rgba(19, 63, 71, 0.8));
+            padding: 25px;
             text-align: center;
-            padding: 20px;
-            background: rgba(0, 0, 0, 0.2);
             position: relative;
-            bottom: 0;
+            overflow: hidden;
+        }
+
+        .copyright::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
+            height: 2px;
+            background: linear-gradient(to right, transparent, #00b4d8, transparent);
+        }
+
+        .copyright p {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
         }
 
         @media (max-width: 768px) {
             header {
                 padding: 15px;
+                flex-direction: column;
+                
+                gap: 15px;
             }
 
             .logo {
                 font-size: 2rem;
+                order: 2;
             }
 
             .presentation {
-                width: 700px;
+                width: 100%;
+                padding: 20px;
             }
 
-
             .presentation h2 {
-                font-size: 2.5rem;
+                font-size: 2rem;
+                margin-top: 150px;
             }
 
             .presentation p {
-                font-size: 1.1rem;
+                font-size: 1rem;
             }
 
-            .aboutus{
-                width: 700px;
+            .aboutus {
+                width: 100%;
+                padding: 30px;
             }
-            .coverletter-item {
+
+            .about-grid {
+                gap: 20px;
+            }
+
+            .about-item {
                 width: 100%;
                 max-width: 300px;
             }
 
-            .copyright {
-                width: 700px;
+            .paypal {
+                padding: 30px;
             }
+
+            .paypal-container {
+                width: 100%;
+                max-width: 350px;
+            }
+
+            .copyright {
+                width: 100%;
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
         }
     </style>
 </head>
@@ -450,68 +537,68 @@
     <section class="paypal">
         <div class="paypal-container">
             <div class="precio-container">
-                $19.99
-                <div class="precio-descripcion">Plan Premium - Acceso Completo</div>
+                <span class="precio-simbolo">$</span>19.99
+                <div class="precio-descripcion">Plan Básico</div>
             </div>
-                <div class="paypalcard">
-                    <div class="paypalcard-item">
-                        <i class="fas fa-check-circle"></i>
-                        <span>Control total de dispositivos</span>
-                    </div>
-                    <div class="paypalcard-item">
-                        <i class="fas fa-check-circle"></i>
-                        <span>Programación avanzada</span>
-                    </div>
-                    <div class="paypalcard-item">
-                        <i class="fas fa-check-circle"></i>
-                        <span>Soporte 24/7</span>
-                    </div>
+            <div class="paypalcard">
+                <div class="paypalcard-item">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Control básico de dispositivos</span>
                 </div>
-            <div id="paypal-button-container"></div>
+                <div class="paypalcard-item">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Programación básica</span>
+                </div>
+                <div class="paypalcard-item">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Soporte por email</span>
+                </div>
+            </div>
+            <div id="paypal-button-container-1"></div>
         </div>
         
         <div class="paypal-container">
-                <div class="precio-container">
-                    $50.00
-                    <div class="precio-descripcion">Plan Premium - Acceso Completo</div>
+            <div class="precio-container">
+                <span class="precio-simbolo">$</span>49.99
+                <div class="precio-descripcion">Plan Pro</div>
+            </div>
+            <div class="paypalcard">
+                <div class="paypalcard-item">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Control total de dispositivos</span>
                 </div>
-                <div class="paypalcard">
-                    <div class="paypalcard-item">
-                        <i class="fas fa-check-circle"></i>
-                        <span>Control total de dispositivos</span>
-                    </div>
-                    <div class="paypalcard-item">
-                        <i class="fas fa-check-circle"></i>
-                        <span>Programación avanzada</span>
-                    </div>
-                    <div class="paypalcard-item">
-                        <i class="fas fa-check-circle"></i>
-                        <span>Soporte 24/7</span>
-                    </div>
+                <div class="paypalcard-item">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Programación avanzada</span>
                 </div>
-            <div id="paypal-button-container"></div>
+                <div class="paypalcard-item">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Soporte 24/7</span>
+                </div>
+            </div>
+            <div id="paypal-button-container-2"></div>
         </div>
 
         <div class="paypal-container">
-                <div class="precio-container">
-                    $100.00
-                    <div class="precio-descripcion">Plan Premium - Acceso Completo</div>
+            <div class="precio-container">
+                <span class="precio-simbolo">$</span>99.99
+                <div class="precio-descripcion">Plan Enterprise</div>
+            </div>
+            <div class="paypalcard">
+                <div class="paypalcard-item">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Control total de dispositivos</span>
                 </div>
-                <div class="paypalcard">
-                    <div class="paypalcard-item">
-                        <i class="fas fa-check-circle"></i>
-                        <span>Control total de dispositivos</span>
-                    </div>
-                    <div class="paypalcard-item">
-                        <i class="fas fa-check-circle"></i>
-                        <span>Programación avanzada</span>
-                    </div>
-                    <div class="paypalcard-item">
-                        <i class="fas fa-check-circle"></i>
-                        <span>Soporte 24/7</span>
-                    </div>
+                <div class="paypalcard-item">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Programación avanzada</span>
                 </div>
-            <div id="paypal-button-container"></div>
+                <div class="paypalcard-item">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Soporte 24/7 + Asistente dedicado</span>
+                </div>
+            </div>
+            <div id="paypal-button-container-3"></div>
         </div>
     </section>
     <footer>
@@ -520,6 +607,7 @@
         </div>
     </footer>
     <script>
+        // Configuración para el Plan Básico
         paypal.Buttons({
             createOrder: function(data, actions) {
                 return actions.order.create({
@@ -527,7 +615,7 @@
                         amount: {
                             value: '19.99'
                         },
-                        description: 'Plan Premium VECOPO'
+                        description: 'Plan Básico VECOPO'
                     }]
                 });
             },
@@ -537,17 +625,65 @@
                     window.location.href = '<?= base_url('/iniciovalogin') ?>';
                 });
             },
-            onError: function(err) {
-                alert('Ocurrió un error durante el proceso de pago');
-                console.error(err);
+            style: {
+                layout: 'vertical',
+                color: 'gold',
+                shape: 'pill',
+                label: 'pay'
+            }
+        }).render('#paypal-button-container-1');
+
+        // Configuración para el Plan Pro
+        paypal.Buttons({
+            createOrder: function(data, actions) {
+                return actions.order.create({
+                    purchase_units: [{
+                        amount: {
+                            value: '49.99'
+                        },
+                        description: 'Plan Pro VECOPO'
+                    }]
+                });
+            },
+            onApprove: function(data, actions) {
+                return actions.order.capture().then(function(details) {
+                    alert('¡Pago completado! Gracias ' + details.payer.name.given_name);
+                    window.location.href = '<?= base_url('/iniciovalogin') ?>';
+                });
             },
             style: {
                 layout: 'vertical',
-                color:  'gold',
-                shape:  'pill',
-                label:  'pay'
+                color: 'gold',
+                shape: 'pill',
+                label: 'pay'
             }
-        }).render('#paypal-button-container');
+        }).render('#paypal-button-container-2');
+
+        // Configuración para el Plan Enterprise
+        paypal.Buttons({
+            createOrder: function(data, actions) {
+                return actions.order.create({
+                    purchase_units: [{
+                        amount: {
+                            value: '99.99'
+                        },
+                        description: 'Plan Enterprise VECOPO'
+                    }]
+                });
+            },
+            onApprove: function(data, actions) {
+                return actions.order.capture().then(function(details) {
+                    alert('¡Pago completado! Gracias ' + details.payer.name.given_name);
+                    window.location.href = '<?= base_url('/iniciovalogin') ?>';
+                });
+            },
+            style: {
+                layout: 'vertical',
+                color: 'gold',
+                shape: 'pill',
+                label: 'pay'
+            }
+        }).render('#paypal-button-container-3');
     </script>
 </body>
 </html>

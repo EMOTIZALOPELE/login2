@@ -27,12 +27,15 @@ class HorariosModel extends Model
 
     protected $beforeInsert = ['setUsuarioId'];
     protected $beforeUpdate = ['checkUsuarioId'];
+    protected $beforeFind = ['checkUsuarioAccess'];
 
     protected function setUsuarioId(array $data)
     {
         $session = \Config\Services::session();
         if ($session->has('id')) {
             $data['data']['usuario_id'] = $session->get('id');
+        } else {
+            throw new \RuntimeException('No hay sesión de usuario activa');
         }
         return $data;
     }
@@ -42,12 +45,63 @@ class HorariosModel extends Model
         $session = \Config\Services::session();
         if ($session->has('id')) {
             $data['data']['usuario_id'] = $session->get('id');
+        } else {
+            throw new \RuntimeException('No hay sesión de usuario activa');
         }
+        return $data;
+    }
+
+    protected function checkUsuarioAccess(array $data)
+    {
+        $session = \Config\Services::session();
+        if (!$session->has('id')) {
+            throw new \RuntimeException('No hay sesión de usuario activa');
+        }
+
+        $userId = $session->get('id');
+        
+        // Si no hay where clause, agregar el filtro de usuario
+        if (!isset($data['builder'])) {
+            $data['builder'] = $this->builder();
+        }
+        
+        // Asegurarse de que siempre se filtre por usuario_id
+        $data['builder']->where('usuario_id', $userId);
+        
+        // Limpiar cualquier condición where anterior que no sea usuario_id
+        $data['builder']->resetQuery();
+        $data['builder']->where('usuario_id', $userId);
+        
         return $data;
     }
 
     public function getHorariosByUserId($userId)
     {
-        return $this->where('usuario_id', $userId)->findAll();
+        if (!$userId) {
+            throw new \RuntimeException('ID de usuario no válido');
+        }
+        
+        // Limpiar cualquier condición where anterior
+        $this->builder()->resetQuery();
+        
+        return $this->where('usuario_id', $userId)
+                   ->orderBy('idhorario', 'DESC')
+                   ->findAll();
+    }
+
+    public function belongsToUser($horarioId, $userId)
+    {
+        if (!$userId || !$horarioId) {
+            return false;
+        }
+        return $this->where('idhorario', $horarioId)
+                   ->where('usuario_id', $userId)
+                   ->countAllResults() > 0;
+    }
+
+    // Método para limpiar horarios inválidos
+    public function cleanInvalidHorarios()
+    {
+        return $this->where('usuario_id', 0)->delete();
     }
 }

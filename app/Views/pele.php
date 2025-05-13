@@ -2,7 +2,6 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Diseño de Artículos</title>
     <script src="https://cdn.jsdelivr.net/npm/konva@8.0.3/konva.min.js"></script>
     <script src="https://kit.fontawesome.com/6f93a4b68f.js" crossorigin="anonymous"></script>

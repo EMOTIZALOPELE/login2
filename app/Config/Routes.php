@@ -24,8 +24,12 @@ $routes->get('/irainicio', 'HorariosController::index');
 $routes->post('/guardar_horarios', 'Home::guardar_horarios'); 
 
 // PÁGINA DE HORARIOS
-$routes->get('/horarios', 'Home::mostrarHorarios');  // Ruta para mostrar los horarios configurados
-$routes->get('mishorarios', 'MisHorarios::horariosmodifica');
+$routes->get('mishorarios', 'HorariosController::index');
+$routes->post('configurar/(:any)', 'HorariosController::configurarHorario/$1');
+$routes->get('addtarjeta', 'HorariosController::añadirtarjeta');
+$routes->post('savetarjeta', 'HorariosController::savehorario');
+$routes->post('borrar_tarjeta/(:num)', 'HorariosController::borrarTarjeta/$1');
+$routes->post('add_name/(:num)', 'HorariosController::addname/$1');
 
 // PÁGINA DE SERVO
 $routes->post('/servo/open', 'ServoController::openServo'); 
@@ -37,6 +41,9 @@ $routes->get('/iniciovaregister', 'Home::inicioregister');
 $routes->get('/tercon', 'HorariosController::terminoscondiciones');
 $routes->get('/pantalla', 'Home::iniciar2');
 
+
 // PLANOS VENTANAS
 $routes->get('/pele', 'Home::iradiseño');
-$routes->post('design/saveDesign', 'DesignController::saveDesign');
+$routes->get('diseno', 'DisenoController::crear');
+$routes->post('diseno/guardar', 'DisenoController::guardar'); // Guarda el diseño en la BD
+

@@ -1,16 +1,32 @@
 <!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inicio</title>
-    <style>
-        /* Reset de estilos básicos */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+    <html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://kit.fontawesome.com/6f93a4b68f.js" crossorigin="anonymous"></script>
+        <title>Inicio</title>
+
+        <!-- Agregar Bootstrap para el modal -->
+        
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+        <style>
+            /* Reset de estilos básicos */
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            header{
+                width: 100%;
+                height: 70px;
+                margin-top: 15px;
+                position: fixed;
+                z-index: 1;
+            }
 
         body {
             font-family: Arial, sans-serif;
@@ -45,9 +61,39 @@
         .menu ul li {
             margin: 20px 0;
         }
+            body {
+                background: url(<?= base_url("img/fondo4.jpg") ?>) no-repeat center center fixed;
+                background-size: cover;        
+                font-family: Arial, sans-serif;        
+                height: 100vh;
+            }
+            /* Menú lateral */
+            .container__menu{
+                max-width: 1800px;
+                height: 100%;
+                width: 100%;
+                margin: auto;
+                display: flex;
+                justify-content: space-between;
+                background:rgba(34, 31, 31, 0.51);
+                
+            }       
+            .menu{
+                display: flex;
+                align-items: center;
+            }
+            .menu ul{
+                display: flex;
+                justify-content: space-around; /* Espaciado igual entre los botones */           
+                gap: 1px; /* Espaciado fijo entre botones */
+            }
+                
+            .menu ul li{
+                list-style: none;
+                margin-left: 20px;
+            }
 
-        .menu ul li a {
-            color: white;
+            .menu ul li a{
             text-decoration: none;
             font-size: 18px;
             padding: 10px 20px;
@@ -104,125 +150,294 @@
 
         .no-data {
             font-size: 16px;
-            color: #7f8c8d;
+            color:rgb(255, 255, 255);
+            text-transform: uppercase;
             text-align: center;
-            margin-top: 20px;
+            cursor: pointer;
+            transition: all 0.5s ease-in-out;
+            padding: 15px 20px; /* Espaciado interno */
+            border-radius: 10px; /* Bordes redondeados */
+            display: inline-block; /* Para evitar problemas de tamaño */
         }
-
-        /* Media Queries para pantallas medianas (tablets) */
-        @media (max-width: 1024px) {
-            .menu {
-                width: 200px;
+            .menu ul li a:hover {
+                transform: translateY(-5px) scale(1.05); /* Levanta y agranda el botón */
+                background: rgba(255, 255, 255, 0.2); /* Fondo semitransparente */
+                box-shadow: -1px 1px 25px rgba(255, 255, 255, 0.4);
+                border-radius: 15px; /* Aumenta el redondeo para mayor suavidad */
             }
-
-            .content {
-                margin-left: 200px;
-                width: calc(100% - 200px);
+        
+            #selected{
+                background: #F6615D;
+                padding: 10px 40px;
+                border-radius: 50px;
             }
-
-            .table-container {
-                padding: 15px;
-            }
-
-            table th, table td {
-                font-size: 12px;
-            }
-        }
-
-        /* Media Queries para pantallas pequeñas (móviles) */
-        @media (max-width: 768px) {
-            .container {
-                flex-direction: column; /* Cambia a apilado */
-            }
-
-            .menu {
-                width: 100%;
-                height: auto;
-                position: relative; /* No fijo */
-                padding: 10px 0;
-            }
-
-            .menu ul {
+                
+            /* Contenido principal */
+            .container__card {
                 display: flex;
-                flex-direction: row; /* Menú horizontal */
-                justify-content: space-around;
+                flex-wrap: wrap; /* Permite que las tarjetas se acomoden solas */
+                gap: 5px; /* Espaciado entre tarjetas */
+                padding: 20px;
+                justify-content: space-around; /* Alinea las tarjetas a la izquierda */
             }
-
-            .menu ul li {
-                margin: 0; /* Sin márgenes verticales */
+            /* Todo esto es el style de las cards*/
+            .horarios-container {
+                display: flex;
+                gap: 15px;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+                }
+            .horario-card {
+                margin-top: 40px;
+                background:rgb(231, 230, 235);
+                padding: 25px;
+                border-radius: 10px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+                width: calc(33.33% - 10px);
+                max-width: 300px; /* No crece más de 300px */
+                text-align: center;
+                transition: all 0.5s ease-in-out;
+                }
+                .horario-card:hover {
+                transform: scale(1.05);
+                border-radius: 5px;
             }
-
-            .menu ul li a {
+            .horario-card h3 {
+                background: #1f53c5;
+                color: white;
+                font-size: 20px;
+                padding: 15px;
+                border-radius: 8px 8px 0 0;
+                margin: -25px -25px 15px -25px;
+                }
+            .horario-card p {
                 font-size: 16px;
-                padding: 10px;
-            }
+                color:rgb(8, 16, 34);
+                margin: 10px 1px 10px 10px;
+                text-align: left;
+                padding: 5px;
+                border-bottom: 1px solid #ddd;
 
-            .content {
-                margin-left: 0;
+                }
+            .config-button {
+                display: block;
+                margin-top: 15px;
+                padding: 10px 20px;
+                background: #1f53c5;
+                color: white;
+                text-align: center;
+                border-radius: 8px;
+                text-decoration: none;
+                font-weight: bold;
+                transition: all 0.3s ease-in-out;
+                }
+
+            .config-button:hover {
+                background: #163a94;
+                transform: scale(1.05);
+                }
+
+            .delete-button {
                 width: 100%;
-                margin-top: 10px; /* Separación del menú */
-            }
-
-            .table-container {
+                display: block;
+                margin-top: 20px;
                 padding: 10px;
+                background:rgb(197, 31, 31);
+                color: white;
+                text-align: center;
+                border-radius: 8px;
+                text-decoration: none;
+                font-weight: bold;
+                transition: all 0.3s ease-in-out;
+                }
+
+                .delete-button:hover {
+                    background-color:rgb(197, 31, 31);
+                    transform: scale(1.05);
+                }
+
+            .button-container {
+                display: flex;
+                gap: 10px;
             }
 
-            table th, table td {
-                font-size: 12px; /* Tamaño reducido */
+            .add-name-button,
+            .save-name-button {
+                display: block;
+                margin-top: 15px;
+                padding: 10px 20px;
+                background: #1f53c5;
+                color: white;
+                text-align: center;
+                border-radius: 8px;
+                text-decoration: none;
+                font-weight: bold;
             }
 
-            h2 {
-                font-size: 18px;
+            .add-name-button:hover,
+            .save-name-button:hover {
+                background-color: #0056b3;
             }
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <!-- Menú lateral (o superior en móviles) -->
-        <nav class="menu">
-            <ul>
-                <li><a href="configuracion">Configuración</a></li>
-                <li><a href="<?= base_url('pele') ?>">Diseña tu sistema</a></li>
-                <li><a href="<?= base_url('logout') ?>">Cerrar Sesión</a></li>
 
-            </ul>
-        </nav>
+            .name-form input {
+                padding: 8px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                margin-right: 10px;
+            }
+            
+           
+                /* Aca termina*/   
 
-        <!-- Contenido principal -->
-        <div class="content">
-            <div class="table-container">
-                <?php if (!empty($horarios)): ?>
-                    <h2>Horarios de Usuario: <?= session()->get('nombre'); ?></h2>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Ventana Apertura</th>
-                                <th>Ventana Cierre</th>
-                                <th>Cortina Apertura</th>
-                                <th>Cortina Cierre</th>
-                                <th>Postigón Apertura</th>
-                                <th>Postigón Cierre</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($horarios as $horario): ?>
-                                <tr>
-                                    <td><?= esc($horario['ventana_apertura']); ?></td>
-                                    <td><?= esc($horario['ventana_cierre']); ?></td>
-                                    <td><?= esc($horario['cortina_apertura']); ?></td>
-                                    <td><?= esc($horario['cortina_cierre']); ?></td>
-                                    <td><?= esc($horario['postigon_apertura']); ?></td>
-                                    <td><?= esc($horario['postigon_cierre']); ?></td>
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                <?php else: ?>
-                    <p class="no-data">No se encontraron horarios para este usuario.</p>
-                <?php endif; ?>
+            /*Haciendo la página Responsive*/
+
+            @media screen and (max-width:1200px){
+
+                header{
+                    padding: 40px;
+                }
+
+            }
+            
+
+            @media screen and (max-width: 550px){
+            
+                .menu nav{
+                    position: fixed;
+                    top: 0;
+                    right: -250px;
+                    background:rgba(10, 10, 12, 0.76);
+                    width: 250px;
+                    height: 100vh;
+                    padding: 40px;
+                    z-index: 1;
+                    transition: all 300ms;
+                }
+
+                .menu ul{
+                    flex-direction: column;
+                    margin-top: 40px;
+                }
+
+                .menu ul li{
+                    margin-top: 30px;
+                    margin-left: 0;
+                }
+
+                .menu ul li a{
+                    color: #bebebe;
+                }
+
+                #selected{
+                    background: none;
+                    padding: 1px;
+                    border-radius: none;
+                    color: #F6615D;
+                }
+
+                .menu nav img{
+                    display: block;
+                    width: 60px;
+                }
+
+                #back_menu{
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100vh;
+                    background: rgba(0,0,0,0.5);
+                    display: none;
+                }
+
+                .menu #btn_menu{
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    width: 50px;
+                    height: 50px;
+                    background: rgba(255, 255, 255, 0.1);
+                    font-size: 24px;
+                    border-radius: 50px;
+                    cursor: pointer;
+                    transition: all 300ms;
+                }
+
+
+                .menu #btn_menu:hover{
+                    background: rgba(255, 255, 255, 0.2);
+                }
+            }
+            @media screen and (max-width: 550px) {
+                .horarios-container {
+                    flex-direction: column; /* Acomoda las tarjetas en columna */
+                    align-items: center; /* Centra las tarjetas */
+                }
+            
+                .horario-card {
+                    width: 80%; /* Ocuparán el 80% del ancho en celulares */
+                    max-width: 300px; /* Se limita a 400px máximo */
+                }
+            }
+
+        </style>
+    </head>
+    <body>
+
+        <header>
+
+
+        <div class="container__menu">
+            <div class="logo">
+                <img src="images/logo-magtimus-v2.3-1.png" alt="">
+            </div>
+            <div class="menu">
+                <i class="fas fa-bars" id="btn_menu"></i>
+                <div id="back_menu"></div>
+                <nav id="nav">
+                    <img src="images/logo-magtimus-v2.3-1.png" alt="">
+                    <ul>
+                        <li><a id="selected">Inicio</a></li>
+                        <li><a href="<?= base_url('addtarjeta') ?>">Añadir Tarjeta</a></li>
+                        <li><a href="<?= base_url('pele') ?>">Diseño</a></li>
+                        <li><a href="<?= base_url('logout') ?>">salir</a></li>
+                    </ul>
+                </nav>
             </div>
         </div>
-    </div>
+    
+        </header>
+            <!-- Contenido principal -->
+            <div class="containter__card">
+                    <div class="horarios-container">
+                        <?php foreach ($horarios as $horario): ?>
+                            <div class="horario-card">
+                            <h3><?= isset($horario['nombre_tarjeta']) && !empty($horario['nombre_tarjeta']) 
+                                ? esc($horario['nombre_tarjeta']) 
+                                : 'Horario de ' . session()->get('nombre'); ?></h3>
+
+                                <p><strong>Ventana Apertura:</strong> <?= esc($horario['ventana_apertura']); ?></p>
+                                <p><strong>Ventana Cierre:</strong> <?= esc($horario['ventana_cierre']); ?></p>
+                                <p><strong>Cortina Apertura:</strong> <?= esc($horario['cortina_apertura']); ?></p>
+                                <p><strong>Cortina Cierre:</strong> <?= esc($horario['cortina_cierre']); ?></p>
+                                <p><strong>Postigón Apertura:</strong> <?= esc($horario['postigon_apertura']); ?></p>
+                                <p><strong>Postigón Cierre:</strong> <?= esc($horario['postigon_cierre']); ?></p>
+
+                                <div class="button-container">
+                                    <form action="<?= site_url('configurar/' . esc($horario['idhorario'])) ?>" method="POST">
+                                        <button type="submit" class="config-button">Configurar</button>
+                                    </form>
+                                </div>  
+                           
+                                <!-- Botón de eliminar tarjeta -->
+                                    <form action="<?= site_url('borrar_tarjeta/' . esc($horario['idhorario'])) ?>" method="POST" onsubmit="return confirm('¿Seguro que quieres eliminar esta tarjeta?');">
+                                        <button type="submit" class="delete-button">Eliminar</button>
+                                    </form>
+                            
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+            </div>
 </body>
 </html>

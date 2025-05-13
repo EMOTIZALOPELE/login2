@@ -129,7 +129,7 @@
             </div>
         <?php endif; ?>
 
-        <form id="designForm" method="post" action="<?= base_url('/save_design') ?>" onsubmit="return validarFormulario()">
+        <form id="designForm" method="post" action="<?= base_url('diseno/guardar') ?>" onsubmit="return validarFormulario()">
             <label for="nombre">Nombre del diseño:</label>
             <input type="text" id="nombre" name="nombre" required minlength="3" value="<?= old('nombre') ?>">
 

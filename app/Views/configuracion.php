@@ -194,7 +194,7 @@
     </div>
 
     <script>
-        const esp32_ip = 'http://192.168.2.145'; // Reemplaza con la IP de tu ESP32
+        const esp32_ip = 'http://192.168.2.50'; // Reemplaza con la IP de tu ESP32
 
         function controlServo(accion) {
             fetch(`${esp32_ip}/${accion}`)

@@ -28,39 +28,6 @@
                 z-index: 1;
             }
 
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            color: #333;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-
-        .container {
-            display: flex;
-            flex-direction: row; /* Por defecto en PCs */
-            width: 100%;
-            height: 100%;
-        }
-
-        /* Menú lateral */
-        .menu {
-            width: 250px; /* Ancho fijo para pantallas grandes */
-            background-color: #333;
-            padding: 20px 0;
-            position: fixed;
-            height: 100%;
-        }
-
-        .menu ul {
-            list-style-type: none;
-        }
-
-        .menu ul li {
-            margin: 20px 0;
-        }
             body {
                 background: url(<?= base_url("img/fondo4.jpg") ?>) no-repeat center center fixed;
                 background-size: cover;        
@@ -84,8 +51,8 @@
             }
             .menu ul{
                 display: flex;
-                justify-content: space-around; /* Espaciado igual entre los botones */           
-                gap: 1px; /* Espaciado fijo entre botones */
+            justify-content: space-around; /* Espaciado igual entre los botones */           
+            gap: 1px; /* Espaciado fijo entre botones */
             }
                 
             .menu ul li{
@@ -95,60 +62,6 @@
 
             .menu ul li a{
             text-decoration: none;
-            font-size: 18px;
-            padding: 10px 20px;
-            display: block;
-            transition: background-color 0.3s;
-        }
-
-        .menu ul li a:hover {
-            background-color: #575757;
-        }
-
-        /* Contenido principal */
-        .content {
-            margin-left: 250px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            width: calc(100% - 250px);
-        }
-
-        .table-container {
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            max-width: 800px;
-            width: 100%;
-            text-align: center;
-        }
-
-        h2 {
-            font-size: 24px;
-            margin-bottom: 20px;
-            color: #333;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        table th, table td {
-            padding: 8px;
-            text-align: center;
-            border: 1px solid black;
-            font-size: 14px;
-        }
-
-        table th {
-            background-color: #f4f4f4;
-            font-weight: bold;
-        }
-
-        .no-data {
             font-size: 16px;
             color:rgb(255, 255, 255);
             text-transform: uppercase;
@@ -160,10 +73,10 @@
             display: inline-block; /* Para evitar problemas de tamaño */
         }
             .menu ul li a:hover {
-                transform: translateY(-5px) scale(1.05); /* Levanta y agranda el botón */
-                background: rgba(255, 255, 255, 0.2); /* Fondo semitransparente */
-                box-shadow: -1px 1px 25px rgba(255, 255, 255, 0.4);
-                border-radius: 15px; /* Aumenta el redondeo para mayor suavidad */
+                    transform: translateY(-5px) scale(1.05); /* Levanta y agranda el botón */
+                    background: rgba(255, 255, 255, 0.2); /* Fondo semitransparente */
+                    box-shadow: -1px 1px 25px rgba(255, 255, 255, 0.4);
+                    border-radius: 15px; /* Aumenta el redondeo para mayor suavidad */
             }
         
             #selected{
@@ -171,7 +84,16 @@
                 padding: 10px 40px;
                 border-radius: 50px;
             }
-                
+            
+            
+            .menu nav img{
+                display: none;
+            }
+
+            .menu #btn_menu{
+                display: none;
+            }
+                    
             /* Contenido principal */
             .container__card {
                 display: flex;
@@ -402,6 +324,7 @@
                         <li><a href="<?= base_url('addtarjeta') ?>">Añadir Tarjeta</a></li>
                         <li><a href="<?= base_url('pele') ?>">Diseño</a></li>
                         <li><a href="<?= base_url('logout') ?>">salir</a></li>
+                        <li><a href="<?= base_url('/masivo') ?>">SERVO</a></li>
                     </ul>
                 </nav>
             </div>

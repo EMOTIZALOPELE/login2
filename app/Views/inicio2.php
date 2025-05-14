@@ -42,10 +42,6 @@
             transition: transform 0.3s ease;
         }
 
-        /* Quitamos el hover en el header completo, ya que el efecto de los botones es suficiente */
-        /* header:hover {
-            background: linear-gradient(to right, rgb(17, 17, 17) 0%, rgb(19, 63, 71) 50%, rgb(17, 17, 17) 100%);
-        } */
 
         .logo {
             font-size: 2.5rem;
@@ -80,8 +76,6 @@
         .login-btn:hover, .register-btn:hover {
             transform: translateY(-3px);
             box-shadow: 0 6px 20px rgba(31, 83, 197, 0.6);
-            /* Combina las transformaciones si quieres ambos efectos */
-            /* transform: translateY(-5px) scale(1.05); */
             box-shadow: -1px 1px 25px rgba(255, 255, 255, 0.4);
             border-radius: 15px;
         }

@@ -30,6 +30,7 @@ $routes->get('addtarjeta', 'HorariosController::añadirtarjeta');
 $routes->post('savetarjeta', 'HorariosController::savehorario');
 $routes->post('borrar_tarjeta/(:num)', 'HorariosController::borrarTarjeta/$1');
 $routes->post('add_name/(:num)', 'HorariosController::addname/$1');
+$routes->post('/actualizar_nombre_tarjeta', 'HorariosController::actualizarNombreTarjeta');
 
 // PÁGINA DE SERVO
 $routes->post('/servo/open', 'ServoController::openServo'); 
@@ -47,3 +48,6 @@ $routes->get('/pele', 'Home::iradiseño');
 $routes->get('diseno', 'DisenoController::crear');
 $routes->post('diseno/guardar', 'DisenoController::guardar'); // Guarda el diseño en la BD
 
+// PAYPAL
+$routes->post('/paypal/createOrder', 'PayPalController::createOrder');
+$routes->post('/paypal/captureOrder', 'PayPalController::captureOrder');

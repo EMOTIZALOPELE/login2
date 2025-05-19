@@ -4,9 +4,12 @@ namespace App\Controllers;
 
 use App\Models\HorariosModel;
 use App\Models\DisenoModel;
+use CodeIgniter\API\ResponseTrait; // Importar ResponseTrait para respuestas JSON
 
 class HorariosController extends BaseController
 {
+    use ResponseTrait; // Usar ResponseTrait
+
     protected $horariosModel;
     protected $disenoModel;
 
@@ -17,47 +20,41 @@ class HorariosController extends BaseController
     }
 
     public function index()
-{
-    $session = \Config\Services::session();
+    {
+        $session = \Config\Services::session();
 
-    if (!$session->has('id')) {
-        return redirect()->to(base_url('login'));
+        if (!$session->has('id')) {
+            return redirect()->to(base_url('login'));
+        }
+
+        $usuarioId = $session->get('id');
+
+        try {
+            // Obtener horarios del usuario actual
+            $horarios = $this->horariosModel
+                ->where('usuario_id', $usuarioId)
+                ->orderBy('idhorario', 'DESC')
+                ->findAll();
+
+            // Preparar datos para enviar a la vista
+            $data = [
+                'title' => 'Página de Inicio',
+                'horarios' => $horarios, // Pasa los horarios obtenidos DIRECTAMENTE a la vista
+                'usuario_id' => $usuarioId,
+                'nombre_usuario' => $session->get('nombre')
+            ];
+
+            return view('inicio', $data);
+        } catch (\Exception $e) {
+            log_message('error', 'Error al obtener horarios: ' . $e->getMessage());
+            return redirect()->to(base_url('login'))->with('error', 'Error al cargar los horarios');
+        }
     }
-
-    $usuarioId = $session->get('id');
-
-    try {
-        // Esta línea solo limpiaba la sesión ANTES de guardar, no es la causa principal del problema
-        // $session->remove('horarios');
-
-        // Obtener horarios del usuario actual
-        $horarios = $this->horariosModel
-            ->where('usuario_id', $usuarioId)
-            ->orderBy('idhorario', 'DESC')
-            ->findAll();
-
-        // *** ELIMINA LA SIGUIENTE LÍNEA ***
-        // $session->set('horarios', $horarios); // <-- ESTA ES LA LÍNEA SOSPECHOSA
-
-        // Preparar datos para enviar a la vista
-        $data = [
-            'title' => 'Página de Inicio',
-            'horarios' => $horarios, // Pasa los horarios obtenidos DIRECTAMENTE a la vista
-            'usuario_id' => $usuarioId,
-            'nombre_usuario' => $session->get('nombre')
-        ];
-
-        return view('inicio', $data);
-    } catch (\Exception $e) {
-        log_message('error', 'Error al obtener horarios: ' . $e->getMessage());
-        return redirect()->to(base_url('login'))->with('error', 'Error al cargar los horarios');
-    }
-}
 
     public function configuracion($id)
     {
         $session = \Config\Services::session();
-        
+
         if (!$session->has('id')) {
             return redirect()->to(base_url('login'));
         }
@@ -108,7 +105,7 @@ class HorariosController extends BaseController
     public function guardar()
     {
         $session = \Config\Services::session();
-        
+
         if (!$session->has('id')) {
             return redirect()->to(base_url('login'));
         }
@@ -129,7 +126,7 @@ class HorariosController extends BaseController
         $diseno['ventana'] = strtolower(trim($diseno['ventana']));
         $diseno['cortina'] = strtolower(trim($diseno['cortina']));
         $diseno['postigon'] = strtolower(trim($diseno['postigon']));
-        
+
         // Preparar los datos del horario
         $datos = [
             'diseno_id' => $disenoId,
@@ -140,11 +137,11 @@ class HorariosController extends BaseController
         if ($diseno['ventana'] === 'si') {
             $ventana_apertura = $this->request->getPost('ventana_apertura');
             $ventana_cierre = $this->request->getPost('ventana_cierre');
-            
+
             if (empty($ventana_apertura) || empty($ventana_cierre)) {
                 return redirect()->back()->withInput()->with('error', 'Debes especificar los horarios de la ventana');
             }
-            
+
             $datos['ventana_apertura'] = $ventana_apertura;
             $datos['ventana_cierre'] = $ventana_cierre;
         }
@@ -152,11 +149,11 @@ class HorariosController extends BaseController
         if ($diseno['cortina'] === 'si') {
             $cortina_apertura = $this->request->getPost('cortina_apertura');
             $cortina_cierre = $this->request->getPost('cortina_cierre');
-            
+
             if (empty($cortina_apertura) || empty($cortina_cierre)) {
                 return redirect()->back()->withInput()->with('error', 'Debes especificar los horarios de la cortina');
             }
-            
+
             $datos['cortina_apertura'] = $cortina_apertura;
             $datos['cortina_cierre'] = $cortina_cierre;
         }
@@ -164,11 +161,11 @@ class HorariosController extends BaseController
         if ($diseno['postigon'] === 'si') {
             $postigon_apertura = $this->request->getPost('postigon_apertura');
             $postigon_cierre = $this->request->getPost('postigon_cierre');
-            
+
             if (empty($postigon_apertura) || empty($postigon_cierre)) {
                 return redirect()->back()->withInput()->with('error', 'Debes especificar los horarios del postigo');
             }
-            
+
             $datos['postigon_apertura'] = $postigon_apertura;
             $datos['postigon_cierre'] = $postigon_cierre;
         }
@@ -176,7 +173,7 @@ class HorariosController extends BaseController
         try {
             // Verificar si ya existe un horario para este diseño
             $horarioExistente = $this->horariosModel->where('diseno_id', $disenoId)->first();
-            
+
             if ($horarioExistente) {
                 // Actualizar horario existente
                 $this->horariosModel->update($horarioExistente['idhorario'], $datos);
@@ -207,11 +204,12 @@ class HorariosController extends BaseController
         return $this->response->setJSON($estado);
     }
 
-  
+
     public function terminoscondiciones()
     {
         return view('Terminosycondiciones');
     }
+
     public function configurarHorario($id)
     {
         // Iniciar sesión
@@ -244,10 +242,13 @@ class HorariosController extends BaseController
         // Cargar la vista configurar.php con los datos
         return view('configuracion', $data);
     }
-    public function añadirtarjeta(){
+
+    public function añadirtarjeta()
+    {
         return view('addtarjeta');
-        
+
     }
+
     public function savehorario()
     {
         $session = \Config\Services::session();
@@ -302,7 +303,61 @@ class HorariosController extends BaseController
             return redirect()->to(base_url('irainicio'))->with('error', 'Error al eliminar el horario: ' . $e->getMessage());
         }
     }
-    
+
+    /**
+     * Actualiza el nombre de una tarjeta de horario existente.
+     * Recibe el ID del horario y el nuevo nombre por POST.
+     * Devuelve una respuesta JSON.
+     */
+    public function actualizarNombreTarjeta()
+    {
+        $session = \Config\Services::session();
+        $usuario_id = $session->get('id');
+
+        // Verificar autenticación
+        if (!$usuario_id) {
+            return $this->failUnauthorized('Debes iniciar sesión para realizar esta acción');
+        }
+
+        // Obtener datos del POST
+        $idhorario = $this->request->getPost('idhorario');
+        $nombre_tarjeta = $this->request->getPost('nombre_tarjeta');
+
+        // Validar datos
+        if (empty($idhorario) || $nombre_tarjeta === null) { // Permitimos nombre_tarjeta vacío si se quiere borrar
+             return $this->failValidationError('ID de horario o nombre no proporcionado.');
+        }
+
+        // Verificar si el horario existe y pertenece al usuario actual
+        $horario = $this->horariosModel
+            ->where('idhorario', $idhorario)
+            ->where('usuario_id', $usuario_id)
+            ->first();
+
+        if (!$horario) {
+            return $this->failForbidden('No tienes permiso para modificar este horario o no existe.');
+        }
+
+        try {
+            // Actualizar el nombre de la tarjeta
+            $this->horariosModel->update($idhorario, ['nombre_tarjeta' => $nombre_tarjeta]);
+
+            // Devolver respuesta de éxito en formato JSON
+            return $this->respondUpdated([
+                'success' => true,
+                'message' => 'Nombre de tarjeta actualizado correctamente.'
+            ]);
+
+        } catch (\Exception $e) {
+            // Registrar el error y devolver respuesta de error en formato JSON
+            log_message('error', 'Error al actualizar nombre de tarjeta (ID ' . $idhorario . '): ' . $e->getMessage());
+            return $this->failServerError('Error interno al actualizar el nombre.');
+        }
+    }
+
+    // La función addname() parece duplicada con actualizarNombreTarjeta() y no devuelve JSON.
+    // Considera eliminarla o refactorizar si tiene otro propósito.
+    /*
     public function addname($idhorario)
     {
         $session = \Config\Services::session();
@@ -335,5 +390,5 @@ class HorariosController extends BaseController
             return redirect()->to(base_url('irainicio'))->with('error', 'Error al actualizar el nombre: ' . $e->getMessage());
         }
     }
-} 
-
+    */
+}

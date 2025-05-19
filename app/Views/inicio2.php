@@ -75,8 +75,7 @@
 
         .login-btn:hover, .register-btn:hover {
             transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(31, 83, 197, 0.6);
-            box-shadow: -1px 1px 25px rgba(255, 255, 255, 0.4);
+            box-shadow: 0 6px 20px rgba(31, 83, 197, 0.6), -1px 1px 25px rgba(255, 255, 255, 0.4);
             border-radius: 15px;
         }
 
@@ -695,28 +694,69 @@
     </footer>
 
     <script>
-        // Configuración para el Plan Básico
+        // Base URL para las llamadas a tu controlador
+        const baseUrl = '<?= base_url() ?>'; // Asegúrate de que base_url() funcione en tu vista
+
+        // Función para manejar errores de AJAX o PayPal
+        function handleError(err) {
+            console.error(err);
+            alert('Ocurrió un error durante el proceso de pago. Por favor, inténtalo de nuevo.');
+            // Puedes añadir lógica para mostrar un mensaje de error más amigable en la UI
+        }
+
+        // Configuración para el Plan Básico (19.99)
         paypal.Buttons({
             createOrder: function(data, actions) {
-                return actions.order.create({
-                    purchase_units: [{
-                        amount: {
-                            value: '19.99'
-                        },
-                        description: 'Plan Básico VECOPO'
-                    }]
-                });
+                // Llama a tu controlador para crear la orden en el lado del servidor
+                return fetch(baseUrl + '/paypal/createOrder', { // Asegúrate de que esta ruta sea correcta
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        amount: '19.99' // Pasa el monto al controlador
+                    })
+                }).then(function(response) {
+                    if (!response.ok) {
+                        // Si la respuesta no es exitosa, lanza un error
+                        return response.json().then(errorData => {
+                            throw new Error('Error al crear la orden en el servidor: ' + (errorData.error || response.statusText));
+                        });
+                    }
+                    return response.json();
+                }).then(function(order) {
+                    // Devuelve el ID de la orden recibida del controlador
+                    return order.id;
+                }).catch(handleError); // Maneja errores de la llamada AJAX o del controlador
             },
             onApprove: function(data, actions) {
-                return actions.order.capture().then(function(details) {
-                    alert('¡Pago completado! Gracias ' + details.payer.name.given_name);
-                    window.location.href = '<?= base_url('/iniciovalogin') ?>'; // Redirige al inicio de sesión después del pago
-                });
+                // Llama a tu controlador para capturar la orden en el lado del servidor
+                return fetch(baseUrl + '/paypal/captureOrder', { // Asegúrate de que esta ruta sea correcta
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        orderID: data.orderID // Pasa el ID de la orden a tu controlador
+                    })
+                }).then(function(response) {
+                     if (!response.ok) {
+                         // Si la respuesta no es exitosa, lanza un error
+                         return response.json().then(errorData => {
+                             throw new Error('Error al capturar el pago en el servidor: ' + (errorData.error || response.statusText));
+                         });
+                     }
+                    return response.json();
+                }).then(function(details) {
+                    // Aquí manejas la respuesta de tu controlador después de capturar el pago
+                    // Tu controlador ya guarda en BD y envía email.
+                    // Puedes mostrar un mensaje de éxito al usuario.
+                    alert('¡Pago completado! Gracias ' + (details.payer ? details.payer.name.given_name : ''));
+                    // Redirige al usuario después de un pago exitoso
+                    window.location.href = baseUrl + '/iniciovalogin'; // Asegúrate de que esta ruta sea correcta
+                }).catch(handleError); // Maneja errores de la llamada AJAX o del controlador
             },
-            onError: function(err) {
-                alert('Ocurrió un error durante el proceso de pago');
-                console.error(err);
-            },
+            onError: handleError, // Usa la función genérica para errores de PayPal SDK
             style: {
                 layout: 'vertical',
                 color: 'gold',
@@ -725,28 +765,51 @@
             }
         }).render('#paypal-button-container-1');
 
-        // Configuración para el Plan Pro
+
+        // Configuración para el Plan Pro (49.99)
         paypal.Buttons({
             createOrder: function(data, actions) {
-                return actions.order.create({
-                    purchase_units: [{
-                        amount: {
-                            value: '49.99'
-                        },
-                        description: 'Plan Pro VECOPO'
-                    }]
-                });
+                return fetch(baseUrl + '/paypal/createOrder', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        amount: '49.99' // Pasa el monto correcto
+                    })
+                }).then(function(response) {
+                    if (!response.ok) {
+                         return response.json().then(errorData => {
+                             throw new Error('Error al crear la orden en el servidor: ' + (errorData.error || response.statusText));
+                         });
+                     }
+                    return response.json();
+                }).then(function(order) {
+                    return order.id;
+                }).catch(handleError);
             },
             onApprove: function(data, actions) {
-                return actions.order.capture().then(function(details) {
-                    alert('¡Pago completado! Gracias ' + details.payer.name.given_name);
-                    window.location.href = '<?= base_url('/iniciovalogin') ?>'; // Redirige al inicio de sesión después del pago
-                });
+                return fetch(baseUrl + '/paypal/captureOrder', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        orderID: data.orderID
+                    })
+                }).then(function(response) {
+                     if (!response.ok) {
+                         return response.json().then(errorData => {
+                             throw new Error('Error al capturar el pago en el servidor: ' + (errorData.error || response.statusText));
+                         });
+                     }
+                    return response.json();
+                }).then(function(details) {
+                    alert('¡Pago completado! Gracias ' + (details.payer ? details.payer.name.given_name : ''));
+                    window.location.href = baseUrl + '/iniciovalogin';
+                }).catch(handleError);
             },
-            onError: function(err) {
-                alert('Ocurrió un error durante el proceso de pago');
-                console.error(err);
-            },
+             onError: handleError,
             style: {
                 layout: 'vertical',
                 color: 'gold',
@@ -755,28 +818,50 @@
             }
         }).render('#paypal-button-container-2');
 
-        // Configuración para el Plan Enterprise
+        // Configuración para el Plan Enterprise (99.99)
         paypal.Buttons({
             createOrder: function(data, actions) {
-                return actions.order.create({
-                    purchase_units: [{
-                        amount: {
-                            value: '99.99'
-                        },
-                        description: 'Plan Enterprise VECOPO'
-                    }]
-                });
+                return fetch(baseUrl + '/paypal/createOrder', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        amount: '99.99' // Pasa el monto correcto
+                    })
+                }).then(function(response) {
+                     if (!response.ok) {
+                         return response.json().then(errorData => {
+                             throw new Error('Error al crear la orden en el servidor: ' + (errorData.error || response.statusText));
+                         });
+                     }
+                    return response.json();
+                }).then(function(order) {
+                    return order.id;
+                }).catch(handleError);
             },
             onApprove: function(data, actions) {
-                return actions.order.capture().then(function(details) {
-                    alert('¡Pago completado! Gracias ' + details.payer.name.given_name);
-                    window.location.href = '<?= base_url('/iniciovalogin') ?>'; // Redirige al inicio de sesión después del pago
-                });
+                return fetch(baseUrl + '/paypal/captureOrder', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        orderID: data.orderID
+                    })
+                }).then(function(response) {
+                     if (!response.ok) {
+                         return response.json().then(errorData => {
+                             throw new Error('Error al capturar el pago en el servidor: ' + (errorData.error || response.statusText));
+                         });
+                     }
+                    return response.json();
+                }).then(function(details) {
+                    alert('¡Pago completado! Gracias ' + (details.payer ? details.payer.name.given_name : ''));
+                    window.location.href = baseUrl + '/iniciovalogin';
+                }).catch(handleError);
             },
-            onError: function(err) {
-                alert('Ocurrió un error durante el proceso de pago');
-                console.error(err);
-            },
+             onError: handleError,
             style: {
                 layout: 'vertical',
                 color: 'gold',

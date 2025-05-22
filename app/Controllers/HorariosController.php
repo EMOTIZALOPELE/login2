@@ -355,40 +355,45 @@ class HorariosController extends BaseController
         }
     }
 
-    // La función addname() parece duplicada con actualizarNombreTarjeta() y no devuelve JSON.
-    // Considera eliminarla o refactorizar si tiene otro propósito.
-    /*
-    public function addname($idhorario)
+    public function verificarCodigoDispositivo()
     {
-        $session = \Config\Services::session();
-        $usuario_id = $session->get('id');
+        $codigo = $this->request->getPost('codigo');
+        $dispositivoModel = new \App\Models\DispositivoModel();
 
-        if (!$usuario_id) {
-            return redirect()->to(base_url('login'))->with('error', 'Debes iniciar sesión para realizar esta acción');
-        }
+        $dispositivo = $dispositivoModel->where('codigo', $codigo)->where('esta_usado', 0)->first();
 
-        $nombre_tarjeta = $this->request->getPost('nombre_tarjeta');
-
-        if (empty($nombre_tarjeta)) {
-            return redirect()->to(base_url('irainicio'))->with('error', 'El nombre no puede estar vacío');
-        }
-
-        // Verificar si el horario existe y pertenece al usuario actual
-        $horario = $this->horariosModel
-            ->where('idhorario', $idhorario)
-            ->where('usuario_id', $usuario_id)
-            ->first();
-
-        if (!$horario) {
-            return redirect()->to(base_url('irainicio'))->with('error', 'No tienes permiso para modificar este horario');
-        }
-
-        try {
-            $this->horariosModel->update($idhorario, ['nombre_tarjeta' => $nombre_tarjeta]);
-            return redirect()->to(base_url('irainicio'))->with('mensaje', 'Nombre actualizado correctamente');
-        } catch (\Exception $e) {
-            return redirect()->to(base_url('irainicio'))->with('error', 'Error al actualizar el nombre: ' . $e->getMessage());
+        if ($dispositivo) {
+            // Código válido y disponible
+            return redirect()->to('/addtarjeta')->with('dispositivo_id', $dispositivo['id']);
+        } else {
+            return redirect()->back()->with('error', 'El código no es válido o ya está en uso.');
         }
     }
-    */
+
+    public function verificarCodigo()
+    {
+        if ($this->request->isAJAX()) {
+            $codigo = $this->request->getJSON()->codigo;
+            $dispositivoModel = new \App\Models\DispositivoModel();
+            $dispositivo = $dispositivoModel->where('codigo', $codigo)->where('esta_usado', 0)->first();
+
+            if ($dispositivo) {
+                return $this->response->setJSON(['success' => true, 'dispositivo_id' => $dispositivo['id']]);
+            } else {
+                return $this->response->setJSON(['success' => false]);
+            }
+        }
+    }
+
+    public function guardarTarjeta()
+    {
+        $dispositivoId = session()->get('dispositivo_id'); // o como lo estés pasando
+        $dispositivoModel = new \App\Models\DispositivoModel();
+
+        // Marcamos el dispositivo como usado
+        $dispositivoModel->update($dispositivoId, ['esta_usado' => 1]);
+
+        // Guardás la tarjeta asociada a ese dispositivo...
+    }
+
 }

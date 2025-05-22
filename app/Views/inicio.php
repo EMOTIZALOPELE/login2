@@ -31,20 +31,13 @@
         }
 
         body {
-            background: url(<?= base_url("img/fondo4.jpg") ?>) no-repeat center center fixed;
+            background-color:rgb(20, 27, 34);
             background-size: cover;
             font-family: Arial, sans-serif;
             min-height: 100vh; /* Usamos min-height para que el contenido determine la altura */
             padding-top: 85px; /* Añadimos padding superior para el header fijo */
             overflow-x: hidden; /* Evita scroll horizontal */
         }
-
-        /* Eliminamos estilos conflictivos del body que centran todo */
-        /* display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh; */
-
 
         /* Menú lateral */
         .container__menu{
@@ -306,10 +299,10 @@
                     <img src="" alt="">
                     <ul>
                         <li><a href="<?= base_url('/inicio') ?>" id="selected">Inicio</a></li>
-                        <li><a href="<?= base_url('addtarjeta') ?>">Añadir Tarjeta</a></li>
+                        <li><a href="#" onclick="abrirModal()">Añadir Tarjeta</a></li>
                         <li><a href="<?= base_url('pele') ?>">Diseño</a></li>
                         <li><a href="<?= base_url('logout') ?>">salir</a></li>
-                         <li><a href="<?= base_url('/masivo') ?>">SERVO</a></li>
+                        <li><a href="<?= base_url('/masivo') ?>">SERVO</a></li>
                     </ul>
                 </nav>
             </div>
@@ -395,7 +388,55 @@
         </div>
     </div>
 
+    <!-- Modal CON CODIGO -->
+    <div id="codigoModal" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.5); justify-content:center; align-items:center;">
+        <div style="background:white; padding:20px; border-radius:8px; max-width:400px; width:100%;">
+            <h3>Ingrese el código del dispositivo</h3>
+            <form id="codigoForm">
+                <input type="text" id="codigoInput" name="codigo" placeholder="Código del dispositivo" required style="width:100%; padding:8px; margin:10px 0;">
+                <div id="codigoError" style="color:red; display:none;">Código inválido</div>
+                <button type="submit" style="padding:10px 20px;">Verificar</button>
+                <button type="button" onclick="cerrarModal()" style="padding:10px 20px; background-color:#ccc;">Cancelar</button>
+            </form>
+        </div>
+    </div>
 
+    <script> //este script ejecuta el modal de ingreso de codigo
+    function abrirModal() {
+        document.getElementById('codigoModal').style.display = 'flex';
+    }
+
+    function cerrarModal() {
+        document.getElementById('codigoModal').style.display = 'none';
+        document.getElementById('codigoError').style.display = 'none';
+        document.getElementById('codigoInput').value = '';
+    }
+
+    // Interceptar envío del formulario
+    document.getElementById('codigoForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const codigo = document.getElementById('codigoInput').value;
+
+        fetch('<?= base_url('verificar-codigo') ?>', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest', // para diferenciar ajax
+            },
+            body: JSON.stringify({ codigo: codigo })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.href = '<?= base_url('addtarjeta') ?>/' + data.dispositivo_id;
+            } else {
+                document.getElementById('codigoError').style.display = 'block';
+            }
+        });
+    });
+    </script>
+
+    
     <script>
         // Script para el menú desplegable en móvil
         document.getElementById('btn_menu').addEventListener('click', function() {

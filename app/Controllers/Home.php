@@ -236,5 +236,6 @@ class Home extends Controller
 
     // Pasar los datos a la vista
     return view('horarios_view', ['horarios' => $horarios]);
-}
+    }
+
 }

@@ -22,6 +22,12 @@ $routes->post('/reset-password', 'Home::resetPassword');
 $routes->get('/configuracion', 'Home::iraconfiguracion'); 
 $routes->get('/irainicio', 'HorariosController::index'); 
 $routes->post('/guardar_horarios', 'Home::guardar_horarios'); 
+$routes->post('verificar-codigo', 'HorariosController::verificarCodigo');
+$routes->get('addtarjeta/(:num)', 'HorariosController::añadirtarjeta/$1');
+$routes->post('verificar-codigo', 'HorariosController::verificarCodigoDispositivo');
+$routes->post('verificar-codigo-ajax', 'HorariosController::verificarCodigo'); // si usás AJAX
+$routes->get('crear-tarjeta', 'HorariosController::formularioCrearTarjeta');
+
 
 // PÁGINA DE HORARIOS
 $routes->get('mishorarios', 'HorariosController::index');

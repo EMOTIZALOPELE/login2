@@ -386,14 +386,41 @@ class HorariosController extends BaseController
     }
 
     public function guardarTarjeta()
-    {
-        $dispositivoId = session()->get('dispositivo_id'); // o como lo estés pasando
-        $dispositivoModel = new \App\Models\DispositivoModel();
+{
+    $session = \Config\Services::session();
+    $usuario_id = $session->get('id');
 
-        // Marcamos el dispositivo como usado
-        $dispositivoModel->update($dispositivoId, ['esta_usado' => 1]);
-
-        // Guardás la tarjeta asociada a ese dispositivo...
+    // Verifica si el ID de usuario está en la sesión
+    if (!$usuario_id) {
+        return redirect()->to(base_url('login'))->with('error', 'Debes iniciar sesión para realizar esta acción');
     }
+
+    $nombre_tarjeta = $this->request->getPost('nombre_tarjeta');
+
+    // Validar que se haya proporcionado un nombre de tarjeta
+    if (empty($nombre_tarjeta)) {
+        return redirect()->back()->withInput()->with('error', 'Debes proporcionar un nombre para la tarjeta');
+    }
+
+    $dispositivoModel = new \App\Models\DispositivoModel();
+
+    // Preparar los datos para la nueva tarjeta
+    $data = [
+        'Nombre_tarjeta' => $nombre_tarjeta,
+        'usuario_id' => $usuario_id,
+        'esta_usado' => 1, // Marcar como usado
+        'created_at' => date('Y-m-d H:i:s'),
+        'updated_at' => date('Y-m-d H:i:s')
+    ];
+
+    try {
+        $dispositivoModel->insert($data);
+        return redirect()->to(base_url('irainicio'))->with('mensaje', 'Tarjeta creada correctamente');
+    } catch (\Exception $e) {
+        log_message('error', 'Error al crear la tarjeta: ' . $e->getMessage());
+        return redirect()->back()->withInput()->with('error', 'Error al crear la tarjeta: ' . $e->getMessage());
+    }
+}
+
 
 }

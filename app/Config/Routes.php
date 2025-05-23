@@ -8,7 +8,7 @@ use CodeIgniter\Router\RouteCollection;
 
 // LOGIN Y REGISTER
 $routes->get('/', 'Home::iniciar2'); 
-$routes->post('/inicioo', 'Home::login'); 
+$routes->post('login', 'Home::login');
 $routes->get('/logout', 'Home::logout');  
 $routes->post('/register/store', 'RegisterController::store'); 
 

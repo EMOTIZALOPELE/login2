@@ -4,304 +4,393 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://kit.fontawesome.com/6f93a4b68f.js" crossorigin="anonymous"></script>
-    <title>Inicio</title>
-
+    <title>VECOPO - Control Inteligente</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
-        /* Reset de estilos básicos */
+        :root {
+            --primary-color: #00f2fe;
+            --secondary-color: #4facfe;
+            --dark-bg: #0a192f;
+            --card-bg: rgba(16, 32, 61, 0.8);
+            --text-primary: #ffffff;
+            --text-secondary: #8892b0;
+            --accent-color: #64ffda;
+            --danger-color: #ff4d4d;
+            --success-color: #00ff9d;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-        }
-
-        header{
-            width: 100%;
-            height: 70px;
-            position: fixed;
-            top: 0; /* Aseguramos que el header fijo esté arriba */
-            left: 0;
-            z-index: 1000; /* Z-index alto para que esté por encima de todo */
-            background:rgba(34, 31, 31, 0.8); /* Fondo semi-transparente */
-            backdrop-filter: blur(5px); /* Efecto de desenfoque */
-            box-shadow: 0 2px 5px rgba(0,0,0,0.5); /* Sombra */
+            font-family: 'Roboto', sans-serif;
         }
 
         body {
-            background-color:rgb(20, 27, 34);
-            background-size: cover;
-            font-family: Arial, sans-serif;
-            min-height: 100vh; /* Usamos min-height para que el contenido determine la altura */
-            padding-top: 85px; /* Añadimos padding superior para el header fijo */
-            overflow-x: hidden; /* Evita scroll horizontal */
+            background: var(--dark-bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(0, 242, 254, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(79, 172, 254, 0.05) 0%, transparent 20%);
         }
 
-        /* Menú lateral */
-        .container__menu{
-            max-width: 1800px;
-            height: 100%;
+        /* Header Moderno */
+        header {
+            background: rgba(10, 25, 47, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(100, 255, 218, 0.1);
+            position: fixed;
             width: 100%;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .container__menu {
+            max-width: 1800px;
             margin: auto;
+            padding: 1rem 2rem;
             display: flex;
             justify-content: space-between;
-            /* background:rgba(34, 31, 31, 0.51); /* Ya definido en header */
-        }
-        .menu{
-            display: flex;
             align-items: center;
         }
-        .menu ul{
+
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(0, 242, 254, 0.3);
+        }
+
+        .menu ul {
             display: flex;
-            justify-content: space-around; /* Espaciado igual entre los botones */
-            gap: 1px; /* Espaciado fijo entre botones */
-        }
-
-        .menu ul li{
+            gap: 1.5rem;
             list-style: none;
-            margin-left: 20px;
         }
 
-        .menu ul li a{
+        .menu ul li a {
+            color: var(--text-primary);
             text-decoration: none;
-            font-size: 16px;
-            color:rgb(255, 255, 255);
-            text-transform: uppercase;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.5s ease-in-out;
-            padding: 15px 20px; /* Espaciado interno */
-            border-radius: 10px; /* Bordes redondeados */
-            display: inline-block; /* Para evitar problemas de tamaño */
-        }
-        .menu ul li a:hover {
-            transform: translateY(-5px) scale(1.05); /* Levanta y agranda el botón */
-            background: rgba(255, 255, 255, 0.2); /* Fondo semitransparente */
-            box-shadow: -1px 1px 25px rgba(255, 255, 255, 0.4);
-            border-radius: 15px; /* Aumenta el redondeo para mayor suavidad */
-        }
-
-        #selected{
-            background: #F6615D;
-            padding: 10px 40px;
+            font-size: 1rem;
+            padding: 0.8rem 1.5rem;
             border-radius: 50px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            background: transparent;
+            border: 1px solid rgba(100, 255, 218, 0.2);
         }
 
-        /* Contenido principal */
+        .menu ul li a:hover {
+            background: rgba(100, 255, 218, 0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(100, 255, 218, 0.2);
+        }
+
+        #selected {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            border: none;
+            color: var(--dark-bg);
+            font-weight: 500;
+        }
+
+        /* Contenedor Principal */
         .container__card {
-             /* Eliminamos estilos conflictivos que centran el contenedor */
-             /* display: flex;
-             flex-wrap: wrap;
-             justify-content: space-around;
-             gap: 5px;
-             padding: 20px; */
-             width: 100%; /* Ocupa todo el ancho */
-             padding: 20px; /* Padding interno */
-             margin-top: 5px; /* Espacio para el header fijo */
+            padding: 2rem;
+            margin-top: 5rem;
         }
 
         .horarios-container {
-            display: flex;
-            flex-wrap: wrap; /* Permite que las tarjetas se acomoden solas */
-            gap: 20px; /* Aumentamos el gap para mejor separación */
-            justify-content: center; /* Centra las tarjetas horizontalmente */
-             align-items: flex-start; /* Alinea las tarjetas en la parte superior */
-             height: auto; /* La altura se ajusta al contenido */
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            padding: 1rem;
         }
 
         .horario-card {
-            /* margin-top: 40px; /* Eliminamos el margen superior, ya usamos gap */
-            background:rgb(231, 230, 235);
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            width: calc(33.33% - 20px); /* Ajustamos el ancho considerando el nuevo gap */
-            max-width: 300px; /* No crece más de 300px */
-            text-align: center;
-            transition: all 0.5s ease-in-out;
-        }
-        .horario-card:hover {
-            transform: scale(1.03); /* Reducimos un poco la escala al pasar el mouse */
-            border-radius: 8px; /* Mantenemos el borde redondeado más sutil */
-        }
-        .horario-card h3 {
-            background: #1f53c5;
-            color: white;
-            font-size: 20px;
-            padding: 15px;
-            border-radius: 8px 8px 0 0;
-            margin: -25px -25px 15px -25px;
-        }
-        .horario-card p {
-            font-size: 16px;
-            color:rgb(8, 16, 34);
-            margin: 10px 1px 10px 10px;
-            text-align: left;
-            padding: 5px;
-            border-bottom: 1px solid #ddd;
-        }
-        .config-button{ /* Aplicamos estilos similares a ambos botones */
-            display: flex;
-            gap: 10px;
-            justify-content: center; /* Centra el texto dentro del botón */
-            margin-top: 15px;
-            padding: 10px 20px;
-            background: #1f53c5;
-            color: white;
-            text-align: center;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: bold;
-            transition: all 0.3s ease-in-out;
-            border: none; /* Quitamos el borde por defecto del botón */
-            cursor: pointer; /* Indicamos que es clickeable */
-            flex-grow: 1; /* Permite que los botones crezcan para llenar el espacio */
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(100, 255, 218, 0.1);
+            backdrop-filter: blur(10px);
         }
 
-        .config-button:hover, .change-name-button:hover {
-            background: #163a94;
-            transform: scale(1.05);
+        .horario-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(100, 255, 218, 0.1), transparent);
+            transform: translateX(-100%);
+            transition: 0.6s;
+        }
+
+        .horario-card:hover::before {
+            transform: translateX(100%);
+        }
+
+        .horario-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(100, 255, 218, 0.2);
+        }
+
+        .horario-card h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(100, 255, 218, 0.2);
+        }
+
+        .horario-card p {
+            color: var(--text-secondary);
+            margin: 1rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .horario-card p strong {
+            color: var(--text-primary);
+            min-width: 150px;
+        }
+
+        /* Botones */
+        .button-container {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .config-button {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: var(--dark-bg);
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .config-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(100, 255, 218, 0.3);
         }
 
         .delete-button {
-            width: 100%;
-            display: block;
-            margin-top: 20px;
-            padding: 10px;
-            background:rgb(197, 31, 31);
+            background: var(--danger-color);
             color: white;
-            text-align: center;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: bold;
-            transition: all 0.3s ease-in-out;
-            border: none; /* Quitamos el borde por defecto del botón */
-            cursor: pointer; /* Indicamos que es clickeable */
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 1rem;
         }
 
         .delete-button:hover {
-            background-color:rgb(197, 31, 31);
-            transform: scale(1.05);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(255, 77, 77, 0.3);
         }
 
-        .button-container {
-            display: flex; /* Usa flexbox para alinear los botones en fila */
-            gap: 10px; /* Espacio entre los botones */
-             justify-content: space-between; /* Espacia los botones */
-        }
-
-        .add-name-button,
-        .save-name-button {
-            display: block;
-            margin-top: 15px;
-            padding: 10px 20px;
-            background: #1f53c5;
-            color: white;
-            text-align: center;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        .add-name-button:hover,
-        .save-name-button:hover {
-            background-color: #0056b3;
-        }
-
-        .name-form input {
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            margin-right: 10px;
-        }
-
-        /* Estilos para los modales (Bootstrap ya maneja la mayoría) */
+        /* Modales */
         .modal-content {
-            background-color: #fefefe; /* Fondo blanco para el modal */
-            color: #333; /* Texto oscuro */
+            background: var(--card-bg);
+            border: 1px solid rgba(100, 255, 218, 0.2);
+            border-radius: 20px;
+            color: var(--text-primary);
         }
+
         .modal-header {
-            border-bottom: 1px solid #dee2e6;
+            border-bottom: 1px solid rgba(100, 255, 218, 0.2);
+            padding: 1.5rem;
         }
+
+        .modal-title {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--primary-color);
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
         .modal-footer {
-            border-top: 1px solid #dee2e6;
-        }
-        .modal-body input[type="text"] {
-            width: 100%; /* Input ocupa todo el ancho */
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+            border-top: 1px solid rgba(100, 255, 218, 0.2);
+            padding: 1.5rem;
         }
 
-        /* Estilos específicos para el modal de éxito */
-        #successModal .modal-content {
+        .form-control {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(100, 255, 218, 0.2);
+            color: var(--text-primary);
             border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,.5);
+            padding: 0.8rem 1rem;
         }
-         #successModal .modal-header {
-             background-color: #28a745; /* Verde para éxito */
-             color: white;
-             border-top-left-radius: 10px;
-             border-top-right-radius: 10px;
-             padding: 15px;
-         }
-         #successModal .modal-header .close {
-             color: white;
-         }
-         #successModal .modal-body {
-             padding: 20px;
-             text-align: center; /* Centra el texto del mensaje */
-             font-size: 1.1rem;
-         }
-         #successModal .modal-footer {
-             justify-content: center; /* Centra el botón en el footer */
-             padding: 10px;
-         }
-         #successModal .modal-footer .btn {
-             padding: 8px 20px;
-             border-radius: 5px;
-         }
 
-        /*Método Responsive*/
-        @media screen and (max-width:1200px){
-            header{
-                padding: 10px 20px; /* Ajuste de padding */
+        .form-control:focus {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--primary-color);
+            color: var(--text-primary);
+            box-shadow: 0 0 0 0.2rem rgba(0, 242, 254, 0.25);
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            border: none;
+            border-radius: 50px;
+            padding: 0.8rem 2rem;
+            font-weight: 500;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(100, 255, 218, 0.2);
+            border-radius: 50px;
+            padding: 0.8rem 2rem;
+            font-weight: 500;
+        }
+
+        /* Modal de Código */
+        #codigoModal {
+            background: rgba(10, 25, 47, 0.95);
+            backdrop-filter: blur(10px);
+        }
+
+        #codigoModal > div {
+            background: var(--card-bg);
+            border: 1px solid rgba(100, 255, 218, 0.2);
+            border-radius: 20px;
+            padding: 2rem;
+        }
+
+        #codigoModal h3 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+        }
+
+        #codigoModal input {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(100, 255, 218, 0.2);
+            color: var(--text-primary);
+            border-radius: 10px;
+            padding: 1rem;
+            width: 100%;
+            margin: 1rem 0;
+        }
+
+        #codigoModal button {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: var(--dark-bg);
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0.5rem;
+        }
+
+        #codigoModal button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(100, 255, 218, 0.3);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container__menu {
+                padding: 1rem;
             }
-             .horario-card {
-                 width: calc(50% - 20px); /* Dos tarjetas por fila */
-             }
+
+            .menu ul {
+                gap: 0.5rem;
+            }
+
+            .menu ul li a {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            .horarios-container {
+                grid-template-columns: 1fr;
+            }
+
+            .button-container {
+                flex-direction: column;
+            }
+        }
+
+        /* Animaciones */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .horario-card {
-                 width: calc(50% - 20px); /* Dos tarjetas por fila */
-             }
+            animation: fadeIn 0.5s ease-out forwards;
+        }
 
-        /* Animaciones (si las necesitas) */
-        /* @keyframes fadeIn { ... } */
-        /* @keyframes slideIn { ... } */
+        /* Efecto de partículas en el fondo */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
 
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            animation: float 20s infinite linear;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) translateX(0); opacity: 0; }
+            50% { opacity: 0.5; }
+            100% { transform: translateY(-100vh) translateX(100px); opacity: 0; }
+        }
     </style>
 </head>
 <body>
+    <div class="particles" id="particles"></div>
 
     <header>
         <div class="container__menu">
-            <div class="logo">
-                <img src="" alt="">
-            </div>
+            <div class="logo">VECOPO</div>
             <div class="menu">
-                <i class="fas fa-bars" id="btn_menu"></i>
-                <div id="back_menu"></div>
                 <nav id="nav">
-                    <img src="" alt="">
                     <ul>
                         <li><a href="<?= base_url('/inicio') ?>" id="selected">Inicio</a></li>
                         <li><a href="#" onclick="abrirModal()">Añadir Tarjeta</a></li>
                         <li><a href="<?= base_url('pele') ?>">Diseño</a></li>
-                        <li><a href="<?= base_url('logout') ?>">salir</a></li>
+                        <li><a href="<?= base_url('logout') ?>">Salir</a></li>
                         <li><a href="<?= base_url('/masivo') ?>">SERVO</a></li>
                     </ul>
                 </nav>
@@ -326,30 +415,30 @@
                     <p><strong>Postigón Apertura:</strong> <?= esc($horario['postigon_apertura']); ?></p>
                     <p><strong>Postigón Cierre:</strong> <?= esc($horario['postigon_cierre']); ?></p>
 
-                    <form action="<?= site_url('configurar/' . esc($horario['idhorario'])) ?>" method="POST" style="display: inline-block; flex-grow: 1;">
-                            <button type="submit" class="config-button">Configurar</button>
-                    </form>
-                    
                     <div class="button-container">
+                        <form action="<?= site_url('configurar/' . esc($horario['idhorario'])) ?>" method="POST" style="flex: 1;">
+                            <button type="submit" class="config-button">Configurar</button>
+                        </form>
+                        
                         <button type="button" class="config-button"
-                                 data-toggle="modal" data-target="#changeNameModal"
-                                 data-idhorario="<?= esc($horario['idhorario']); ?>"
-                                 data-current-name="<?= isset($horario['nombre_tarjeta']) && !empty($horario['nombre_tarjeta'])
-                                     ? esc($horario['nombre_tarjeta'])
-                                     : 'Horario de ' . session()->get('nombre'); ?>">
-                             Cambiar Nombre
-                         </button>
+                                data-toggle="modal" data-target="#changeNameModal"
+                                data-idhorario="<?= esc($horario['idhorario']); ?>"
+                                data-current-name="<?= isset($horario['nombre_tarjeta']) && !empty($horario['nombre_tarjeta'])
+                                    ? esc($horario['nombre_tarjeta'])
+                                    : 'Horario de ' . session()->get('nombre'); ?>">
+                            Cambiar Nombre
+                        </button>
                     </div>
                     
                     <form action="<?= site_url('borrar_tarjeta/' . esc($horario['idhorario'])) ?>" method="POST" onsubmit="return confirm('¿Seguro que quieres eliminar esta tarjeta?');">
                         <button type="submit" class="delete-button">Eliminar</button>
                     </form>
-
                 </div>
             <?php endforeach; ?>
         </div>
     </div>
 
+    <!-- Modales existentes con el nuevo estilo -->
     <div class="modal fade" id="changeNameModal" tabindex="-1" role="dialog" aria-labelledby="changeNameModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -361,7 +450,8 @@
                 </div>
                 <div class="modal-body">
                     <input type="text" id="newCardName" class="form-control" placeholder="Nuevo nombre de la tarjeta">
-                    <input type="hidden" id="cardIdToChange"> </div>
+                    <input type="hidden" id="cardIdToChange">
+                </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                     <button type="button" class="btn btn-primary" id="saveNewNameBtn">Guardar Nombre</button>
@@ -379,8 +469,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body" id="successModalBody">
-                    </div>
+                <div class="modal-body" id="successModalBody"></div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-success" data-dismiss="modal">Aceptar</button>
                 </div>
@@ -388,134 +477,118 @@
         </div>
     </div>
 
-    <!-- Modal CON CODIGO -->
-    <div id="codigoModal" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.5); justify-content:center; align-items:center;">
-        <div style="background:white; padding:20px; border-radius:8px; max-width:400px; width:100%;">
+    <div id="codigoModal" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(10, 25, 47, 0.95); justify-content:center; align-items:center;">
+        <div>
             <h3>Ingrese el código del dispositivo</h3>
             <form id="codigoForm">
-                <input type="text" id="codigoInput" name="codigo" placeholder="Código del dispositivo" required style="width:100%; padding:8px; margin:10px 0;">
-                <div id="codigoError" style="color:red; display:none;">Código inválido</div>
-                <button type="submit" style="padding:10px 20px;">Verificar</button>
-                <button type="button" onclick="cerrarModal()" style="padding:10px 20px; background-color:#ccc;">Cancelar</button>
+                <input type="text" id="codigoInput" name="codigo" placeholder="Código del dispositivo" required>
+                <div id="codigoError" style="color:var(--danger-color); display:none;">Código inválido</div>
+                <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 1rem;">
+                    <button type="submit">Verificar</button>
+                    <button type="button" onclick="cerrarModal()" style="background: rgba(255, 255, 255, 0.1);">Cancelar</button>
+                </div>
             </form>
         </div>
     </div>
 
-    <script> //este script ejecuta el modal de ingreso de codigo
-    function abrirModal() {
-        document.getElementById('codigoModal').style.display = 'flex';
-    }
-
-    function cerrarModal() {
-        document.getElementById('codigoModal').style.display = 'none';
-        document.getElementById('codigoError').style.display = 'none';
-        document.getElementById('codigoInput').value = '';
-    }
-
-    // Interceptar envío del formulario
-    document.getElementById('codigoForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const codigo = document.getElementById('codigoInput').value;
-
-        fetch('<?= base_url('verificar-codigo') ?>', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest', // para diferenciar ajax
-            },
-            body: JSON.stringify({ codigo: codigo })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                window.location.href = '<?= base_url('addtarjeta') ?>/' + data.dispositivo_id;
-            } else {
-                document.getElementById('codigoError').style.display = 'block';
-            }
-        });
-    });
-    </script>
-
-    
     <script>
-        // Script para el menú desplegable en móvil
-        document.getElementById('btn_menu').addEventListener('click', function() {
-            document.getElementById('nav').classList.toggle('show');
-            document.getElementById('back_menu').style.display = 'block';
-        });
+        // Script para crear partículas en el fondo
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + 'vw';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
 
-        document.getElementById('back_menu').addEventListener('click', function() {
-            document.getElementById('nav').classList.remove('show');
-            document.getElementById('back_menu').style.display = 'none';
+        // Inicializar partículas
+        createParticles();
+
+        // Scripts existentes
+        function abrirModal() {
+            document.getElementById('codigoModal').style.display = 'flex';
+        }
+
+        function cerrarModal() {
+            document.getElementById('codigoModal').style.display = 'none';
+            document.getElementById('codigoError').style.display = 'none';
+            document.getElementById('codigoInput').value = '';
+        }
+
+        document.getElementById('codigoForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const codigo = document.getElementById('codigoInput').value;
+
+            fetch('<?= base_url('verificar-codigo') ?>', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+                body: JSON.stringify({ codigo: codigo })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.href = '<?= base_url('addtarjeta') ?>/' + data.dispositivo_id;
+                } else {
+                    document.getElementById('codigoError').style.display = 'block';
+                }
+            });
         });
 
         // Script para los modales
         $(document).ready(function() {
-            // Cuando se abre el modal de cambiar nombre, llenamos el campo de texto y guardamos el ID
             $('#changeNameModal').on('show.bs.modal', function (event) {
-                const button = $(event.relatedTarget); // Botón que activó el modal
-                const cardId = button.data('idhorario'); // Extrae info de los data-* attributes
+                const button = $(event.relatedTarget);
+                const cardId = button.data('idhorario');
                 const currentName = button.data('current-name');
 
                 const modal = $(this);
-                modal.find('.modal-body #newCardName').val(currentName); // Llena el input con el nombre actual
-                modal.find('.modal-body #cardIdToChange').val(cardId); // Guarda el ID en el campo oculto
+                modal.find('.modal-body #newCardName').val(currentName);
+                modal.find('.modal-body #cardIdToChange').val(cardId);
             });
 
-            // Cuando se hace clic en el botón "Guardar Nombre" dentro del modal de cambiar nombre
             $('#saveNewNameBtn').on('click', function() {
-                const cardId = $('#cardIdToChange').val(); // Obtiene el ID del campo oculto
-                const newName = $('#newCardName').val(); // Obtiene el nuevo nombre del input
+                const cardId = $('#cardIdToChange').val();
+                const newName = $('#newCardName').val();
 
                 if (!newName.trim()) {
                     alert('El nombre de la tarjeta no puede estar vacío.');
                     return;
                 }
 
-                // Realiza la llamada AJAX a tu controlador de CodeIgniter
                 $.ajax({
-                    url: '<?= base_url('actualizar_nombre_tarjeta') ?>', // Asegúrate de que esta ruta esté configurada en Routes.php
+                    url: '<?= base_url('actualizar_nombre_tarjeta') ?>',
                     method: 'POST',
                     data: {
                         idhorario: cardId,
                         nombre_tarjeta: newName
                     },
-                    dataType: 'json', // Esperamos una respuesta JSON
+                    dataType: 'json',
                     success: function(response) {
                         if (response.success) {
-                            // Si la actualización fue exitosa
-                            // Cierra el modal de cambiar nombre
                             $('#changeNameModal').modal('hide');
-
-                            // Muestra el modal de éxito con el mensaje del servidor
                             $('#successModalBody').text(response.message);
                             $('#successModal').modal('show');
-
-                            // Actualiza el nombre en la tarjeta sin recargar la página
                             $(`.horario-card h3[data-idhorario="${cardId}"] .card-title`).text(newName);
-                            // Actualiza el data-attribute del botón para futuras ediciones
                             $(`.change-name-button[data-idhorario="${cardId}"]`).data('current-name', newName);
-
                         } else {
-                            // Si hubo un error reportado por el servidor
-                            // Cierra el modal de cambiar nombre
                             $('#changeNameModal').modal('hide');
-                            // Muestra una alerta con el error
                             alert('Error al actualizar el nombre: ' + (response.message || 'Error desconocido'));
                         }
                     },
                     error: function(xhr, status, error) {
-                        // Maneja errores de la petición AJAX
                         console.error('Error AJAX:', status, error, xhr.responseText);
-                         // Cierra el modal de cambiar nombre
                         $('#changeNameModal').modal('hide');
-                        // Muestra una alerta genérica de error de comunicación
                         alert('Ocurrió un error al comunicarse con el servidor.');
                     }
                 });
             });
         });
     </script>
-
 </body>
 </html>

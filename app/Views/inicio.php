@@ -34,17 +34,13 @@
             color: var(--text-primary);
             min-height: 100vh;
             overflow-x: hidden;
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(0, 242, 254, 0.05) 0%, transparent 20%),
-                radial-gradient(circle at 90% 80%, rgba(79, 172, 254, 0.05) 0%, transparent 20%);
+        
         }
 
-        /* Header Moderno */
         header {
             background: rgba(10, 25, 47, 0.95);
             backdrop-filter: blur(10px);
             border-bottom: 1px solid rgba(100, 255, 218, 0.1);
-            position: fixed;
             width: 100%;
             z-index: 1000;
             transition: all 0.3s ease;
@@ -79,7 +75,7 @@
             color: var(--text-primary);
             text-decoration: none;
             font-size: 1rem;
-            padding: 0.8rem 1.5rem;
+            padding: 0.8rem 1.2rem;
             border-radius: 50px;
             transition: all 0.3s ease;
             position: relative;
@@ -485,7 +481,7 @@
                 <div id="codigoError" style="color:var(--danger-color); display:none;">Código inválido</div>
                 <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 1rem;">
                     <button type="submit">Verificar</button>
-                    <button type="button" onclick="cerrarModal()" style="background: rgba(255, 255, 255, 0.1);">Cancelar</button>
+                    <button type="button" onclick="cerrarModal()" style="background: rgb(250, 6, 6);">Cancelar</button>
                 </div>
             </form>
         </div>

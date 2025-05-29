@@ -101,7 +101,7 @@
             statusElement.textContent = data.estado;
             statusElement.className = `status-indicator status-${data.estado.toLowerCase()}`;
             
-            fetch(`http://10.81.11.241/servo${estado === 'abierto' ? 'Open' : 'Close'}`)
+            fetch(`http://10.81.11.158/servo${estado === 'abierto' ? 'Open' : 'Close'}`)
               .then(response => {
                 if (!response.ok) {
                   console.error('Error al comunicar con ESP32');

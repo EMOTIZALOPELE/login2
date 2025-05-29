@@ -51,7 +51,7 @@
             margin: auto;
             padding: 1rem 2rem;
             display: flex;
-            justify-content: space-between;
+            justify-content: space-between; /* Coloca el logo a la izquierda y el menú a la derecha */
             align-items: center;
         }
 
@@ -65,7 +65,10 @@
             text-shadow: 0 0 20px rgba(0, 242, 254, 0.3);
         }
 
+        /* Estilo .logo-placeholder eliminado ya que no se usa */
+
         .menu ul {
+            margin-top: 5px;
             display: flex;
             gap: 1.5rem;
             list-style: none;
@@ -75,7 +78,7 @@
             color: var(--text-primary);
             text-decoration: none;
             font-size: 1rem;
-            padding: 0.8rem 1.2rem;
+            padding: 12px 18px;
             border-radius: 50px;
             transition: all 0.3s ease;
             position: relative;
@@ -100,7 +103,7 @@
         /* Contenedor Principal */
         .container__card {
             padding: 2rem;
-            margin-top: 5rem;
+            margin-top: 1px; 
         }
 
         .horarios-container {
@@ -346,36 +349,11 @@
         .horario-card {
             animation: fadeIn 0.5s ease-out forwards;
         }
-
-        /* Efecto de partículas en el fondo */
-        .particles {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: -1;
-        }
-
-        .particle {
-            position: absolute;
-            width: 2px;
-            height: 2px;
-            background: var(--primary-color);
-            border-radius: 50%;
-            animation: float 20s infinite linear;
-        }
-
-        @keyframes float {
-            0% { transform: translateY(0) translateX(0); opacity: 0; }
-            50% { opacity: 0.5; }
-            100% { transform: translateY(-100vh) translateX(100px); opacity: 0; }
-        }
+        
     </style>
 </head>
 <body>
-    <div class="particles" id="particles"></div>
+    <div class=""></div>
 
     <header>
         <div class="container__menu">
@@ -391,7 +369,7 @@
                     </ul>
                 </nav>
             </div>
-        </div>
+            </div>
     </header>
 
     <div class="container__card">
@@ -434,7 +412,6 @@
         </div>
     </div>
 
-    <!-- Modales existentes con el nuevo estilo -->
     <div class="modal fade" id="changeNameModal" tabindex="-1" role="dialog" aria-labelledby="changeNameModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -488,55 +465,55 @@
     </div>
 
     <script>
-        // Script para crear partículas en el fondo
-        function createParticles() {
-            const particlesContainer = document.getElementById('particles');
-            for (let i = 0; i < 50; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                particle.style.left = Math.random() * 100 + 'vw';
-                particle.style.animationDelay = Math.random() * 20 + 's';
-                particlesContainer.appendChild(particle);
-            }
-        }
 
-        // Inicializar partículas
-        createParticles();
-
-        // Scripts existentes
         function abrirModal() {
-            document.getElementById('codigoModal').style.display = 'flex';
+            const modal = document.getElementById('codigoModal');
+            if (modal) modal.style.display = 'flex';
         }
 
         function cerrarModal() {
-            document.getElementById('codigoModal').style.display = 'none';
-            document.getElementById('codigoError').style.display = 'none';
-            document.getElementById('codigoInput').value = '';
+            const modal = document.getElementById('codigoModal');
+            const errorDiv = document.getElementById('codigoError');
+            const input = document.getElementById('codigoInput');
+            if (modal) modal.style.display = 'none';
+            if (errorDiv) errorDiv.style.display = 'none';
+            if (input) input.value = '';
         }
 
-        document.getElementById('codigoForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const codigo = document.getElementById('codigoInput').value;
+        const codigoForm = document.getElementById('codigoForm');
+        if (codigoForm) {
+            codigoForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const codigoInput = document.getElementById('codigoInput');
+                const codigo = codigoInput ? codigoInput.value : '';
+                const codigoError = document.getElementById('codigoError');
 
-            fetch('<?= base_url('verificar-codigo') ?>', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest',
-                },
-                body: JSON.stringify({ codigo: codigo })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    window.location.href = '<?= base_url('addtarjeta') ?>/' + data.dispositivo_id;
-                } else {
-                    document.getElementById('codigoError').style.display = 'block';
-                }
+                fetch('<?= base_url('verificar-codigo') ?>', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                    },
+                    body: JSON.stringify({ codigo: codigo })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        window.location.href = '<?= base_url('addtarjeta') ?>/' + data.dispositivo_id;
+                    } else {
+                        if (codigoError) codigoError.style.display = 'block';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error en fetch verificar-codigo:', error);
+                    if (codigoError) {
+                        codigoError.textContent = 'Error de conexión. Intente nuevamente.';
+                        codigoError.style.display = 'block';
+                    }
+                });
             });
-        });
-
-        // Script para los modales
+        }
+        
         $(document).ready(function() {
             $('#changeNameModal').on('show.bs.modal', function (event) {
                 const button = $(event.relatedTarget);
@@ -562,16 +539,17 @@
                     method: 'POST',
                     data: {
                         idhorario: cardId,
-                        nombre_tarjeta: newName
+                        nombre_tarjeta: newName,
+                        '<?= csrf_token() ?>': '<?= csrf_hash() ?>' 
                     },
                     dataType: 'json',
                     success: function(response) {
                         if (response.success) {
                             $('#changeNameModal').modal('hide');
-                            $('#successModalBody').text(response.message);
+                            $('#successModalBody').text(response.message || 'Nombre actualizado con éxito.');
                             $('#successModal').modal('show');
                             $(`.horario-card h3[data-idhorario="${cardId}"] .card-title`).text(newName);
-                            $(`.change-name-button[data-idhorario="${cardId}"]`).data('current-name', newName);
+                            $(`button[data-idhorario="${cardId}"][data-target="#changeNameModal"]`).data('current-name', newName);
                         } else {
                             $('#changeNameModal').modal('hide');
                             alert('Error al actualizar el nombre: ' + (response.message || 'Error desconocido'));
@@ -580,9 +558,13 @@
                     error: function(xhr, status, error) {
                         console.error('Error AJAX:', status, error, xhr.responseText);
                         $('#changeNameModal').modal('hide');
-                        alert('Ocurrió un error al comunicarse con el servidor.');
+                        alert('Ocurrió un error al comunicarse con el servidor. Detalles: ' + xhr.responseText);
                     }
                 });
+            });
+
+            $('#successModal').on('hidden.bs.modal', function () {
+                // location.reload(); 
             });
         });
     </script>

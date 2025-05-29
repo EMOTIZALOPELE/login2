@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Configuración de Ventanas, Cortinas y Postigones</title>
+    <title>Configuración de Horarios</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         /* Estilos generales */
         * {
@@ -20,7 +21,7 @@
             }
 
             body {
-                background: url(<?= base_url("img/fondo4.jpg") ?>) no-repeat center center fixed;
+                background: url(<?=base_url("img/fondo4.jpg") ?>) no-repeat center center fixed;
                 background-size: cover;        
                 font-family: Arial, sans-serif;        
                 height: 100vh;
@@ -99,98 +100,106 @@
             padding: 15px;
             font-size: 18px;
             border: none;
-            cursor: pointer;
-            border-radius: 5px;
+            padding: 0.75rem 1.5rem;
         }
-
-        .buttonservo:hover {
-            background-color: #2980b9;
-        }
-
-        /* Estilos responsivos */
-        @media (min-width: 768px) {
-            .container {
-                margin: 20px auto;
-                max-width: 600px;
-            }
-
-            .menu ul {
-                justify-content: space-between;
-            }
-
-            .menu ul li {
-                margin-left: 20px;
-            }
+        .btn-secondary {
+            background-color: #6c757d;
+            border: none;
+            padding: 0.75rem 1.5rem;
         }
     </style>
 </head>
 <body>
-
-     <header>
-
-
-        <div class="container__menu">
-            <div class="logo">
-                <img src="images/logo-magtimus-v2.3-1.png" alt="">
-            </div>
-            <div class="menu">
-                <i class="fas fa-bars" id="btn_menu"></i>
-                <div id="back_menu"></div>
-                <nav id="nav">
-                    <img src="images/logo-magtimus-v2.3-1.png" alt="">
-                    <ul>
-                        <li><a href="irainicio">Perfil</a></li>
-                        <li><a id="selected">Añadir Tarjeta</a></li>
-                        <li><a href="<?= base_url('logout') ?>">Cerrar Sesión</a></li>
-                    </ul>
-                </nav>
-            </div>
-        </div>
-    <!-- Contenedor principal -->
     <div class="container">
-        <h2>Configuración de Horarios</h2>
-
-        <form action="<?= base_url('guardar_horarios') ?>" method="post">
-            <input type="hidden" name="idhorario" value="<?= isset($horario['idhorario']) ? esc($horario['idhorario']) : '' ?>">
-            <div class="form-group">
-                <label for="ventana_apertura">Apertura de Ventanas:</label>
-                <input type="time" id="ventana_apertura" name="ventana_apertura" value="<?= isset($horario['ventana_apertura']) ? esc($horario['ventana_apertura']) : '' ?>" required>
+        <h2 class="text-center mb-4">Configuración de Horarios para: <?= esc($diseno['nombre']) ?></h2>
+        
+        <?php if (session()->has('mensaje')): ?>
+            <div class="alert alert-success">
+                <?= session('mensaje') ?>
             </div>
+        <?php endif; ?>
 
-            <div class="form-group">
-                <label for="ventana_cierre">Cierre de Ventanas:</label>
-                <input type="time" id="ventana_cierre" name="ventana_cierre" value="<?= isset($horario['ventana_cierre']) ? esc($horario['ventana_cierre']) : '' ?>" required>
+        <?php if (session()->has('error')): ?>
+            <div class="alert alert-danger">
+                <?= session('error') ?>
             </div>
+        <?php endif; ?>
 
-            <div class="form-group">
-                <label for="cortina_apertura">Apertura de Cortinas:</label>
-                <input type="time" id="cortina_apertura" name="cortina_apertura" value="<?= isset($horario['cortina_apertura']) ? esc($horario['cortina_apertura']) : '' ?>" required>
+        <form action="<?= base_url('horarios/guardar') ?>" method="post">
+            <input type="hidden" name="diseno_id" value="<?= $diseno['id_diseno'] ?>">
+            
+            <?php 
+            // Asegurar que los valores estén en minúsculas y sin espacios
+            $ventana = strtolower(trim($diseno['ventana']));
+            $cortina = strtolower(trim($diseno['cortina']));
+            $postigon = strtolower(trim($diseno['postigon']));
+            ?>
+
+            <?php if ($ventana === 'si'): ?>
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">Ventana</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="ventana_apertura" class="form-label">Hora de Apertura:</label>
+                            <input type="time" class="form-control" id="ventana_apertura" name="ventana_apertura" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="ventana_cierre" class="form-label">Hora de Cierre:</label>
+                            <input type="time" class="form-control" id="ventana_cierre" name="ventana_cierre" required>
+                        </div>
+                    </div>
+                </div>
             </div>
+            <?php endif; ?>
 
-            <div class="form-group">
-                <label for="cortina_cierre">Cierre de Cortinas:</label>
-                <input type="time" id="cortina_cierre" name="cortina_cierre" value="<?= isset($horario['cortina_cierre']) ? esc($horario['cortina_cierre']) : '' ?>" required>
+            <?php if ($cortina === 'si'): ?>
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">Cortina</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="cortina_apertura" class="form-label">Hora de Apertura:</label>
+                            <input type="time" class="form-control" id="cortina_apertura" name="cortina_apertura" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="cortina_cierre" class="form-label">Hora de Cierre:</label>
+                            <input type="time" class="form-control" id="cortina_cierre" name="cortina_cierre" required>
+                        </div>
+                    </div>
+                </div>
             </div>
+            <?php endif; ?>
 
-            <div class="form-group">
-                <label for="postigon_apertura">Apertura de Postigones:</label>
-                <input type="time" id="postigon_apertura" name="postigon_apertura" value="<?= isset($horario['postigon_apertura']) ? esc($horario['postigon_apertura']) : '' ?>" required>
+            <?php if ($postigon === 'si'): ?>
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">Postigo</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="postigon_apertura" class="form-label">Hora de Apertura:</label>
+                            <input type="time" class="form-control" id="postigon_apertura" name="postigon_apertura" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="postigon_cierre" class="form-label">Hora de Cierre:</label>
+                            <input type="time" class="form-control" id="postigon_cierre" name="postigon_cierre" required>
+                        </div>
+                    </div>
+                </div>
             </div>
+            <?php endif; ?>
 
-            <div class="form-group">
-                <label for="postigon_cierre">Cierre de Postigones:</label>
-                <input type="time" id="postigon_cierre" name="postigon_cierre" value="<?= isset($horario['postigon_cierre']) ? esc($horario['postigon_cierre']) : '' ?>" required>
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary">Guardar Horarios</button>
+                <a href="<?= base_url('irainicio') ?>" class="btn btn-secondary">Volver al Inicio</a>
             </div>
-
-            <button type="submit">Guardar Horarios</button>
         </form>
-
-        <h2>Control del Servo</h2>
-        <div class="servo-controls">
-            <button class="buttonservo" onclick="controlServo('servoOpen')">Abrir Servo</button>
-            <button class="buttonservo" onclick="controlServo('servoClose')">Cerrar Servo</button>
-        </div>
-
     </div>
 
     <script>
@@ -204,5 +213,6 @@
         }
     </script>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -1,0 +1,137 @@
+#include <WiFi.h>
+#include <HTTPClient.h>
+#include <ArduinoJson.h>
+#include <ESP32Servo.h>
+#include <NTPClient.h>
+#include <WiFiUdp.h>
+
+// Configuración WiFi
+const char* ssid = "ITR3-6";
+const char* password = "archivado";
+
+// Configuración del servo
+Servo servoVentana;
+const uint8_t pinServoVentana = 2;
+bool ventanaAbierta = false;
+
+// Configuración NTP para obtener hora actual
+WiFiUDP ntpUDP;
+NTPClient timeClient(ntpUDP, "pool.ntp.org");
+
+// Configuración de la API
+const char* serverName = "http://localhost/login2/api/ventana"; // Ajustar según tu configuración
+const int intervaloConsulta = 30000; // Consultar cada 30 segundos
+
+// ID del diseño (debe coincidir con el ID en la base de datos)
+const int disenoId = 1; // Ajustar según el ID de tu diseño
+
+void setup() {
+  Serial.begin(115200);
+  
+  // Configurar servo
+  servoVentana.attach(pinServoVentana);
+  servoVentana.write(0); // Iniciar cerrado
+
+  // Conectar WiFi
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+  
+  Serial.println("\nWiFi conectado");
+  Serial.print("Dirección IP: ");
+  Serial.println(WiFi.localIP());
+
+  // Inicializar cliente NTP
+  timeClient.begin();
+  timeClient.setTimeOffset(-10800); // Ajustar según tu zona horaria
+}
+
+void loop() {
+  timeClient.update();
+  
+  if (WiFi.status() == WL_CONNECTED) {
+    HTTPClient http;
+    
+    // Obtener estado actual de la ventana
+    String url = String(serverName) + "/estado/" + String(disenoId);
+    http.begin(url);
+    
+    int httpCode = http.GET();
+    if (httpCode == 200) {
+      String payload = http.getString();
+      
+      DynamicJsonDocument doc(1024);
+      deserializeJson(doc, payload);
+      
+      // Obtener estado y horarios
+      String estado = doc["estado"];
+      String horaActual = timeClient.getFormattedTime();
+      String apertura = doc["ventana_apertura"];
+      String cierre = doc["ventana_cierre"];
+      String diasSemana = doc["dias_semana"];
+      
+      // Obtener el día actual
+      String diaActual = getDiaActual();
+      
+      // Verificar si el día actual está en los días programados
+      if (diasSemana.indexOf(diaActual) >= 0) {
+        // Comparar horas
+        if (horaActual >= apertura && horaActual <= cierre && !ventanaAbierta) {
+          abrirVentana();
+          Serial.println("Ventana abierta automáticamente");
+        } else if ((horaActual < apertura || horaActual > cierre) && ventanaAbierta) {
+          cerrarVentana();
+          Serial.println("Ventana cerrada automáticamente");
+        }
+      }
+    } else {
+      Serial.println("Error al obtener estado de la ventana");
+    }
+    http.end();
+  }
+  
+  delay(intervaloConsulta);
+}
+
+void abrirVentana() {
+  servoVentana.write(180);
+  ventanaAbierta = true;
+  actualizarEstadoEnBD("abierta");
+}
+
+void cerrarVentana() {
+  servoVentana.write(0);
+  ventanaAbierta = false;
+  actualizarEstadoEnBD("cerrada");
+}
+
+void actualizarEstadoEnBD(String estado) {
+  if (WiFi.status() == WL_CONNECTED) {
+    HTTPClient http;
+    String url = String(serverName) + "/actualizarEstado/" + String(disenoId);
+    
+    http.begin(url);
+    http.addHeader("Content-Type", "application/json");
+    
+    DynamicJsonDocument doc(200);
+    doc["estado"] = estado;
+    
+    String jsonString;
+    serializeJson(doc, jsonString);
+    
+    int httpCode = http.PUT(jsonString);
+    if (httpCode == 200) {
+      Serial.println("Estado actualizado correctamente");
+    } else {
+      Serial.println("Error al actualizar el estado");
+    }
+    http.end();
+  }
+}
+
+String getDiaActual() {
+  const char* dias[] = {"Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"};
+  return String(dias[timeClient.getDay()]);
+}

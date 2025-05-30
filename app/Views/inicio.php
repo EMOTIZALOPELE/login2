@@ -20,6 +20,7 @@
             --accent-color: #64ffda;
             --danger-color: #ff4d4d;
             --success-color: #00ff9d;
+            --input-border: rgba(100, 255, 218, 0.2);
         }
 
         * {
@@ -33,17 +34,18 @@
             background: var(--dark-bg);
             color: var(--text-primary);
             min-height: 100vh;
-            overflow-x: hidden;
-        
+            overflow-x: hidden; 
         }
 
         header {
             background: rgba(10, 25, 47, 0.95);
             backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(100, 255, 218, 0.1);
+            border-bottom: 1px solid rgb(255, 251, 0); 
             width: 100%;
             z-index: 1000;
             transition: all 0.3s ease;
+            position: sticky; 
+            top: 0;
         }
 
         .container__menu {
@@ -51,27 +53,63 @@
             margin: auto;
             padding: 1rem 2rem;
             display: flex;
-            justify-content: space-between; /* Coloca el logo a la izquierda y el menú a la derecha */
+            justify-content: space-between; 
             align-items: center;
+            transition: padding 0.3s ease, flex-direction 0.3s ease, grid-template-columns 0.3s ease; 
         }
 
         .logo {
             font-family: 'Orbitron', sans-serif;
-            font-size: 2rem;
+            font-size: 2rem; 
             font-weight: 700;
             background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             text-shadow: 0 0 20px rgba(0, 242, 254, 0.3);
+            transition: font-size 0.3s ease; 
+        }
+        
+        .hamburger-button {
+            display: none; 
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem; 
+            z-index: 1005; 
+        }
+        .hamburger-line {
+            display: block;
+            width: 28px;
+            height: 3px;
+            background-color: var(--text-primary);
+            margin: 5px 0;
+            border-radius: 3px;
+            transition: all 0.3s ease-in-out;
+        }
+        .hamburger-button.active .hamburger-line:nth-child(1) {
+            transform: translateY(8px) rotate(45deg);
+        }
+        .hamburger-button.active .hamburger-line:nth-child(2) {
+            opacity: 0;
+        }
+        .hamburger-button.active .hamburger-line:nth-child(3) {
+            transform: translateY(-8px) rotate(-45deg);
+        }
+        .header-spacer { 
+            display: none; 
         }
 
-        /* Estilo .logo-placeholder eliminado ya que no se usa */
-
+        .menu {
+            /* Estilos para el contenedor del nav que se vuelve desplegable */
+        }
         .menu ul {
-            margin-top: 5px;
+            margin: 0; 
             display: flex;
             gap: 1.5rem;
             list-style: none;
+            padding-left: 0; 
+            align-items: center; 
+            transition: gap 0.3s ease;
         }
 
         .menu ul li a {
@@ -81,16 +119,42 @@
             padding: 12px 18px;
             border-radius: 50px;
             transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
+            position: relative;  
+            overflow: hidden;   
             background: transparent;
             border: 1px solid rgba(100, 255, 218, 0.2);
+            display: inline-block; 
+            white-space: nowrap; 
+        }
+
+        .menu ul li a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0; 
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                130deg, 
+                transparent 30%,
+                rgba(255, 77, 77, 0.35) 45%, 
+                rgba(255, 77, 77, 0.45) 50%, 
+                rgba(255, 77, 77, 0.35) 55%,
+                transparent 70%
+            );
+            transform: translateX(-101%); 
+            transition: transform 0.65s cubic-bezier(0.23, 1, 0.32, 1); 
+            pointer-events: none; 
         }
 
         .menu ul li a:hover {
-            background: rgba(100, 255, 218, 0.1);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(100, 255, 218, 0.2);
+            background: rgba(100, 255, 218, 0.1); 
+            transform: translateY(-2px); 
+            box-shadow: 0 5px 15px rgba(100, 255, 218, 0.2); 
+        }
+
+        .menu ul li a:hover::before {
+            transform: translateX(101%); 
         }
 
         #selected {
@@ -100,85 +164,132 @@
             font-weight: 500;
         }
 
-        /* Contenedor Principal */
+        #selected::before {
+            display: none;
+        }
+
         .container__card {
             padding: 2rem;
-            margin-top: 1px; 
+            margin-top: 2rem; 
+            transition: padding 0.3s ease, margin-top 0.3s ease;
         }
 
         .horarios-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            padding: 1rem;
+            display: flex; 
+            overflow-x: auto; 
+            overflow-y: hidden; 
+            padding: 1.5rem; 
+            gap: 2rem; 
+            min-height: 510px; /* Altura mínima para el contenedor de scroll */
+            align-items: flex-start; 
+        }
+        
+        .horarios-container::-webkit-scrollbar {
+            height: 10px; 
+        }
+        .horarios-container::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.2);
+            border-radius: 10px;
+        }
+        .horarios-container::-webkit-scrollbar-thumb {
+            background: var(--input-border, rgba(100, 255, 218, 0.2));
+            border-radius: 10px;
+        }
+        .horarios-container::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-color, #64ffda);
         }
 
         .horario-card {
             background: var(--card-bg);
             border-radius: 20px;
-            padding: 2rem;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
+            padding: 1.5rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, width 0.3s ease, height 0.3s ease;
+            position: relative; 
+            overflow: hidden;   
             border: 1px solid rgba(100, 255, 218, 0.1);
             backdrop-filter: blur(10px);
+            width: 330px; 
+            height: 480px; 
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
         }
 
-        .horario-card::before {
+        .horario-card::before { 
             content: '';
             position: absolute;
             top: 0;
-            left: 0;
-            width: 100%;
+            left: -150%; 
+            width: 60%;  
             height: 100%;
-            background: linear-gradient(45deg, transparent, rgba(100, 255, 218, 0.1), transparent);
-            transform: translateX(-100%);
-            transition: 0.6s;
+            background: linear-gradient(
+                to right, 
+                rgba(100, 255, 218, 0) 0%,       
+                rgba(100, 255, 218, 0.2) 50%,    
+                rgba(100, 255, 218, 0) 100%      
+            );
+            transform: skewX(-25deg); 
+            transition: left 0.85s cubic-bezier(0.23, 1, 0.32, 1); 
+            z-index: 1; 
+            pointer-events: none; 
         }
-
-        .horario-card:hover::before {
-            transform: translateX(100%);
-        }
-
-        .horario-card:hover {
-            transform: translateY(-10px);
+        .horario-card:hover::before { left: 150%; }
+        .horario-card:hover { 
+            transform: translateY(-10px) scale(1.02); 
             box-shadow: 0 10px 30px rgba(100, 255, 218, 0.2);
         }
 
         .horario-card h3 {
             font-family: 'Orbitron', sans-serif;
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             color: var(--primary-color);
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
             border-bottom: 1px solid rgba(100, 255, 218, 0.2);
+            flex-shrink: 0;
+            position: relative; 
+            z-index: 2;         
         }
+            
+        .card-scrollable-content {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding-right: 5px; 
+            margin-right: -5px; 
+            position: relative; 
+            z-index: 2;        
+        }
+        .card-scrollable-content::-webkit-scrollbar { width: 6px; }
+        .card-scrollable-content::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); border-radius: 10px; }
+        .card-scrollable-content::-webkit-scrollbar-thumb { background: var(--input-border, rgba(100, 255, 218, 0.2)); border-radius: 10px; }
+        .card-scrollable-content::-webkit-scrollbar-thumb:hover { background: var(--accent-color, #64ffda); }
 
         .horario-card p {
             color: var(--text-secondary);
-            margin: 1rem 0;
+            margin: 0.7rem 0; 
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            font-size: 0.9rem; 
         }
-
         .horario-card p strong {
             color: var(--text-primary);
-            min-width: 150px;
+            min-width: 130px; 
+            font-size: 0.9rem;
         }
-
-        /* Botones */
         .button-container {
             display: flex;
-            gap: 1rem;
-            margin-top: 1.5rem;
+            gap: 0.8rem; 
+            margin-top: 1rem; 
         }
-
+        .config-button, .delete-button {
+            padding: 0.6rem 1rem; 
+            font-size: 0.85rem; 
+        }
         .config-button {
             background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
             color: var(--dark-bg);
             border: none;
-            padding: 0.8rem 1.5rem;
             border-radius: 50px;
             font-weight: 500;
             cursor: pointer;
@@ -188,177 +299,235 @@
             text-decoration: none;
             display: inline-block;
         }
-
         .config-button:hover {
             transform: translateY(-3px);
             box-shadow: 0 5px 15px rgba(100, 255, 218, 0.3);
         }
-
-        .delete-button {
+        .delete-button { 
             background: var(--danger-color);
             color: white;
             border: none;
-            padding: 0.8rem 1.5rem;
             border-radius: 50px;
             font-weight: 500;
             cursor: pointer;
             transition: all 0.3s ease;
             width: 100%;
-            margin-top: 1rem;
+            margin-top: 0.8rem; 
         }
-
+        .card-scrollable-content form:last-child {
+            margin-top: 0.8rem; 
+        }
         .delete-button:hover {
             transform: translateY(-3px);
             box-shadow: 0 5px 15px rgba(255, 77, 77, 0.3);
         }
 
-        /* Modales */
-        .modal-content {
-            background: var(--card-bg);
-            border: 1px solid rgba(100, 255, 218, 0.2);
-            border-radius: 20px;
-            color: var(--text-primary);
+        /* --- INICIO BLOQUE RESPONSIVE --- */
+        @media (max-width: 992px) { 
+            .horario-card {
+                width: 300px;
+                height: 460px;
+            }
+            .horarios-container {
+                gap: 1.5rem;
+                justify-content: center; 
+            }
         }
 
-        .modal-header {
-            border-bottom: 1px solid rgba(100, 255, 218, 0.2);
-            padding: 1.5rem;
-        }
-
-        .modal-title {
-            font-family: 'Orbitron', sans-serif;
-            color: var(--primary-color);
-        }
-
-        .modal-body {
-            padding: 1.5rem;
-        }
-
-        .modal-footer {
-            border-top: 1px solid rgba(100, 255, 218, 0.2);
-            padding: 1.5rem;
-        }
-
-        .form-control {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(100, 255, 218, 0.2);
-            color: var(--text-primary);
-            border-radius: 10px;
-            padding: 0.8rem 1rem;
-        }
-
-        .form-control:focus {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: var(--primary-color);
-            color: var(--text-primary);
-            box-shadow: 0 0 0 0.2rem rgba(0, 242, 254, 0.25);
-        }
-
-        .btn-primary {
-            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
-            border: none;
-            border-radius: 50px;
-            padding: 0.8rem 2rem;
-            font-weight: 500;
-        }
-
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(100, 255, 218, 0.2);
-            border-radius: 50px;
-            padding: 0.8rem 2rem;
-            font-weight: 500;
-        }
-
-        /* Modal de Código */
-        #codigoModal {
-            background: rgba(10, 25, 47, 0.95);
-            backdrop-filter: blur(10px);
-        }
-
-        #codigoModal > div {
-            background: var(--card-bg);
-            border: 1px solid rgba(100, 255, 218, 0.2);
-            border-radius: 20px;
-            padding: 2rem;
-        }
-
-        #codigoModal h3 {
-            font-family: 'Orbitron', sans-serif;
-            color: var(--primary-color);
-            margin-bottom: 1.5rem;
-        }
-
-        #codigoModal input {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(100, 255, 218, 0.2);
-            color: var(--text-primary);
-            border-radius: 10px;
-            padding: 1rem;
-            width: 100%;
-            margin: 1rem 0;
-        }
-
-        #codigoModal button {
-            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
-            color: var(--dark-bg);
-            border: none;
-            padding: 0.8rem 2rem;
-            border-radius: 50px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin: 0.5rem;
-        }
-
-        #codigoModal button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(100, 255, 218, 0.3);
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
+        @media (max-width: 767.98px) { 
             .container__menu {
+                display: grid; 
+                grid-template-columns: auto 1fr auto; 
+                align-items: center;
+                padding: 0.8rem 1rem; 
+            }
+            .hamburger-button {
+                display: block; 
+                grid-column: 1 / 2; 
+                justify-self: start;
+            }
+            .logo {
+                grid-column: 2 / 3; 
+                justify-self: center; 
+                font-size: 1.8rem; 
+                margin: 0; 
+            }
+            .header-spacer { 
+                display: block;
+                grid-column: 3 / 4;
+                width: 48px; /* Ancho aprox. de la hamburguesa para centrar logo */
+                height: 1px; 
+            }
+
+            .menu { 
+                position: fixed; 
+                top: 55px; /* Ajustar según altura real del header en móvil */
+                left: 0;
+                width: 100%;
+                background: rgba(17, 17, 17, 0.97); 
+                backdrop-filter: blur(8px); 
+                -webkit-backdrop-filter: blur(8px);
+                padding: 1rem 0; 
+                z-index: 999; 
+                
+                visibility: hidden; 
+                opacity: 0;
+                transform: translateY(-100%); 
+                transition: transform 0.35s ease, opacity 0.35s ease, visibility 0s 0.35s;
+            }
+            .menu.active { 
+                visibility: visible;
+                opacity: 1;
+                transform: translateY(0); 
+                transition: transform 0.35s ease, opacity 0.35s ease, visibility 0s;
+            }
+            .menu ul {
+                flex-direction: column; 
+                align-items: center;
+                gap: 0.5rem; 
+                width: 100%;
+            }
+            .menu ul li {
+                width: 90%; 
+                max-width: 300px; 
+                text-align: center;
+            }
+            .menu ul li a {
+                padding: 12px 15px; 
+                font-size: 1rem; 
+                display: block; 
+                width: 100%;
+                border-radius: 5px; 
+                border: 1px solid rgba(100, 255, 218, 0.1); 
+            }
+            .menu ul li a:hover { 
+                background: rgba(100, 255, 218, 0.15);
+                transform: translateY(0); 
+                box-shadow: none; 
+            }
+            .menu ul li a::before { /* Ocultar brillo rojo en menú desplegable */
+                display: none; 
+            }
+            #selected { 
+                background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+                color: var(--dark-bg);
+            }
+
+            .container__card {
+                padding: 1rem; 
+                margin-top: 1rem;
+            }
+            .horarios-container {
+                flex-direction: column; 
+                align-items: center; 
+                overflow-x: hidden; 
+                overflow-y: auto; 
+                padding: 1rem 0.5rem; 
+                gap: 1.5rem; 
+                min-height: auto; 
+            }
+            .horarios-container::-webkit-scrollbar { 
+                display: none; 
+            }
+            .horario-card {
+                width: 90%; 
+                max-width: 450px; 
+                height: auto; 
+                min-height: 400px; 
+                flex-shrink: 1; 
+                margin-bottom: 1.5rem; 
+            }
+            .horario-card h3 {
+                font-size: 1.3rem;
+            }
+            .card-scrollable-content { 
+                /* El scroll interno sigue funcionando */
+            }
+            .horario-card p, .horario-card p strong {
+                font-size: 0.88rem;
+            }
+            .config-button, .delete-button {
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 480px) { 
+            .logo {
+                font-size: 1.6rem;
+            }
+            .header-spacer {
+                width: 40px; /* Ajustar si el botón hamburguesa es más pequeño */
+            }
+            .hamburger-line {
+                width: 24px;
+                height: 2.5px;
+                margin: 4.5px 0;
+            }
+            .hamburger-button.active .hamburger-line:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+            .hamburger-button.active .hamburger-line:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+            .menu.active ul li a { 
+                font-size: 0.9rem;
+                padding: 10px 12px;
+            }
+            .container__card {
+                padding: 0.8rem 0.3rem; 
+            }
+            .horarios-container {
+                gap: 1rem;
+            }
+            .horario-card {
+                width: 95%; 
+                min-height: 380px;
                 padding: 1rem;
             }
-
-            .menu ul {
-                gap: 0.5rem;
+            .horario-card h3 {
+                font-size: 1.2rem;
             }
-
-            .menu ul li a {
-                padding: 0.5rem 1rem;
-                font-size: 0.9rem;
+            .horario-card p, .horario-card p strong {
+                font-size: 0.82rem;
             }
-
-            .horarios-container {
-                grid-template-columns: 1fr;
-            }
-
-            .button-container {
-                flex-direction: column;
+            .config-button, .delete-button {
+                font-size: 0.8rem;
+                padding: 0.5rem 0.8rem;
             }
         }
+        /* --- FIN BLOQUE RESPONSIVE --- */
 
-        /* Animaciones */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
-
-        .horario-card {
-            animation: fadeIn 0.5s ease-out forwards;
-        }
+        .horario-card { animation: fadeIn 0.5s ease-out forwards; }
         
+        /* Estilos de Modales */
+        .modal-content { background: var(--card-bg); border: 1px solid rgba(100, 255, 218, 0.2); border-radius: 20px; color: var(--text-primary); }
+        .modal-header { border-bottom: 1px solid rgba(100, 255, 218, 0.2); padding: 1.5rem; }
+        .modal-title { font-family: 'Orbitron', sans-serif; color: var(--primary-color); }
+        .modal-body { padding: 1.5rem; }
+        .modal-footer { border-top: 1px solid rgba(100, 255, 218, 0.2); padding: 1.5rem; }
+        .form-control { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(100, 255, 218, 0.2); color: var(--text-primary); border-radius: 10px; padding: 0.8rem 1rem; }
+        .form-control:focus { background: rgba(255, 255, 255, 0.1); border-color: var(--primary-color); color: var(--text-primary); box-shadow: 0 0 0 0.2rem rgba(0, 242, 254, 0.25); }
+        .btn-primary { background: linear-gradient(45deg, var(--primary-color), var(--secondary-color)); border: none; border-radius: 50px; padding: 0.8rem 2rem; font-weight: 500; }
+        .btn-secondary { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(100, 255, 218, 0.2); border-radius: 50px; padding: 0.8rem 2rem; font-weight: 500; }
+        #codigoModal { background: rgba(10, 25, 47, 0.95); backdrop-filter: blur(10px); }
+        #codigoModal > div { background: var(--card-bg); border: 1px solid rgba(100, 255, 218, 0.2); border-radius: 20px; padding: 2rem; }
+        #codigoModal h3 { font-family: 'Orbitron', sans-serif; color: var(--primary-color); margin-bottom: 1.5rem; }
+        #codigoModal input { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(100, 255, 218, 0.2); color: var(--text-primary); border-radius: 10px; padding: 1rem; width: 100%; margin: 1rem 0; }
+        #codigoModal button { background: linear-gradient(45deg, var(--primary-color), var(--secondary-color)); color: var(--dark-bg); border: none; padding: 0.8rem 2rem; border-radius: 50px; font-weight: 500; cursor: pointer; transition: all 0.3s ease; margin: 0.5rem; }
+        #codigoModal button:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(100, 255, 218, 0.3); }
     </style>
 </head>
 <body>
-    <div class=""></div>
-
     <header>
         <div class="container__menu">
+            <button class="hamburger-button" id="hamburgerButton" aria-label="Abrir menú" aria-expanded="false">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </button>
             <div class="logo">VECOPO</div>
-            <div class="menu">
+            <div class="header-spacer" style="width: 48px;"></div> <div class="menu" id="navigationMenu">
                 <nav id="nav">
                     <ul>
                         <li><a href="<?= base_url('/inicio') ?>" id="selected">Inicio</a></li>
@@ -369,7 +538,7 @@
                     </ul>
                 </nav>
             </div>
-            </div>
+        </div>
     </header>
 
     <div class="container__card">
@@ -381,32 +550,33 @@
                             ? esc($horario['nombre_tarjeta'])
                             : 'Horario de ' . session()->get('nombre'); ?></span>
                     </h3>
+                    <div class="card-scrollable-content">
+                        <p><strong>Ventana Apertura:</strong> <?= esc($horario['ventana_apertura']); ?></p>
+                        <p><strong>Ventana Cierre:</strong> <?= esc($horario['ventana_cierre']); ?></p>
+                        <p><strong>Cortina Apertura:</strong> <?= esc($horario['cortina_apertura']); ?></p>
+                        <p><strong>Cortina Cierre:</strong> <?= esc($horario['cortina_cierre']); ?></p>
+                        <p><strong>Postigón Apertura:</strong> <?= esc($horario['postigon_apertura']); ?></p>
+                        <p><strong>Postigón Cierre:</strong> <?= esc($horario['postigon_cierre']); ?></p>
 
-                    <p><strong>Ventana Apertura:</strong> <?= esc($horario['ventana_apertura']); ?></p>
-                    <p><strong>Ventana Cierre:</strong> <?= esc($horario['ventana_cierre']); ?></p>
-                    <p><strong>Cortina Apertura:</strong> <?= esc($horario['cortina_apertura']); ?></p>
-                    <p><strong>Cortina Cierre:</strong> <?= esc($horario['cortina_cierre']); ?></p>
-                    <p><strong>Postigón Apertura:</strong> <?= esc($horario['postigon_apertura']); ?></p>
-                    <p><strong>Postigón Cierre:</strong> <?= esc($horario['postigon_cierre']); ?></p>
-
-                    <div class="button-container">
-                        <form action="<?= site_url('configurar/' . esc($horario['idhorario'])) ?>" method="POST" style="flex: 1;">
-                            <button type="submit" class="config-button">Configurar</button>
-                        </form>
+                        <div class="button-container">
+                            <form action="<?= site_url('configurar/' . esc($horario['idhorario'])) ?>" method="POST" style="flex: 1;">
+                                <button type="submit" class="config-button">Configurar</button>
+                            </form>
+                            
+                            <button type="button" class="config-button"
+                                    data-toggle="modal" data-target="#changeNameModal"
+                                    data-idhorario="<?= esc($horario['idhorario']); ?>"
+                                    data-current-name="<?= isset($horario['nombre_tarjeta']) && !empty($horario['nombre_tarjeta'])
+                                        ? esc($horario['nombre_tarjeta'])
+                                        : 'Horario de ' . session()->get('nombre'); ?>">
+                                Cambiar Nombre
+                            </button>
+                        </div>
                         
-                        <button type="button" class="config-button"
-                                data-toggle="modal" data-target="#changeNameModal"
-                                data-idhorario="<?= esc($horario['idhorario']); ?>"
-                                data-current-name="<?= isset($horario['nombre_tarjeta']) && !empty($horario['nombre_tarjeta'])
-                                    ? esc($horario['nombre_tarjeta'])
-                                    : 'Horario de ' . session()->get('nombre'); ?>">
-                            Cambiar Nombre
-                        </button>
+                        <form action="<?= site_url('borrar_tarjeta/' . esc($horario['idhorario'])) ?>" method="POST" onsubmit="return confirm('¿Seguro que quieres eliminar esta tarjeta?');">
+                            <button type="submit" class="delete-button">Eliminar</button>
+                        </form>
                     </div>
-                    
-                    <form action="<?= site_url('borrar_tarjeta/' . esc($horario['idhorario'])) ?>" method="POST" onsubmit="return confirm('¿Seguro que quieres eliminar esta tarjeta?');">
-                        <button type="submit" class="delete-button">Eliminar</button>
-                    </form>
                 </div>
             <?php endforeach; ?>
         </div>
@@ -465,12 +635,57 @@
     </div>
 
     <script>
+        // Script para Hamburguesa
+        const hamburgerButton = document.getElementById('hamburgerButton');
+        const navigationMenu = document.getElementById('navigationMenu');
+        
+        if (hamburgerButton && navigationMenu) {
+            const navLinksInMenu = navigationMenu.querySelectorAll('a'); 
 
-        function abrirModal() {
+            hamburgerButton.addEventListener('click', (event) => {
+                event.stopPropagation(); 
+                navigationMenu.classList.toggle('active');
+                hamburgerButton.classList.toggle('active');
+                const isExpanded = hamburgerButton.getAttribute('aria-expanded') === 'true' || false;
+                hamburgerButton.setAttribute('aria-expanded', !isExpanded);
+            });
+
+            navLinksInMenu.forEach(link => {
+                link.addEventListener('click', () => {
+                    if (navigationMenu.classList.contains('active')) {
+                        navigationMenu.classList.remove('active');
+                        hamburgerButton.classList.remove('active');
+                        hamburgerButton.setAttribute('aria-expanded', 'false');
+                    }
+                });
+            });
+
+            document.addEventListener('click', (event) => {
+                if (navigationMenu.classList.contains('active') && 
+                    !navigationMenu.contains(event.target) && 
+                    !hamburgerButton.contains(event.target)) {
+                    navigationMenu.classList.remove('active');
+                    hamburgerButton.classList.remove('active');
+                    hamburgerButton.setAttribute('aria-expanded', 'false');
+                }
+            });
+        }
+
+        // Modificada para cerrar el menú hamburguesa si está abierto
+        function abrirModalYCerrarMenu() {
+            if (navigationMenu && navigationMenu.classList.contains('active')) {
+                navigationMenu.classList.remove('active');
+                hamburgerButton.classList.remove('active');
+                hamburgerButton.setAttribute('aria-expanded', 'false');
+            }
+            abrirModal(); // Llama a tu función original para abrir el modal
+        }
+
+        // Funciones de Modales (existentes)
+        function abrirModal() { // Esta es tu función original, la de arriba la envuelve
             const modal = document.getElementById('codigoModal');
             if (modal) modal.style.display = 'flex';
         }
-
         function cerrarModal() {
             const modal = document.getElementById('codigoModal');
             const errorDiv = document.getElementById('codigoError');
@@ -487,13 +702,9 @@
                 const codigoInput = document.getElementById('codigoInput');
                 const codigo = codigoInput ? codigoInput.value : '';
                 const codigoError = document.getElementById('codigoError');
-
                 fetch('<?= base_url('verificar-codigo') ?>', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest',
-                    },
+                    headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest', },
                     body: JSON.stringify({ codigo: codigo })
                 })
                 .then(response => response.json())
@@ -519,7 +730,6 @@
                 const button = $(event.relatedTarget);
                 const cardId = button.data('idhorario');
                 const currentName = button.data('current-name');
-
                 const modal = $(this);
                 modal.find('.modal-body #newCardName').val(currentName);
                 modal.find('.modal-body #cardIdToChange').val(cardId);
@@ -528,12 +738,10 @@
             $('#saveNewNameBtn').on('click', function() {
                 const cardId = $('#cardIdToChange').val();
                 const newName = $('#newCardName').val();
-
                 if (!newName.trim()) {
                     alert('El nombre de la tarjeta no puede estar vacío.');
                     return;
                 }
-
                 $.ajax({
                     url: '<?= base_url('actualizar_nombre_tarjeta') ?>',
                     method: 'POST',
@@ -563,9 +771,7 @@
                 });
             });
 
-            $('#successModal').on('hidden.bs.modal', function () {
-                // location.reload(); 
-            });
+            $('#successModal').on('hidden.bs.modal', function () { /* location.reload(); */ });
         });
     </script>
 </body>

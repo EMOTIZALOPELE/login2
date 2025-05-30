@@ -28,6 +28,8 @@ $routes->post('verificar-codigo', 'HorariosController::verificarCodigoDispositiv
 $routes->post('verificar-codigo-ajax', 'HorariosController::verificarCodigo'); // si usás AJAX
 $routes->get('crear-tarjeta', 'HorariosController::formularioCrearTarjeta');
 
+$routes->post('/guardar_horarios', 'HorariosController::guardar_horarios'); 
+$routes->get('configuracion/(:num)', 'HorariosController::configuracion/$1');
 
 // PÁGINA DE HORARIOS
 $routes->get('mishorarios', 'HorariosController::index');
@@ -38,9 +40,14 @@ $routes->post('borrar_tarjeta/(:num)', 'HorariosController::borrarTarjeta/$1');
 $routes->post('add_name/(:num)', 'HorariosController::addname/$1');
 $routes->post('/actualizar_nombre_tarjeta', 'HorariosController::actualizarNombreTarjeta');
 
+
 // PÁGINA DE SERVO
-$routes->post('/servo/open', 'ServoController::openServo'); 
-$routes->post('/servo/close', 'ServoController::closeServo'); 
+$routes->get('/funcional', 'ServoController::nazi');
+$routes->get('/funcional/actualizarEstado/(:any)', 'ServoController::actualizarEstado/$1');
+$routes->get('/funcional/obtenerUltimoEstado', 'ServoController::obtenerUltimoEstado');
+$routes->get('/funcional/obtenerEstado', 'ServoController::obtenerEstado');
+$routes->get('/masivo', 'ServoController::estado');
+
 
 // INICIO 2
 $routes->get('/iniciovalogin', 'Home::iralogin');
@@ -57,3 +64,19 @@ $routes->post('diseno/guardar', 'DisenoController::guardar'); // Guarda el dise�
 // PAYPAL
 $routes->post('/paypal/createOrder', 'PayPalController::createOrder');
 $routes->post('/paypal/captureOrder', 'PayPalController::captureOrder');
+// Rutas para horarios de ventana
+$routes->get('horario-ventana/configurar/(:num)', 'HorarioVentanaController::configurar/$1');
+$routes->get('api/horario-ventana/(:num)', 'HorarioVentanaController::index/$1');
+$routes->put('api/horario-ventana/(:num)', 'HorarioVentanaController::update/$1');
+$routes->get('api/horario-ventana/estado', 'HorarioVentanaController::getEstadoVentana');
+
+// Rutas para diseños
+$routes->get('diseno/crear', 'DisenoController::crear');
+$routes->post('diseno/guardar', 'DisenoController::guardar');
+
+// Rutas para horarios
+$routes->get('horarios/configuracion/(:num)', 'HorariosController::configuracion/$1');
+$routes->post('horarios/guardar', 'HorariosController::guardar');
+
+
+

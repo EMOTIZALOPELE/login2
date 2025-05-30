@@ -1,0 +1,354 @@
+INFO - 2025-04-11 11:04:29 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-11 11:04:39 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-11 11:04:39 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-11 11:13:34 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2025-04-11 11:16:46 --> ParseError: syntax error, unexpected token "<<", expecting "function" or "const"
+[Method: GET, Route: /]
+in APPPATH\Controllers\Home.php on line 183.
+ 1 SYSTEMPATH\Autoloader\Autoloader.php(296): CodeIgniter\Autoloader\Autoloader->includeFile('C:\\xampp\\htdocs\\login2\\app\\Controllers\\Home.php')
+ 2 SYSTEMPATH\Autoloader\Autoloader.php(272): CodeIgniter\Autoloader\Autoloader->loadInNamespace('App\\Controllers\\Home')
+ 3 [internal function]: CodeIgniter\Autoloader\Autoloader->loadClass('App\\Controllers\\Home')
+ 4 SYSTEMPATH\CodeIgniter.php(887): class_exists('\\App\\Controllers\\Home', true)
+ 5 SYSTEMPATH\CodeIgniter.php(496): CodeIgniter\CodeIgniter->startController()
+ 6 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 SYSTEMPATH\Boot.php(325): CodeIgniter\CodeIgniter->run()
+ 8 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 9 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+INFO - 2025-04-11 11:19:35 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-11 11:19:38 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-11 11:20:01 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-11 11:20:01 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-11 11:20:09 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-11 11:20:09 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2025-04-11 11:20:09 --> ErrorException: Undefined variable $usuarioId
+[Method: GET, Route: irainicio]
+in APPPATH\Controllers\HorariosController.php on line 29.
+ 1 APPPATH\Controllers\HorariosController.php(29): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $usuarioId', 'C:\\xampp\\htdocs\\login2\\app\\Controllers\\HorariosController.php', 29)
+ 2 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\HorariosController->index()
+ 3 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\HorariosController))
+ 4 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH\Boot.php(325): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+INFO - 2025-04-11 11:20:39 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2025-04-11 11:20:39 --> ErrorException: Undefined variable $usuarioId
+[Method: GET, Route: irainicio]
+in APPPATH\Controllers\HorariosController.php on line 29.
+ 1 APPPATH\Controllers\HorariosController.php(29): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $usuarioId', 'C:\\xampp\\htdocs\\login2\\app\\Controllers\\HorariosController.php', 29)
+ 2 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\HorariosController->index()
+ 3 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\HorariosController))
+ 4 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH\Boot.php(325): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+INFO - 2025-04-11 11:20:42 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2025-04-11 11:20:42 --> ErrorException: Undefined variable $horarios
+[Method: GET, Route: irainicio]
+in APPPATH\Controllers\HorariosController.php on line 34.
+ 1 APPPATH\Controllers\HorariosController.php(34): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $horarios', 'C:\\xampp\\htdocs\\login2\\app\\Controllers\\HorariosController.php', 34)
+ 2 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\HorariosController->index()
+ 3 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\HorariosController))
+ 4 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH\Boot.php(325): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+INFO - 2025-04-11 11:20:42 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2025-04-11 11:20:42 --> ErrorException: Undefined variable $horarios
+[Method: GET, Route: irainicio]
+in APPPATH\Controllers\HorariosController.php on line 34.
+ 1 APPPATH\Controllers\HorariosController.php(34): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $horarios', 'C:\\xampp\\htdocs\\login2\\app\\Controllers\\HorariosController.php', 34)
+ 2 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\HorariosController->index()
+ 3 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\HorariosController))
+ 4 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH\Boot.php(325): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+INFO - 2025-04-11 11:20:43 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2025-04-11 11:20:43 --> ErrorException: Undefined variable $horarios
+[Method: GET, Route: irainicio]
+in APPPATH\Controllers\HorariosController.php on line 34.
+ 1 APPPATH\Controllers\HorariosController.php(34): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $horarios', 'C:\\xampp\\htdocs\\login2\\app\\Controllers\\HorariosController.php', 34)
+ 2 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\HorariosController->index()
+ 3 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\HorariosController))
+ 4 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH\Boot.php(325): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+INFO - 2025-04-11 11:20:55 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2025-04-11 11:20:55 --> ErrorException: Undefined variable $usuarioId
+[Method: GET, Route: irainicio]
+in APPPATH\Controllers\HorariosController.php on line 29.
+ 1 APPPATH\Controllers\HorariosController.php(29): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $usuarioId', 'C:\\xampp\\htdocs\\login2\\app\\Controllers\\HorariosController.php', 29)
+ 2 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\HorariosController->index()
+ 3 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\HorariosController))
+ 4 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH\Boot.php(325): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+INFO - 2025-04-11 11:21:08 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2025-04-11 11:21:08 --> ErrorException: Undefined variable $usuarioId
+[Method: GET, Route: irainicio]
+in APPPATH\Controllers\HorariosController.php on line 29.
+ 1 APPPATH\Controllers\HorariosController.php(29): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $usuarioId', 'C:\\xampp\\htdocs\\login2\\app\\Controllers\\HorariosController.php', 29)
+ 2 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\HorariosController->index()
+ 3 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\HorariosController))
+ 4 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH\Boot.php(325): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+INFO - 2025-04-11 11:21:10 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2025-04-11 11:21:10 --> ErrorException: Undefined variable $usuarioid
+[Method: GET, Route: irainicio]
+in APPPATH\Controllers\HorariosController.php on line 29.
+ 1 APPPATH\Controllers\HorariosController.php(29): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $usuarioid', 'C:\\xampp\\htdocs\\login2\\app\\Controllers\\HorariosController.php', 29)
+ 2 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\HorariosController->index()
+ 3 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\HorariosController))
+ 4 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH\Boot.php(325): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+INFO - 2025-04-11 11:21:13 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2025-04-11 11:21:13 --> ErrorException: Undefined variable $usuarioid
+[Method: GET, Route: irainicio]
+in APPPATH\Controllers\HorariosController.php on line 29.
+ 1 APPPATH\Controllers\HorariosController.php(29): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $usuarioid', 'C:\\xampp\\htdocs\\login2\\app\\Controllers\\HorariosController.php', 29)
+ 2 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\HorariosController->index()
+ 3 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\HorariosController))
+ 4 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH\Boot.php(325): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+INFO - 2025-04-11 11:21:14 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2025-04-11 11:21:14 --> ErrorException: Undefined variable $usuarioid
+[Method: GET, Route: irainicio]
+in APPPATH\Controllers\HorariosController.php on line 29.
+ 1 APPPATH\Controllers\HorariosController.php(29): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $usuarioid', 'C:\\xampp\\htdocs\\login2\\app\\Controllers\\HorariosController.php', 29)
+ 2 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\HorariosController->index()
+ 3 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\HorariosController))
+ 4 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH\Boot.php(325): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+INFO - 2025-04-11 11:21:14 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2025-04-11 11:21:14 --> ErrorException: Undefined variable $usuario_id
+[Method: GET, Route: irainicio]
+in APPPATH\Controllers\HorariosController.php on line 29.
+ 1 APPPATH\Controllers\HorariosController.php(29): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $usuario_id', 'C:\\xampp\\htdocs\\login2\\app\\Controllers\\HorariosController.php', 29)
+ 2 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\HorariosController->index()
+ 3 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\HorariosController))
+ 4 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH\Boot.php(325): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+INFO - 2025-04-11 11:21:15 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2025-04-11 11:21:15 --> ErrorException: Undefined variable $usuario_id
+[Method: GET, Route: irainicio]
+in APPPATH\Controllers\HorariosController.php on line 29.
+ 1 APPPATH\Controllers\HorariosController.php(29): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $usuario_id', 'C:\\xampp\\htdocs\\login2\\app\\Controllers\\HorariosController.php', 29)
+ 2 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\HorariosController->index()
+ 3 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\HorariosController))
+ 4 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH\Boot.php(325): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+INFO - 2025-04-11 11:21:15 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2025-04-11 11:21:15 --> ErrorException: Undefined variable $usuario_id
+[Method: GET, Route: irainicio]
+in APPPATH\Controllers\HorariosController.php on line 29.
+ 1 APPPATH\Controllers\HorariosController.php(29): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $usuario_id', 'C:\\xampp\\htdocs\\login2\\app\\Controllers\\HorariosController.php', 29)
+ 2 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\HorariosController->index()
+ 3 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\HorariosController))
+ 4 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH\Boot.php(325): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+INFO - 2025-04-11 11:21:15 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2025-04-11 11:21:15 --> ErrorException: Undefined variable $usuario_id
+[Method: GET, Route: irainicio]
+in APPPATH\Controllers\HorariosController.php on line 29.
+ 1 APPPATH\Controllers\HorariosController.php(29): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $usuario_id', 'C:\\xampp\\htdocs\\login2\\app\\Controllers\\HorariosController.php', 29)
+ 2 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\HorariosController->index()
+ 3 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\HorariosController))
+ 4 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH\Boot.php(325): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+INFO - 2025-04-11 11:21:15 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2025-04-11 11:21:15 --> ErrorException: Undefined variable $usuario_id
+[Method: GET, Route: irainicio]
+in APPPATH\Controllers\HorariosController.php on line 29.
+ 1 APPPATH\Controllers\HorariosController.php(29): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $usuario_id', 'C:\\xampp\\htdocs\\login2\\app\\Controllers\\HorariosController.php', 29)
+ 2 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\HorariosController->index()
+ 3 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\HorariosController))
+ 4 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH\Boot.php(325): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+INFO - 2025-04-11 11:21:15 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2025-04-11 11:21:15 --> ErrorException: Undefined variable $usuario_id
+[Method: GET, Route: irainicio]
+in APPPATH\Controllers\HorariosController.php on line 29.
+ 1 APPPATH\Controllers\HorariosController.php(29): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $usuario_id', 'C:\\xampp\\htdocs\\login2\\app\\Controllers\\HorariosController.php', 29)
+ 2 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\HorariosController->index()
+ 3 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\HorariosController))
+ 4 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH\Boot.php(325): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+INFO - 2025-04-11 11:22:31 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2025-04-11 11:22:31 --> ErrorException: Undefined variable $usuarioId
+[Method: GET, Route: irainicio]
+in APPPATH\Controllers\HorariosController.php on line 29.
+ 1 APPPATH\Controllers\HorariosController.php(29): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $usuarioId', 'C:\\xampp\\htdocs\\login2\\app\\Controllers\\HorariosController.php', 29)
+ 2 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\HorariosController->index()
+ 3 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\HorariosController))
+ 4 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH\Boot.php(325): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+INFO - 2025-04-11 11:22:32 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2025-04-11 11:22:32 --> ErrorException: Undefined variable $usuarioId
+[Method: GET, Route: irainicio]
+in APPPATH\Controllers\HorariosController.php on line 29.
+ 1 APPPATH\Controllers\HorariosController.php(29): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $usuarioId', 'C:\\xampp\\htdocs\\login2\\app\\Controllers\\HorariosController.php', 29)
+ 2 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\HorariosController->index()
+ 3 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\HorariosController))
+ 4 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH\Boot.php(325): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+INFO - 2025-04-11 11:22:32 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2025-04-11 11:22:32 --> ErrorException: Undefined variable $usuarioId
+[Method: GET, Route: irainicio]
+in APPPATH\Controllers\HorariosController.php on line 29.
+ 1 APPPATH\Controllers\HorariosController.php(29): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $usuarioId', 'C:\\xampp\\htdocs\\login2\\app\\Controllers\\HorariosController.php', 29)
+ 2 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\HorariosController->index()
+ 3 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\HorariosController))
+ 4 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH\Boot.php(325): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+INFO - 2025-04-11 11:22:32 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2025-04-11 11:22:32 --> ErrorException: Undefined variable $usuarioId
+[Method: GET, Route: irainicio]
+in APPPATH\Controllers\HorariosController.php on line 29.
+ 1 APPPATH\Controllers\HorariosController.php(29): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $usuarioId', 'C:\\xampp\\htdocs\\login2\\app\\Controllers\\HorariosController.php', 29)
+ 2 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\HorariosController->index()
+ 3 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\HorariosController))
+ 4 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH\Boot.php(325): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+INFO - 2025-04-11 11:22:33 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2025-04-11 11:22:33 --> ErrorException: Undefined variable $usuarioId
+[Method: GET, Route: irainicio]
+in APPPATH\Controllers\HorariosController.php on line 29.
+ 1 APPPATH\Controllers\HorariosController.php(29): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $usuarioId', 'C:\\xampp\\htdocs\\login2\\app\\Controllers\\HorariosController.php', 29)
+ 2 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\HorariosController->index()
+ 3 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\HorariosController))
+ 4 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH\Boot.php(325): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+INFO - 2025-04-11 11:22:33 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2025-04-11 11:22:33 --> ErrorException: Undefined variable $usuarioId
+[Method: GET, Route: irainicio]
+in APPPATH\Controllers\HorariosController.php on line 29.
+ 1 APPPATH\Controllers\HorariosController.php(29): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $usuarioId', 'C:\\xampp\\htdocs\\login2\\app\\Controllers\\HorariosController.php', 29)
+ 2 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\HorariosController->index()
+ 3 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\HorariosController))
+ 4 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH\Boot.php(325): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+INFO - 2025-04-11 11:22:55 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-11 11:23:01 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-11 11:24:27 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-11 11:24:57 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-11 11:25:04 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-04-11 11:25:04 --> === INTENTANDO GUARDAR DISEÑO ===
+DEBUG - 2025-04-11 11:25:04 --> Nombre: nuevo diseño
+DEBUG - 2025-04-11 11:25:04 --> Cortina: no
+DEBUG - 2025-04-11 11:25:04 --> Ventana: si
+DEBUG - 2025-04-11 11:25:04 --> Postigon: no
+DEBUG - 2025-04-11 11:25:04 --> Usuario ID: 6
+DEBUG - 2025-04-11 11:25:04 --> Diseño guardado con ID: 97
+INFO - 2025-04-11 11:25:04 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-04-11 11:25:04 --> === DATOS DEL DISEÑO ANTES DE PASAR A LA VISTA ===
+DEBUG - 2025-04-11 11:25:04 --> ID: 97
+DEBUG - 2025-04-11 11:25:04 --> Nombre: nuevo diseño
+DEBUG - 2025-04-11 11:25:04 --> Ventana (raw): [si]
+DEBUG - 2025-04-11 11:25:04 --> Cortina (raw): [no]
+DEBUG - 2025-04-11 11:25:04 --> Postigon (raw): [no]
+DEBUG - 2025-04-11 11:25:04 --> Ventana === "si": true
+DEBUG - 2025-04-11 11:25:04 --> Cortina === "si": false
+DEBUG - 2025-04-11 11:25:04 --> Postigon === "si": false
+DEBUG - 2025-04-11 11:25:04 --> Longitud Ventana: 2
+DEBUG - 2025-04-11 11:25:04 --> Longitud Cortina: 2
+DEBUG - 2025-04-11 11:25:04 --> Longitud Postigon: 2
+DEBUG - 2025-04-11 11:25:04 --> === FIN DATOS DEL DISEÑO ===
+INFO - 2025-04-11 11:25:09 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-11 11:25:09 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-11 11:28:57 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-11 11:29:02 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-11 11:29:02 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-11 12:28:56 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-11 12:29:01 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-11 12:29:01 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-11 12:29:43 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-11 12:29:45 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-11 12:29:50 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-11 12:29:52 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-11 12:30:04 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-11 13:03:21 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-11 13:04:12 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-11 13:04:12 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-11 13:04:21 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-11 13:04:22 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-11 13:07:56 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-11 13:08:03 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-11 13:08:11 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-11 13:08:11 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-11 13:08:13 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-11 13:08:17 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-11 13:08:21 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-11 13:08:37 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-11 13:08:42 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-11 13:08:45 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-11 13:08:52 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-11 13:08:52 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-11 13:08:58 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-11 13:08:58 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-11 13:09:44 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-11 13:10:22 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-04-11 13:10:22 --> === INTENTANDO GUARDAR DISEÑO ===
+DEBUG - 2025-04-11 13:10:22 --> Nombre: ventana 2do piso
+DEBUG - 2025-04-11 13:10:22 --> Cortina: si
+DEBUG - 2025-04-11 13:10:22 --> Ventana: si
+DEBUG - 2025-04-11 13:10:22 --> Postigon: no
+DEBUG - 2025-04-11 13:10:22 --> Usuario ID: 6
+DEBUG - 2025-04-11 13:10:22 --> Diseño guardado con ID: 98
+INFO - 2025-04-11 13:10:22 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-04-11 13:10:22 --> === DATOS DEL DISEÑO ANTES DE PASAR A LA VISTA ===
+DEBUG - 2025-04-11 13:10:22 --> ID: 98
+DEBUG - 2025-04-11 13:10:22 --> Nombre: ventana 2do piso
+DEBUG - 2025-04-11 13:10:22 --> Ventana (raw): [si]
+DEBUG - 2025-04-11 13:10:22 --> Cortina (raw): [si]
+DEBUG - 2025-04-11 13:10:22 --> Postigon (raw): [no]
+DEBUG - 2025-04-11 13:10:22 --> Ventana === "si": true
+DEBUG - 2025-04-11 13:10:22 --> Cortina === "si": true
+DEBUG - 2025-04-11 13:10:22 --> Postigon === "si": false
+DEBUG - 2025-04-11 13:10:22 --> Longitud Ventana: 2
+DEBUG - 2025-04-11 13:10:22 --> Longitud Cortina: 2
+DEBUG - 2025-04-11 13:10:22 --> Longitud Postigon: 2
+DEBUG - 2025-04-11 13:10:22 --> === FIN DATOS DEL DISEÑO ===
+INFO - 2025-04-11 13:10:38 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-11 13:10:38 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-11 13:14:20 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-11 13:15:27 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-11 13:15:43 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-11 13:15:47 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-11 13:15:47 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-11 13:31:26 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-11 13:31:33 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-04-11 13:31:33 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.

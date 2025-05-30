@@ -533,7 +533,7 @@
                         <li><a href="<?= base_url('/inicio') ?>" id="selected">Inicio</a></li>
                         <li><a href="#" onclick="abrirModal()">Añadir Tarjeta</a></li>
                         <li><a href="<?= base_url('pele') ?>">Diseño</a></li>
-                        <li><a href="<?= base_url('logout') ?>">Salir</a></li>
+                        <li><a href="<?= base_url('logout') ?>">salir</a></li>
                         <li><a href="<?= base_url('/masivo') ?>">SERVO</a></li>
                     </ul>
                 </nav>

@@ -42,7 +42,7 @@
             backdrop-filter: blur(10px);
             border-bottom: 1px solid rgb(255, 251, 0); 
             width: 100%;
-            z-index: 1000;
+            z-index: 1000; 
             transition: all 0.3s ease;
             position: sticky; 
             top: 0;
@@ -51,11 +51,11 @@
         .container__menu {
             max-width: 1800px;
             margin: auto;
-            padding: 1rem 2rem;
+            padding: 1rem 2rem; 
             display: flex;
             justify-content: space-between; 
             align-items: center;
-            transition: padding 0.3s ease, flex-direction 0.3s ease, grid-template-columns 0.3s ease; 
+            transition: padding 0.3s ease; 
         }
 
         .logo {
@@ -69,38 +69,41 @@
             transition: font-size 0.3s ease; 
         }
         
-        .hamburger-button {
-            display: none; 
-            background: none;
+        /* Estilos para el botón hamburguesa (inspirado en VECOPO Tesina) */
+        .menu-toggle {
+            display: none; /* Oculto por defecto, se muestra en móvil */
+            flex-direction: column;
+            justify-content: space-around; 
+            width: 30px; 
+            height: 24px; 
+            background: transparent;
             border: none;
             cursor: pointer;
-            padding: 0.5rem; 
-            z-index: 1005; 
+            padding: 0; /* Sin padding extra para el contenedor del toggle */
+            z-index: 1011; 
+            position: relative; 
         }
-        .hamburger-line {
-            display: block;
-            width: 28px;
-            height: 3px;
-            background-color: var(--text-primary);
-            margin: 5px 0;
+        .menu-toggle div { /* Las líneas de la hamburguesa */
+            width: 25px; 
+            height: 3px; 
+            background-color: var(--text-primary); 
             border-radius: 3px;
             transition: all 0.3s ease-in-out;
         }
-        .hamburger-button.active .hamburger-line:nth-child(1) {
-            transform: translateY(8px) rotate(45deg);
+
+        /* Animación del botón hamburguesa a "X" cuando está activo */
+        .menu-toggle.active div:nth-child(1) {
+            transform: translateY(8px) rotate(45deg); /* Ajuste de 8px para 3px de alto y 5px de gap original */
         }
-        .hamburger-button.active .hamburger-line:nth-child(2) {
+        .menu-toggle.active div:nth-child(2) {
             opacity: 0;
         }
-        .hamburger-button.active .hamburger-line:nth-child(3) {
-            transform: translateY(-8px) rotate(-45deg);
-        }
-        .header-spacer { 
-            display: none; 
+        .menu-toggle.active div:nth-child(3) {
+            transform: translateY(-8px) rotate(-45deg); /* Ajuste de 8px */
         }
 
-        .menu {
-            /* Estilos para el contenedor del nav que se vuelve desplegable */
+        .menu { 
+            /* En desktop, el .menu (contenedor de ul) se muestra normalmente */
         }
         .menu ul {
             margin: 0; 
@@ -126,201 +129,171 @@
             display: inline-block; 
             white-space: nowrap; 
         }
-
+        /* ... (efecto ::before para brillo en botones de menú desktop se mantiene igual) ... */
         .menu ul li a::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0; 
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(
-                130deg, 
-                transparent 30%,
-                rgba(255, 77, 77, 0.35) 45%, 
-                rgba(255, 77, 77, 0.45) 50%, 
-                rgba(255, 77, 77, 0.35) 55%,
-                transparent 70%
-            );
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient( 130deg, transparent 30%, rgba(255, 77, 77, 0.35) 45%, rgba(255, 77, 77, 0.45) 50%, rgba(255, 77, 77, 0.35) 55%, transparent 70% );
             transform: translateX(-101%); 
             transition: transform 0.65s cubic-bezier(0.23, 1, 0.32, 1); 
             pointer-events: none; 
         }
-
+        .menu ul li a:hover::before { transform: translateX(101%); }
+        #selected::before { display: none; }
         .menu ul li a:hover {
             background: rgba(100, 255, 218, 0.1); 
             transform: translateY(-2px); 
             box-shadow: 0 5px 15px rgba(100, 255, 218, 0.2); 
         }
-
-        .menu ul li a:hover::before {
-            transform: translateX(101%); 
-        }
-
-        #selected {
+        #selected { 
             background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
             border: none;
             color: var(--dark-bg);
             font-weight: 500;
         }
 
-        #selected::before {
-            display: none;
-        }
+        /* --- ESTILOS DEL CONTENIDO PRINCIPAL (TARJETAS) --- */
+        .container__card { /* ... (sin cambios) ... */ }
+        .horarios-container { /* ... (sin cambios) ... */ }
+        .horario-card { /* ... (sin cambios) ... */ }
+        /* ... (todos los demás estilos de tarjetas, contenido scrolleable, botones internos, etc., se mantienen) ... */
+            /* Estilo para la barra de scroll (WebKit browsers) en el contenedor de horarios */
+            .horarios-container::-webkit-scrollbar {
+                height: 10px; 
+            }
+            .horarios-container::-webkit-scrollbar-track {
+                background: rgba(0,0,0,0.2);
+                border-radius: 10px;
+            }
+            .horarios-container::-webkit-scrollbar-thumb {
+                background: var(--input-border, rgba(100, 255, 218, 0.2));
+                border-radius: 10px;
+            }
+            .horarios-container::-webkit-scrollbar-thumb:hover {
+                background: var(--accent-color, #64ffda);
+            }
 
-        .container__card {
-            padding: 2rem;
-            margin-top: 2rem; 
-            transition: padding 0.3s ease, margin-top 0.3s ease;
-        }
+            .horario-card {
+                background: var(--card-bg);
+                border-radius: 20px;
+                padding: 1.5rem;
+                transition: transform 0.3s ease, box-shadow 0.3s ease, width 0.3s ease, height 0.3s ease;
+                position: relative; 
+                overflow: hidden;   
+                border: 1px solid rgba(100, 255, 218, 0.1);
+                backdrop-filter: blur(10px);
+                width: 330px; 
+                height: 480px; 
+                flex-shrink: 0;
+                display: flex;
+                flex-direction: column;
+            }
 
-        .horarios-container {
-            display: flex; 
-            overflow-x: auto; 
-            overflow-y: hidden; 
-            padding: 1.5rem; 
-            gap: 2rem; 
-            min-height: 510px; /* Altura mínima para el contenedor de scroll */
-            align-items: flex-start; 
-        }
-        
-        .horarios-container::-webkit-scrollbar {
-            height: 10px; 
-        }
-        .horarios-container::-webkit-scrollbar-track {
-            background: rgba(0,0,0,0.2);
-            border-radius: 10px;
-        }
-        .horarios-container::-webkit-scrollbar-thumb {
-            background: var(--input-border, rgba(100, 255, 218, 0.2));
-            border-radius: 10px;
-        }
-        .horarios-container::-webkit-scrollbar-thumb:hover {
-            background: var(--accent-color, #64ffda);
-        }
+            .horario-card::before { 
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -150%; 
+                width: 60%;  
+                height: 100%;
+                background: linear-gradient(
+                    to right, 
+                    rgba(100, 255, 218, 0) 0%,       
+                    rgba(100, 255, 218, 0.2) 50%,    
+                    rgba(100, 255, 218, 0) 100%      
+                );
+                transform: skewX(-25deg); 
+                transition: left 0.85s cubic-bezier(0.23, 1, 0.32, 1); 
+                z-index: 1; 
+                pointer-events: none; 
+            }
+            .horario-card:hover::before { left: 150%; }
+            .horario-card:hover { 
+                transform: translateY(-10px) scale(1.02); 
+                box-shadow: 0 10px 30px rgba(100, 255, 218, 0.2);
+            }
 
-        .horario-card {
-            background: var(--card-bg);
-            border-radius: 20px;
-            padding: 1.5rem;
-            transition: transform 0.3s ease, box-shadow 0.3s ease, width 0.3s ease, height 0.3s ease;
-            position: relative; 
-            overflow: hidden;   
-            border: 1px solid rgba(100, 255, 218, 0.1);
-            backdrop-filter: blur(10px);
-            width: 330px; 
-            height: 480px; 
-            flex-shrink: 0;
-            display: flex;
-            flex-direction: column;
-        }
+            .horario-card h3 {
+                font-family: 'Orbitron', sans-serif;
+                font-size: 1.4rem;
+                color: var(--primary-color);
+                margin-bottom: 1rem;
+                padding-bottom: 0.75rem;
+                border-bottom: 1px solid rgba(100, 255, 218, 0.2);
+                flex-shrink: 0;
+                position: relative; 
+                z-index: 2;         
+            }
+                
+            .card-scrollable-content {
+                flex-grow: 1;
+                overflow-y: auto;
+                padding-right: 5px; 
+                margin-right: -5px; 
+                position: relative; 
+                z-index: 2;        
+            }
+            .card-scrollable-content::-webkit-scrollbar { width: 6px; }
+            .card-scrollable-content::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); border-radius: 10px; }
+            .card-scrollable-content::-webkit-scrollbar-thumb { background: var(--input-border, rgba(100, 255, 218, 0.2)); border-radius: 10px; }
+            .card-scrollable-content::-webkit-scrollbar-thumb:hover { background: var(--accent-color, #64ffda); }
 
-        .horario-card::before { 
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -150%; 
-            width: 60%;  
-            height: 100%;
-            background: linear-gradient(
-                to right, 
-                rgba(100, 255, 218, 0) 0%,       
-                rgba(100, 255, 218, 0.2) 50%,    
-                rgba(100, 255, 218, 0) 100%      
-            );
-            transform: skewX(-25deg); 
-            transition: left 0.85s cubic-bezier(0.23, 1, 0.32, 1); 
-            z-index: 1; 
-            pointer-events: none; 
-        }
-        .horario-card:hover::before { left: 150%; }
-        .horario-card:hover { 
-            transform: translateY(-10px) scale(1.02); 
-            box-shadow: 0 10px 30px rgba(100, 255, 218, 0.2);
-        }
-
-        .horario-card h3 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.4rem;
-            color: var(--primary-color);
-            margin-bottom: 1rem;
-            padding-bottom: 0.75rem;
-            border-bottom: 1px solid rgba(100, 255, 218, 0.2);
-            flex-shrink: 0;
-            position: relative; 
-            z-index: 2;         
-        }
-            
-        .card-scrollable-content {
-            flex-grow: 1;
-            overflow-y: auto;
-            padding-right: 5px; 
-            margin-right: -5px; 
-            position: relative; 
-            z-index: 2;        
-        }
-        .card-scrollable-content::-webkit-scrollbar { width: 6px; }
-        .card-scrollable-content::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); border-radius: 10px; }
-        .card-scrollable-content::-webkit-scrollbar-thumb { background: var(--input-border, rgba(100, 255, 218, 0.2)); border-radius: 10px; }
-        .card-scrollable-content::-webkit-scrollbar-thumb:hover { background: var(--accent-color, #64ffda); }
-
-        .horario-card p {
-            color: var(--text-secondary);
-            margin: 0.7rem 0; 
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.9rem; 
-        }
-        .horario-card p strong {
-            color: var(--text-primary);
-            min-width: 130px; 
-            font-size: 0.9rem;
-        }
-        .button-container {
-            display: flex;
-            gap: 0.8rem; 
-            margin-top: 1rem; 
-        }
-        .config-button, .delete-button {
-            padding: 0.6rem 1rem; 
-            font-size: 0.85rem; 
-        }
-        .config-button {
-            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
-            color: var(--dark-bg);
-            border: none;
-            border-radius: 50px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            flex: 1;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-        }
-        .config-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(100, 255, 218, 0.3);
-        }
-        .delete-button { 
-            background: var(--danger-color);
-            color: white;
-            border: none;
-            border-radius: 50px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            width: 100%;
-            margin-top: 0.8rem; 
-        }
-        .card-scrollable-content form:last-child {
-            margin-top: 0.8rem; 
-        }
-        .delete-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(255, 77, 77, 0.3);
-        }
+            .horario-card p {
+                color: var(--text-secondary);
+                margin: 0.7rem 0; 
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                font-size: 0.9rem; 
+            }
+            .horario-card p strong {
+                color: var(--text-primary);
+                min-width: 130px; 
+                font-size: 0.9rem;
+            }
+            .button-container {
+                display: flex;
+                gap: 0.8rem; 
+                margin-top: 1rem; 
+            }
+            .config-button, .delete-button {
+                padding: 0.6rem 1rem; 
+                font-size: 0.85rem; 
+            }
+            .config-button {
+                background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+                color: var(--dark-bg);
+                border: none;
+                border-radius: 50px;
+                font-weight: 500;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                flex: 1;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+            }
+            .config-button:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 5px 15px rgba(100, 255, 218, 0.3);
+            }
+            .delete-button { 
+                background: var(--danger-color);
+                color: white;
+                border: none;
+                border-radius: 50px;
+                font-weight: 500;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                width: 100%;
+                margin-top: 0.8rem; 
+            }
+            .card-scrollable-content form:last-child {
+                margin-top: 0.8rem; 
+            }
+            .delete-button:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 5px 15px rgba(255, 77, 77, 0.3);
+            }
 
         /* --- INICIO BLOQUE RESPONSIVE --- */
         @media (max-width: 992px) { 
@@ -336,161 +309,140 @@
 
         @media (max-width: 767.98px) { 
             .container__menu {
-                display: grid; 
-                grid-template-columns: auto 1fr auto; 
+                display: flex; /* Usar flex para logo a la izq y hamburguesa a la der */
+                justify-content: space-between; 
                 align-items: center;
                 padding: 0.8rem 1rem; 
             }
-            .hamburger-button {
-                display: block; 
-                grid-column: 1 / 2; 
-                justify-self: start;
+            .menu-toggle { /* Mostrar el nuevo botón hamburguesa */
+                display: flex; 
+                order: 2; /* Asegura que la hamburguesa esté a la derecha */
             }
             .logo {
-                grid-column: 2 / 3; 
-                justify-self: center; 
                 font-size: 1.8rem; 
-                margin: 0; 
+                order: 1; /* Asegura que el logo esté a la izquierda */
             }
             .header-spacer { 
-                display: block;
-                grid-column: 3 / 4;
-                width: 48px; /* Ancho aprox. de la hamburguesa para centrar logo */
-                height: 1px; 
+                display: none; 
             }
 
-            .menu { 
+            .menu { /* Este es el div con ID #navigationMenu que contiene el <nav> y <ul> */
+                /* Ocultar el ul horizontal original que está dentro de este .menu */
+                /* Los estilos para la barra de navegación horizontal en desktop */
+                /* Si el HTML es <div class="menu" id="navigationMenu"><nav><ul>...</ul></nav></div> */
+                /* Entonces, en desktop, .menu se muestra, pero su contenido ul es flex. */
+                /* En móvil, el .menu (que es #navigationMenu) se convierte en el panel desplegable. */
+            }
+            
+            /* Panel de menú desplegable */
+            #navigationMenu { 
+                order: 3; /* Si se mantiene en el flujo, pero se va a posicionar fixed */
+                display: none; /* Oculto por defecto, se activa con JS */
                 position: fixed; 
                 top: 55px; /* Ajustar según altura real del header en móvil */
                 left: 0;
                 width: 100%;
-                background: rgba(17, 17, 17, 0.97); 
+                background: rgba(17, 17, 17, 0.98); 
                 backdrop-filter: blur(8px); 
                 -webkit-backdrop-filter: blur(8px);
-                padding: 1rem 0; 
-                z-index: 999; 
+                padding: 15px 0; 
+                z-index: 1009; 
                 
                 visibility: hidden; 
                 opacity: 0;
-                transform: translateY(-100%); 
-                transition: transform 0.35s ease, opacity 0.35s ease, visibility 0s 0.35s;
+                transform: translateY(-20px); 
+                transition: transform 0.3s ease, opacity 0.3s ease, visibility 0s 0.3s;
             }
-            .menu.active { 
+            #navigationMenu.active { 
                 visibility: visible;
                 opacity: 1;
                 transform: translateY(0); 
-                transition: transform 0.35s ease, opacity 0.35s ease, visibility 0s;
+                transition: transform 0.3s ease, opacity 0.3s ease, visibility 0s;
+                display: block; 
             }
-            .menu ul {
+            /* En desktop, el .menu original que contiene el ul debe ocultarse si la hamburguesa está activa */
+            /* Ocultar el .menu original (el de la barra horizontal) en móvil */
+            .container__menu > .menu > nav { /* Específico para el nav de desktop */
+                display: none;
+            }
+            /* Mostrar el #navigationMenu cuando es .active */
+            #navigationMenu.active > nav {
+                display: block;
+            }
+
+
+            #navigationMenu ul { /* Estilos para la lista dentro del panel desplegable */
                 flex-direction: column; 
                 align-items: center;
                 gap: 0.5rem; 
                 width: 100%;
             }
-            .menu ul li {
+            #navigationMenu ul li {
                 width: 90%; 
                 max-width: 300px; 
                 text-align: center;
             }
-            .menu ul li a {
+            #navigationMenu ul li a {
                 padding: 12px 15px; 
                 font-size: 1rem; 
                 display: block; 
                 width: 100%;
                 border-radius: 5px; 
-                border: 1px solid rgba(100, 255, 218, 0.1); 
+                border: 1px solid rgba(100, 255, 218, 0.08); 
+                background: transparent; 
             }
-            .menu ul li a:hover { 
+            #navigationMenu ul li:last-child a {
+                border-bottom: 1px solid rgba(100, 255, 218, 0.08); 
+            }
+            #navigationMenu ul li a:hover { 
                 background: rgba(100, 255, 218, 0.15);
                 transform: translateY(0); 
                 box-shadow: none; 
             }
-            .menu ul li a::before { /* Ocultar brillo rojo en menú desplegable */
+            #navigationMenu ul li a::before { 
                 display: none; 
             }
-            #selected { 
-                background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            #navigationMenu #selected { 
+                background: var(--primary-color); 
                 color: var(--dark-bg);
             }
+            #navigationMenu #selected:hover {
+                background: var(--primary-color); 
+            }
 
-            .container__card {
-                padding: 1rem; 
-                margin-top: 1rem;
-            }
+            /* Adaptación de las tarjetas para scroll vertical (se mantiene como en tu última versión) */
+            .container__card { padding: 1rem; margin-top: 1rem; }
             .horarios-container {
-                flex-direction: column; 
-                align-items: center; 
-                overflow-x: hidden; 
-                overflow-y: auto; 
-                padding: 1rem 0.5rem; 
-                gap: 1.5rem; 
-                min-height: auto; 
+                flex-direction: column; align-items: center; overflow-x: hidden; 
+                overflow-y: auto; padding: 1rem 0.5rem; gap: 1.5rem; min-height: auto; 
             }
-            .horarios-container::-webkit-scrollbar { 
-                display: none; 
-            }
+            .horarios-container::-webkit-scrollbar { display: none; }
             .horario-card {
-                width: 90%; 
-                max-width: 450px; 
-                height: auto; 
-                min-height: 400px; 
-                flex-shrink: 1; 
-                margin-bottom: 1.5rem; 
+                width: 90%; max-width: 450px; height: auto; 
+                min-height: 400px; flex-shrink: 1; margin-bottom: 1.5rem; 
             }
-            .horario-card h3 {
-                font-size: 1.3rem;
-            }
-            .card-scrollable-content { 
-                /* El scroll interno sigue funcionando */
-            }
-            .horario-card p, .horario-card p strong {
-                font-size: 0.88rem;
-            }
-            .config-button, .delete-button {
-                font-size: 0.85rem;
-            }
+            .horario-card h3 { font-size: 1.3rem; }
+            .horario-card p, .horario-card p strong { font-size: 0.88rem; }
+            .config-button, .delete-button { font-size: 0.85rem; }
         }
 
         @media (max-width: 480px) { 
-            .logo {
-                font-size: 1.6rem;
-            }
-            .header-spacer {
-                width: 40px; /* Ajustar si el botón hamburguesa es más pequeño */
-            }
-            .hamburger-line {
-                width: 24px;
-                height: 2.5px;
-                margin: 4.5px 0;
-            }
-            .hamburger-button.active .hamburger-line:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-            .hamburger-button.active .hamburger-line:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
-
-            .menu.active ul li a { 
-                font-size: 0.9rem;
-                padding: 10px 12px;
-            }
-            .container__card {
-                padding: 0.8rem 0.3rem; 
-            }
-            .horarios-container {
-                gap: 1rem;
-            }
-            .horario-card {
-                width: 95%; 
-                min-height: 380px;
-                padding: 1rem;
-            }
-            .horario-card h3 {
-                font-size: 1.2rem;
-            }
-            .horario-card p, .horario-card p strong {
-                font-size: 0.82rem;
-            }
-            .config-button, .delete-button {
-                font-size: 0.8rem;
-                padding: 0.5rem 0.8rem;
-            }
+            .logo { font-size: 1.6rem; }
+            .container__menu { padding: 0.6rem 0.8rem; } 
+            
+            .menu-toggle div { width: 22px; height: 2.5px; } 
+            .menu-toggle.active div:nth-child(1) { transform: translateY(7.5px) rotate(45deg); }
+            .menu-toggle.active div:nth-child(3) { transform: translateY(-7.5px) rotate(-45deg); }
+            
+            #navigationMenu.active { top: 48px; /* Ajustar si la altura del header cambia mucho */ }
+            #navigationMenu.active ul li a { font-size: 0.9rem; padding: 10px 12px; }
+            
+            .container__card { padding: 0.8rem 0.3rem; }
+            .horarios-container { gap: 1rem; }
+            .horario-card { width: 95%; min-height: 380px; padding: 1rem; }
+            .horario-card h3 { font-size: 1.2rem; }
+            .horario-card p, .horario-card p strong { font-size: 0.82rem; }
+            .config-button, .delete-button { font-size: 0.8rem; padding: 0.5rem 0.8rem; }
         }
         /* --- FIN BLOQUE RESPONSIVE --- */
 
@@ -521,19 +473,19 @@
 <body>
     <header>
         <div class="container__menu">
-            <button class="hamburger-button" id="hamburgerButton" aria-label="Abrir menú" aria-expanded="false">
-                <span class="hamburger-line"></span>
-                <span class="hamburger-line"></span>
-                <span class="hamburger-line"></span>
-            </button>
-            <div class="logo">VECOPO</div>
-            <div class="header-spacer" style="width: 48px;"></div> <div class="menu" id="navigationMenu">
+            <div class="logo">VECOPO</div> <div class="menu-toggle" id="hamburgerButton" role="button" aria-label="Abrir menú de navegación" aria-expanded="false">
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+
+            <div class="menu" id="navigationMenu">
                 <nav id="nav">
                     <ul>
                         <li><a href="<?= base_url('/inicio') ?>" id="selected">Inicio</a></li>
-                        <li><a href="#" onclick="abrirModal()">Añadir Tarjeta</a></li>
+                        <li><a href="#" onclick="abrirModalYCerrarMenu()">Añadir Tarjeta</a></li>
                         <li><a href="<?= base_url('pele') ?>">Diseño</a></li>
-                        <li><a href="<?= base_url('logout') ?>">salir</a></li>
+                        <li><a href="<?= base_url('logout') ?>">Salir</a></li>
                         <li><a href="<?= base_url('/masivo') ?>">SERVO</a></li>
                     </ul>
                 </nav>
@@ -635,9 +587,9 @@
     </div>
 
     <script>
-        // Script para Hamburguesa
-        const hamburgerButton = document.getElementById('hamburgerButton');
-        const navigationMenu = document.getElementById('navigationMenu');
+    // Script para Hamburguesa
+        const hamburgerButton = document.getElementById('hamburgerButton'); 
+        const navigationMenu = document.getElementById('navigationMenu'); 
         
         if (hamburgerButton && navigationMenu) {
             const navLinksInMenu = navigationMenu.querySelectorAll('a'); 
@@ -645,7 +597,7 @@
             hamburgerButton.addEventListener('click', (event) => {
                 event.stopPropagation(); 
                 navigationMenu.classList.toggle('active');
-                hamburgerButton.classList.toggle('active');
+                hamburgerButton.classList.toggle('active'); 
                 const isExpanded = hamburgerButton.getAttribute('aria-expanded') === 'true' || false;
                 hamburgerButton.setAttribute('aria-expanded', !isExpanded);
             });
@@ -675,14 +627,16 @@
         function abrirModalYCerrarMenu() {
             if (navigationMenu && navigationMenu.classList.contains('active')) {
                 navigationMenu.classList.remove('active');
-                hamburgerButton.classList.remove('active');
-                hamburgerButton.setAttribute('aria-expanded', 'false');
+                if (hamburgerButton) { 
+                    hamburgerButton.classList.remove('active');
+                    hamburgerButton.setAttribute('aria-expanded', 'false');
+                }
             }
-            abrirModal(); // Llama a tu función original para abrir el modal
+            abrirModal(); 
         }
 
-        // Funciones de Modales (existentes)
-        function abrirModal() { // Esta es tu función original, la de arriba la envuelve
+        // --- El resto de tu JavaScript existente ---
+        function abrirModal() { 
             const modal = document.getElementById('codigoModal');
             if (modal) modal.style.display = 'flex';
         }

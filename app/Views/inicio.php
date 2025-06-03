@@ -21,14 +21,21 @@
             --danger-color: #ff4d4d;
             --success-color: #00ff9d;
             --input-border: rgba(100, 255, 218, 0.2);
+            /* Colores del menú de referencia */
+            --menu-icon-color: #00e0ff; 
+            --menu-bg-color: rgba(10, 25, 47, 0.97); /* Un poco más opaco y oscuro, similar al header */
+            --menu-border-color: rgba(0, 224, 255, 0.08); 
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Roboto', sans-serif;
+            font-family: 'Roboto', sans-serif; 
         }
+        .mobile-menu-panel, .mobile-menu-panel a, .mobile-menu-panel i { /* Aplicar Poppins al panel y sus contenidos */
+        }
+
 
         body {
             background: var(--dark-bg);
@@ -42,7 +49,7 @@
             backdrop-filter: blur(10px);
             border-bottom: 1px solid rgb(255, 251, 0); 
             width: 100%;
-            z-index: 1000; 
+            z-index: 1000; /* El header base */
             transition: all 0.3s ease;
             position: sticky; 
             top: 0;
@@ -67,11 +74,11 @@
             -webkit-text-fill-color: transparent;
             text-shadow: 0 0 20px rgba(0, 242, 254, 0.3);
             transition: font-size 0.3s ease; 
+            z-index: 1; /* Para que el logo no interfiera con el z-index del menu-toggle */
         }
         
-        /* Estilos para el botón hamburguesa (inspirado en VECOPO Tesina) */
         .menu-toggle {
-            display: none; /* Oculto por defecto, se muestra en móvil */
+            display: none; 
             flex-direction: column;
             justify-content: space-around; 
             width: 30px; 
@@ -79,339 +86,207 @@
             background: transparent;
             border: none;
             cursor: pointer;
-            padding: 0; /* Sin padding extra para el contenedor del toggle */
-            z-index: 1011; 
+            padding: 0; 
+            z-index: 1011; /* BOTÓN HAMBURGUESA: MÁS ALTO */
             position: relative; 
         }
-        .menu-toggle div { /* Las líneas de la hamburguesa */
+        .menu-toggle div { 
             width: 25px; 
             height: 3px; 
-            background-color: var(--text-primary); 
-            border-radius: 3px;
-            transition: all 0.3s ease-in-out;
+            background: #00e0ff; 
+            border-radius: 3px; 
+            transition: all 0.3s ease-in-out; 
         }
+        /* Animación X para el botón (opcional, pero la mantenemos por UX) */
+        .menu-toggle.active div:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+        .menu-toggle.active div:nth-child(2) { opacity: 0; }
+        .menu-toggle.active div:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
 
-        /* Animación del botón hamburguesa a "X" cuando está activo */
-        .menu-toggle.active div:nth-child(1) {
-            transform: translateY(8px) rotate(45deg); /* Ajuste de 8px para 3px de alto y 5px de gap original */
+        .desktop-menu { 
+            display: flex; 
         }
-        .menu-toggle.active div:nth-child(2) {
-            opacity: 0;
+        .desktop-menu ul {
+            margin: 0; display: flex; gap: 1.5rem; list-style: none;
+            padding-left: 0; align-items: center; 
         }
-        .menu-toggle.active div:nth-child(3) {
-            transform: translateY(-8px) rotate(-45deg); /* Ajuste de 8px */
+        .desktop-menu ul li a {
+            color: var(--text-primary); text-decoration: none; font-size: 1rem; padding: 12px 18px;
+            border-radius: 50px; transition: all 0.3s ease; position: relative;  
+            overflow: hidden; background: transparent; border: 1px solid rgba(100, 255, 218, 0.2);
+            display: inline-block; white-space: nowrap; 
         }
-
-        .menu { 
-            /* En desktop, el .menu (contenedor de ul) se muestra normalmente */
-        }
-        .menu ul {
-            margin: 0; 
-            display: flex;
-            gap: 1.5rem;
-            list-style: none;
-            padding-left: 0; 
-            align-items: center; 
-            transition: gap 0.3s ease;
-        }
-
-        .menu ul li a {
-            color: var(--text-primary);
-            text-decoration: none;
-            font-size: 1rem;
-            padding: 12px 18px;
-            border-radius: 50px;
-            transition: all 0.3s ease;
-            position: relative;  
-            overflow: hidden;   
-            background: transparent;
-            border: 1px solid rgba(100, 255, 218, 0.2);
-            display: inline-block; 
-            white-space: nowrap; 
-        }
-        /* ... (efecto ::before para brillo en botones de menú desktop se mantiene igual) ... */
-        .menu ul li a::before {
+        .desktop-menu ul li a::before {
             content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient( 130deg, transparent 30%, rgba(255, 77, 77, 0.35) 45%, rgba(255, 77, 77, 0.45) 50%, rgba(255, 77, 77, 0.35) 55%, transparent 70% );
             transform: translateX(-101%); 
             transition: transform 0.65s cubic-bezier(0.23, 1, 0.32, 1); 
             pointer-events: none; 
         }
-        .menu ul li a:hover::before { transform: translateX(101%); }
-        #selected::before { display: none; }
-        .menu ul li a:hover {
+        .desktop-menu ul li a:hover::before { transform: translateX(101%); }
+        .desktop-menu #selected::before { display: none; }
+        .desktop-menu ul li a:hover {
             background: rgba(100, 255, 218, 0.1); 
             transform: translateY(-2px); 
             box-shadow: 0 5px 15px rgba(100, 255, 218, 0.2); 
         }
-        #selected { 
+        .desktop-menu #selected { 
             background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
-            border: none;
-            color: var(--dark-bg);
-            font-weight: 500;
+            border: none; color: var(--dark-bg); font-weight: 500;
+        }
+
+        
+        /* PANEL DE MENÚ MÓVIL DESPLEGABLE (#navigationMenu es el div.mobile-menu-panel) */
+        .mobile-menu-panel { 
+            display: none; 
+            flex-direction: column;
+            position: fixed; 
+            /* --- NUEVA POSICIÓN Y DIMENSIONES --- */
+            top: 0; /* Desde el tope del viewport */
+            right: 0; /* Alineado a la derecha */
+            left: auto; /* Para asegurar alineación derecha */
+            width: 30vw; /* Mitad del ancho del viewport */
+            max-width: 300px; /* Un ancho máximo para que no sea demasiado grande en tablets */
+            min-width: 25px; /* Un ancho mínimo para móviles pequeños */
+            height: 100vh; /* Todo el alto del viewport */
+            
+            background: var(--menu-bg-color); 
+            backdrop-filter: blur(10px); 
+            -webkit-backdrop-filter: blur(10px);
+            padding: 2rem 0 1rem 0; /* Padding: arriba generoso, sin padding horizontal (los 'a' lo tendrán) */
+            box-shadow: -5px 0px 15px rgba(0,0,0,0.4); /* Sombra a la izquierda */
+            z-index: 1010; /* ENCIMA DEL HEADER, DEBAJO DE LA HAMBURGUESA */
+            
+            visibility: hidden; 
+            opacity: 0;
+            transform: translateX(100%); /* Inicia fuera de la pantalla a la derecha */
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease, visibility 0s 0.35s;
+        }
+        .mobile-menu-panel.active { 
+            visibility: visible;
+            opacity: 1;
+            transform: translateX(0); /* Desliza a su posición desde la derecha */
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease, visibility 0s;
+            display: flex; 
+        }
+        .mobile-menu-panel ul { 
+            flex-direction: column; 
+            align-items: flex-start; 
+            gap: 0;                  
+            width: 100%;
+            list-style: none;        
+            padding: 0;      
+            margin: 0;               
+            height: 100%; 
+            overflow-y: auto; 
+        }
+        .mobile-menu-panel ul::-webkit-scrollbar { width: 6px; }
+        .mobile-menu-panel ul::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); border-radius: 10px; }
+        .mobile-menu-panel ul::-webkit-scrollbar-thumb { background: var(--input-border); border-radius: 10px; }
+        .mobile-menu-panel ul::-webkit-scrollbar-thumb:hover { background: var(--accent-color); }
+
+        .mobile-menu-panel ul li {
+            width: 100%;             
+        }
+        .mobile-menu-panel ul li a {
+            font-family: 'Poppins', sans-serif;
+            padding: 14px 25px; /* Aumentado padding izquierdo */
+            font-size: 1rem; 
+            display: flex; 
+            align-items: center;
+            width: 100%;
+            border-radius: 0;        
+            border: none;            
+            border-bottom: 1px solid var(--menu-border-color); 
+            background: transparent; 
+            text-align: left;        
+            color: var(--text-primary); 
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .mobile-menu-panel ul li a i { 
+            margin-right: 15px;
+            font-size: 1.1rem; 
+            width: 20px; 
+            text-align: center;
+            color: var(--menu-icon-color); 
+        }
+        .mobile-menu-panel ul li:first-child a { /* Espacio arriba del primer elemento */
+            margin-top: 1rem; /* Ajusta este valor si tu header es muy alto */
+        }
+        .mobile-menu-panel ul li:last-child a {
+            border-bottom: none; 
+        }
+        .mobile-menu-panel ul li a:hover { 
+            background: rgba(0, 224, 255, 0.1); 
+            color: var(--menu-icon-color); 
+        }
+        .mobile-menu-panel #selected-mobile { 
+            background: var(--menu-icon-color); 
+            color: var(--dark-bg) !important;
+        }
+        .mobile-menu-panel #selected-mobile i {
+            color: var(--dark-bg) !important;
+        }
+        .mobile-menu-panel #selected-mobile:hover {
+            background: var(--menu-icon-color); 
         }
 
         /* --- ESTILOS DEL CONTENIDO PRINCIPAL (TARJETAS) --- */
-        .container__card { /* ... (sin cambios) ... */ }
-        .horarios-container { /* ... (sin cambios) ... */ }
-        .horario-card { /* ... (sin cambios) ... */ }
-        /* ... (todos los demás estilos de tarjetas, contenido scrolleable, botones internos, etc., se mantienen) ... */
-            /* Estilo para la barra de scroll (WebKit browsers) en el contenedor de horarios */
-            .horarios-container::-webkit-scrollbar {
-                height: 10px; 
-            }
-            .horarios-container::-webkit-scrollbar-track {
-                background: rgba(0,0,0,0.2);
-                border-radius: 10px;
-            }
-            .horarios-container::-webkit-scrollbar-thumb {
-                background: var(--input-border, rgba(100, 255, 218, 0.2));
-                border-radius: 10px;
-            }
-            .horarios-container::-webkit-scrollbar-thumb:hover {
-                background: var(--accent-color, #64ffda);
-            }
+        .container__card { padding: 2rem; margin-top: 2rem; transition: padding 0.3s ease, margin-top 0.3s ease; }
+        .horarios-container { display: flex; overflow-x: auto; overflow-y: hidden; padding: 1.5rem; gap: 2rem; min-height: 510px; align-items: flex-start; }
+        /* ... (estilos de scrollbar y tarjetas se mantienen) ... */
+        .horarios-container::-webkit-scrollbar { height: 10px; }
+        .horarios-container::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); border-radius: 10px; }
+        .horarios-container::-webkit-scrollbar-thumb { background: var(--input-border, rgba(100, 255, 218, 0.2)); border-radius: 10px; }
+        .horarios-container::-webkit-scrollbar-thumb:hover { background: var(--accent-color, #64ffda); }
+        .horario-card { background: var(--card-bg); border-radius: 20px; padding: 1.5rem; transition: transform 0.3s ease, box-shadow 0.3s ease, width 0.3s ease, height 0.3s ease; position: relative; overflow: hidden; border: 1px solid rgba(100, 255, 218, 0.1); backdrop-filter: blur(10px); width: 330px; height: 480px; flex-shrink: 0; display: flex; flex-direction: column; }
+        .horario-card::before { content: ''; position: absolute; top: 0; left: -150%; width: 60%; height: 100%; background: linear-gradient( to right, rgba(100, 255, 218, 0) 0%, rgba(100, 255, 218, 0.2) 50%, rgba(100, 255, 218, 0) 100% ); transform: skewX(-25deg); transition: left 0.85s cubic-bezier(0.23, 1, 0.32, 1); z-index: 1; pointer-events: none; }
+        .horario-card:hover::before { left: 150%; }
+        .horario-card:hover { transform: translateY(-10px) scale(1.02); box-shadow: 0 10px 30px rgba(100, 255, 218, 0.2); }
+        .horario-card h3 { font-family: 'Orbitron', sans-serif; font-size: 1.4rem; color: var(--primary-color); margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 1px solid rgba(100, 255, 218, 0.2); flex-shrink: 0; position: relative; z-index: 2; }
+        .card-scrollable-content { flex-grow: 1; overflow-y: auto; padding-right: 5px; margin-right: -5px; position: relative; z-index: 2; }
+        .card-scrollable-content::-webkit-scrollbar { width: 6px; }
+        .card-scrollable-content::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); border-radius: 10px; }
+        .card-scrollable-content::-webkit-scrollbar-thumb { background: var(--input-border, rgba(100, 255, 218, 0.2)); border-radius: 10px; }
+        .card-scrollable-content::-webkit-scrollbar-thumb:hover { background: var(--accent-color, #64ffda); }
+        .horario-card p { color: var(--text-secondary); margin: 0.7rem 0; display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; }
+        .horario-card p strong { color: var(--text-primary); min-width: 130px; font-size: 0.9rem; }
+        .button-container { display: flex; gap: 0.8rem; margin-top: 1rem; }
+        .config-button, .delete-button { padding: 0.6rem 1rem; font-size: 0.85rem; }
+        .config-button { background: linear-gradient(45deg, var(--primary-color), var(--secondary-color)); color: var(--dark-bg); border: none; border-radius: 50px; font-weight: 500; cursor: pointer; transition: all 0.3s ease; flex: 1; text-align: center; text-decoration: none; display: inline-block; }
+        .config-button:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(100, 255, 218, 0.3); }
+        .delete-button { background: var(--danger-color); color: white; border: none; border-radius: 50px; font-weight: 500; cursor: pointer; transition: all 0.3s ease; width: 100%; margin-top: 0.8rem; }
+        .card-scrollable-content form:last-child { margin-top: 0.8rem; }
+        .delete-button:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(255, 77, 77, 0.3); }
 
-            .horario-card {
-                background: var(--card-bg);
-                border-radius: 20px;
-                padding: 1.5rem;
-                transition: transform 0.3s ease, box-shadow 0.3s ease, width 0.3s ease, height 0.3s ease;
-                position: relative; 
-                overflow: hidden;   
-                border: 1px solid rgba(100, 255, 218, 0.1);
-                backdrop-filter: blur(10px);
-                width: 330px; 
-                height: 480px; 
-                flex-shrink: 0;
-                display: flex;
-                flex-direction: column;
-            }
-
-            .horario-card::before { 
-                content: '';
-                position: absolute;
-                top: 0;
-                left: -150%; 
-                width: 60%;  
-                height: 100%;
-                background: linear-gradient(
-                    to right, 
-                    rgba(100, 255, 218, 0) 0%,       
-                    rgba(100, 255, 218, 0.2) 50%,    
-                    rgba(100, 255, 218, 0) 100%      
-                );
-                transform: skewX(-25deg); 
-                transition: left 0.85s cubic-bezier(0.23, 1, 0.32, 1); 
-                z-index: 1; 
-                pointer-events: none; 
-            }
-            .horario-card:hover::before { left: 150%; }
-            .horario-card:hover { 
-                transform: translateY(-10px) scale(1.02); 
-                box-shadow: 0 10px 30px rgba(100, 255, 218, 0.2);
-            }
-
-            .horario-card h3 {
-                font-family: 'Orbitron', sans-serif;
-                font-size: 1.4rem;
-                color: var(--primary-color);
-                margin-bottom: 1rem;
-                padding-bottom: 0.75rem;
-                border-bottom: 1px solid rgba(100, 255, 218, 0.2);
-                flex-shrink: 0;
-                position: relative; 
-                z-index: 2;         
-            }
-                
-            .card-scrollable-content {
-                flex-grow: 1;
-                overflow-y: auto;
-                padding-right: 5px; 
-                margin-right: -5px; 
-                position: relative; 
-                z-index: 2;        
-            }
-            .card-scrollable-content::-webkit-scrollbar { width: 6px; }
-            .card-scrollable-content::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); border-radius: 10px; }
-            .card-scrollable-content::-webkit-scrollbar-thumb { background: var(--input-border, rgba(100, 255, 218, 0.2)); border-radius: 10px; }
-            .card-scrollable-content::-webkit-scrollbar-thumb:hover { background: var(--accent-color, #64ffda); }
-
-            .horario-card p {
-                color: var(--text-secondary);
-                margin: 0.7rem 0; 
-                display: flex;
-                align-items: center;
-                gap: 0.5rem;
-                font-size: 0.9rem; 
-            }
-            .horario-card p strong {
-                color: var(--text-primary);
-                min-width: 130px; 
-                font-size: 0.9rem;
-            }
-            .button-container {
-                display: flex;
-                gap: 0.8rem; 
-                margin-top: 1rem; 
-            }
-            .config-button, .delete-button {
-                padding: 0.6rem 1rem; 
-                font-size: 0.85rem; 
-            }
-            .config-button {
-                background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
-                color: var(--dark-bg);
-                border: none;
-                border-radius: 50px;
-                font-weight: 500;
-                cursor: pointer;
-                transition: all 0.3s ease;
-                flex: 1;
-                text-align: center;
-                text-decoration: none;
-                display: inline-block;
-            }
-            .config-button:hover {
-                transform: translateY(-3px);
-                box-shadow: 0 5px 15px rgba(100, 255, 218, 0.3);
-            }
-            .delete-button { 
-                background: var(--danger-color);
-                color: white;
-                border: none;
-                border-radius: 50px;
-                font-weight: 500;
-                cursor: pointer;
-                transition: all 0.3s ease;
-                width: 100%;
-                margin-top: 0.8rem; 
-            }
-            .card-scrollable-content form:last-child {
-                margin-top: 0.8rem; 
-            }
-            .delete-button:hover {
-                transform: translateY(-3px);
-                box-shadow: 0 5px 15px rgba(255, 77, 77, 0.3);
-            }
 
         /* --- INICIO BLOQUE RESPONSIVE --- */
         @media (max-width: 992px) { 
-            .horario-card {
-                width: 300px;
-                height: 460px;
-            }
-            .horarios-container {
-                gap: 1.5rem;
-                justify-content: center; 
-            }
+            .horario-card { width: 300px; height: 460px; }
+            .horarios-container { gap: 1.5rem; justify-content: center; }
         }
 
         @media (max-width: 767.98px) { 
             .container__menu {
-                display: flex; /* Usar flex para logo a la izq y hamburguesa a la der */
+                display: flex; 
                 justify-content: space-between; 
                 align-items: center;
                 padding: 0.8rem 1rem; 
             }
-            .menu-toggle { /* Mostrar el nuevo botón hamburguesa */
+            .menu-toggle { 
                 display: flex; 
-                order: 2; /* Asegura que la hamburguesa esté a la derecha */
             }
             .logo {
                 font-size: 1.8rem; 
-                order: 1; /* Asegura que el logo esté a la izquierda */
-            }
-            .header-spacer { 
-                display: none; 
-            }
-
-            .menu { /* Este es el div con ID #navigationMenu que contiene el <nav> y <ul> */
-                /* Ocultar el ul horizontal original que está dentro de este .menu */
-                /* Los estilos para la barra de navegación horizontal en desktop */
-                /* Si el HTML es <div class="menu" id="navigationMenu"><nav><ul>...</ul></nav></div> */
-                /* Entonces, en desktop, .menu se muestra, pero su contenido ul es flex. */
-                /* En móvil, el .menu (que es #navigationMenu) se convierte en el panel desplegable. */
             }
             
-            /* Panel de menú desplegable */
-            #navigationMenu { 
-                order: 3; /* Si se mantiene en el flujo, pero se va a posicionar fixed */
-                display: none; /* Oculto por defecto, se activa con JS */
-                position: fixed; 
-                top: 55px; /* Ajustar según altura real del header en móvil */
-                left: 0;
-                width: 100%;
-                background: rgba(17, 17, 17, 0.98); 
-                backdrop-filter: blur(8px); 
-                -webkit-backdrop-filter: blur(8px);
-                padding: 15px 0; 
-                z-index: 1009; 
-                
-                visibility: hidden; 
-                opacity: 0;
-                transform: translateY(-20px); 
-                transition: transform 0.3s ease, opacity 0.3s ease, visibility 0s 0.3s;
+            .desktop-menu { /* Ocultar el menú de escritorio en móvil */
+                display: none !important;
             }
-            #navigationMenu.active { 
-                visibility: visible;
-                opacity: 1;
-                transform: translateY(0); 
-                transition: transform 0.3s ease, opacity 0.3s ease, visibility 0s;
-                display: block; 
+            
+            .container__card { 
+                padding: 1rem; 
+                margin-top: 1rem; 
             }
-            /* En desktop, el .menu original que contiene el ul debe ocultarse si la hamburguesa está activa */
-            /* Ocultar el .menu original (el de la barra horizontal) en móvil */
-            .container__menu > .menu > nav { /* Específico para el nav de desktop */
-                display: none;
-            }
-            /* Mostrar el #navigationMenu cuando es .active */
-            #navigationMenu.active > nav {
-                display: block;
-            }
-
-
-            #navigationMenu ul { /* Estilos para la lista dentro del panel desplegable */
-                flex-direction: column; 
-                align-items: center;
-                gap: 0.5rem; 
-                width: 100%;
-            }
-            #navigationMenu ul li {
-                width: 90%; 
-                max-width: 300px; 
-                text-align: center;
-            }
-            #navigationMenu ul li a {
-                padding: 12px 15px; 
-                font-size: 1rem; 
-                display: block; 
-                width: 100%;
-                border-radius: 5px; 
-                border: 1px solid rgba(100, 255, 218, 0.08); 
-                background: transparent; 
-            }
-            #navigationMenu ul li:last-child a {
-                border-bottom: 1px solid rgba(100, 255, 218, 0.08); 
-            }
-            #navigationMenu ul li a:hover { 
-                background: rgba(100, 255, 218, 0.15);
-                transform: translateY(0); 
-                box-shadow: none; 
-            }
-            #navigationMenu ul li a::before { 
-                display: none; 
-            }
-            #navigationMenu #selected { 
-                background: var(--primary-color); 
-                color: var(--dark-bg);
-            }
-            #navigationMenu #selected:hover {
-                background: var(--primary-color); 
-            }
-
-            /* Adaptación de las tarjetas para scroll vertical (se mantiene como en tu última versión) */
-            .container__card { padding: 1rem; margin-top: 1rem; }
             .horarios-container {
                 flex-direction: column; align-items: center; overflow-x: hidden; 
                 overflow-y: auto; padding: 1rem 0.5rem; gap: 1.5rem; min-height: auto; 
@@ -431,11 +306,16 @@
             .container__menu { padding: 0.6rem 0.8rem; } 
             
             .menu-toggle div { width: 22px; height: 2.5px; } 
-            .menu-toggle.active div:nth-child(1) { transform: translateY(7.5px) rotate(45deg); }
-            .menu-toggle.active div:nth-child(3) { transform: translateY(-7.5px) rotate(-45deg); }
+            /* Si se desea la animación X también para este tamaño, las reglas .menu-toggle.active div deben estar aquí o ser generales */
             
-            #navigationMenu.active { top: 48px; /* Ajustar si la altura del header cambia mucho */ }
-            #navigationMenu.active ul li a { font-size: 0.9rem; padding: 10px 12px; }
+            .mobile-menu-panel.active { 
+                top: 0; /* En pantallas muy pequeñas, el menú podría cubrir el header por completo */
+                padding-top: 4rem; /* Espacio para que el contenido no quede debajo del header si top es 0 */
+                width: 60vw; /* Un poco más ancho si 50vw es muy poco */
+                max-width: 280px; /* Límite para que no sea demasiado ancho incluso con vw */
+            }
+            .mobile-menu-panel.active ul li a { font-size: 0.9rem; padding: 10px 15px; }
+            .mobile-menu-panel.active ul li a i { font-size: 1rem; margin-right: 10px; }
             
             .container__card { padding: 0.8rem 0.3rem; }
             .horarios-container { gap: 1rem; }
@@ -473,15 +353,15 @@
 <body>
     <header>
         <div class="container__menu">
-            <div class="logo">VECOPO</div> <div class="menu-toggle" id="hamburgerButton" role="button" aria-label="Abrir menú de navegación" aria-expanded="false">
+            <div class="logo">VECOPO</div>
+            
+            <div class="menu-toggle" id="menu-toggle" role="button" aria-label="Abrir menú de navegación" aria-expanded="false">
                 <div></div>
                 <div></div>
                 <div></div>
             </div>
 
-            <div class="menu" id="navigationMenu">
-                <nav id="nav">
-                    <ul>
+            <div class="desktop-menu"> <nav> <ul>
                         <li><a href="<?= base_url('/inicio') ?>" id="selected">Inicio</a></li>
                         <li><a href="#" onclick="abrirModalYCerrarMenu()">Añadir Tarjeta</a></li>
                         <li><a href="<?= base_url('pele') ?>">Diseño</a></li>
@@ -491,6 +371,15 @@
                 </nav>
             </div>
         </div>
+
+        <nav class="mobile-menu-panel" id="navigationMenu"> <ul>
+                <li><a href="<?= base_url('/inicio') ?>" id="selected-mobile"><i class="fas fa-home"></i> Inicio</a></li>
+                <li><a href="#" onclick="abrirModalYCerrarMenu()"><i class="fas fa-plus-square"></i> Añadir Tarjeta</a></li>
+                <li><a href="<?= base_url('pele') ?>"><i class="fas fa-palette"></i> Diseño</a></li>
+                <li><a href="<?= base_url('logout') ?>"><i class="fas fa-sign-out-alt"></i> Salir</a></li>
+                <li><a href="<?= base_url('/masivo') ?>"><i class="fas fa-cogs"></i> SERVO</a></li>
+            </ul>
+        </nav>
     </header>
 
     <div class="container__card">
@@ -587,56 +476,55 @@
     </div>
 
     <script>
-    // Script para Hamburguesa
-        const hamburgerButton = document.getElementById('hamburgerButton'); 
-        const navigationMenu = document.getElementById('navigationMenu'); 
+        // Script para Hamburguesa
+        const hamburgerToggleBtn = document.getElementById('menu-toggle'); 
+        const mobileNavigationPanel = document.getElementById('navigationMenu');   
         
-        if (hamburgerButton && navigationMenu) {
-            const navLinksInMenu = navigationMenu.querySelectorAll('a'); 
+        if (hamburgerToggleBtn && mobileNavigationPanel) {
+            const navLinksInMobilePanel = mobileNavigationPanel.querySelectorAll('a'); 
 
-            hamburgerButton.addEventListener('click', (event) => {
+            hamburgerToggleBtn.addEventListener('click', (event) => {
                 event.stopPropagation(); 
-                navigationMenu.classList.toggle('active');
-                hamburgerButton.classList.toggle('active'); 
-                const isExpanded = hamburgerButton.getAttribute('aria-expanded') === 'true' || false;
-                hamburgerButton.setAttribute('aria-expanded', !isExpanded);
+                mobileNavigationPanel.classList.toggle('active');
+                hamburgerToggleBtn.classList.toggle('active'); // Para animar el botón a "X"
+                
+                const isExpanded = hamburgerToggleBtn.getAttribute('aria-expanded') === 'true' || false;
+                hamburgerToggleBtn.setAttribute('aria-expanded', !isExpanded);
             });
 
-            navLinksInMenu.forEach(link => {
+            navLinksInMobilePanel.forEach(link => {
                 link.addEventListener('click', () => {
-                    if (navigationMenu.classList.contains('active')) {
-                        navigationMenu.classList.remove('active');
-                        hamburgerButton.classList.remove('active');
-                        hamburgerButton.setAttribute('aria-expanded', 'false');
+                    if (mobileNavigationPanel.classList.contains('active')) {
+                        mobileNavigationPanel.classList.remove('active');
+                        hamburgerToggleBtn.classList.remove('active'); 
+                        hamburgerToggleBtn.setAttribute('aria-expanded', 'false');
                     }
                 });
             });
 
             document.addEventListener('click', (event) => {
-                if (navigationMenu.classList.contains('active') && 
-                    !navigationMenu.contains(event.target) && 
-                    !hamburgerButton.contains(event.target)) {
-                    navigationMenu.classList.remove('active');
-                    hamburgerButton.classList.remove('active');
-                    hamburgerButton.setAttribute('aria-expanded', 'false');
+                if (mobileNavigationPanel.classList.contains('active') && 
+                    !mobileNavigationPanel.contains(event.target) && 
+                    !hamburgerToggleBtn.contains(event.target)) {
+                    mobileNavigationPanel.classList.remove('active');
+                    hamburgerToggleBtn.classList.remove('active'); 
+                    hamburgerToggleBtn.setAttribute('aria-expanded', 'false');
                 }
             });
         }
 
-        // Modificada para cerrar el menú hamburguesa si está abierto
         function abrirModalYCerrarMenu() {
-            if (navigationMenu && navigationMenu.classList.contains('active')) {
-                navigationMenu.classList.remove('active');
-                if (hamburgerButton) { 
-                    hamburgerButton.classList.remove('active');
-                    hamburgerButton.setAttribute('aria-expanded', 'false');
+            if (mobileNavigationPanel && mobileNavigationPanel.classList.contains('active')) {
+                mobileNavigationPanel.classList.remove('active');
+                if (hamburgerToggleBtn) { 
+                    hamburgerToggleBtn.classList.remove('active'); 
+                    hamburgerToggleBtn.setAttribute('aria-expanded', 'false');
                 }
             }
-            abrirModal(); 
+            abrirModalOriginal(); 
         }
 
-        // --- El resto de tu JavaScript existente ---
-        function abrirModal() { 
+        function abrirModalOriginal() { 
             const modal = document.getElementById('codigoModal');
             if (modal) modal.style.display = 'flex';
         }

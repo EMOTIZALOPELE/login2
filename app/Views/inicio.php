@@ -231,8 +231,7 @@
         }
 
         /* --- ESTILOS DEL CONTENIDO PRINCIPAL (TARJETAS) --- */
-        .container__card { padding: 2rem; margin-top: 2rem; transition: padding 0.3s ease, margin-top 0.3s ease; }
-        .horarios-container { display: flex; overflow-x: auto; overflow-y: hidden; padding: 1.5rem; gap: 2rem; min-height: 510px; align-items: flex-start; }
+      .horarios-container { display: flex; overflow-x: auto; overflow-y: hidden; padding: 1.5rem; gap: 2rem; min-height: 510px; align-items: flex-start; }
         /* ... (estilos de scrollbar y tarjetas se mantienen) ... */
         .horarios-container::-webkit-scrollbar { height: 10px; }
         .horarios-container::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); border-radius: 10px; }
@@ -389,7 +388,7 @@
                     <h3 data-idhorario="<?= esc($horario['idhorario']); ?>">
                         <span class="card-title"><?= isset($horario['nombre_tarjeta']) && !empty($horario['nombre_tarjeta'])
                             ? esc($horario['nombre_tarjeta'])
-                            : 'Horario de ' . session()->get('nombre'); ?></span>
+                            : 'Tu horario ' . session()->get('nombre'); ?></span>
                     </h3>
                     <div class="card-scrollable-content">
                         <p><strong>Ventana Apertura:</strong> <?= esc($horario['ventana_apertura']); ?></p>

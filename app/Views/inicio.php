@@ -21,14 +21,21 @@
             --danger-color: #ff4d4d;
             --success-color: #00ff9d;
             --input-border: rgba(100, 255, 218, 0.2);
+            /* Colores del menú de referencia */
+            --menu-icon-color: #00e0ff; 
+            --menu-bg-color: rgba(10, 25, 47, 0.97); /* Un poco más opaco y oscuro, similar al header */
+            --menu-border-color: rgba(0, 224, 255, 0.08); 
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Roboto', sans-serif;
+            font-family: 'Roboto', sans-serif; 
         }
+        .mobile-menu-panel, .mobile-menu-panel a, .mobile-menu-panel i { /* Aplicar Poppins al panel y sus contenidos */
+        }
+
 
         body {
             background: var(--dark-bg);
@@ -42,7 +49,7 @@
             backdrop-filter: blur(10px);
             border-bottom: 1px solid rgb(255, 251, 0); 
             width: 100%;
-            z-index: 1000; 
+            z-index: 1000; /* El header base */
             transition: all 0.3s ease;
             position: sticky; 
             top: 0;
@@ -67,6 +74,7 @@
             -webkit-text-fill-color: transparent;
             text-shadow: 0 0 20px rgba(0, 242, 254, 0.3);
             transition: font-size 0.3s ease; 
+            z-index: 1; /* Para que el logo no interfiera con el z-index del menu-toggle */
         }
         
         /* ESTILOS PARA EL BOTÓN HAMBURGUESA (COPIADOS "TAL CUAL" DE VECOPO Tesina) */
@@ -78,6 +86,7 @@
             padding: 10px; 
             z-index: 1011; /* Encima del panel de menú si el panel es 1009 y header 1000 */
         }
+        .menu-toggle div { 
         .menu-toggle div { 
             width: 25px; 
             height: 3px; 
@@ -115,15 +124,16 @@
             transition: transform 0.65s cubic-bezier(0.23, 1, 0.32, 1); 
             pointer-events: none; 
         }
-        .menu ul li a:hover::before { transform: translateX(101%); }
-        #selected::before { display: none; }
-        .menu ul li a:hover {
+        .desktop-menu ul li a:hover::before { transform: translateX(101%); }
+        .desktop-menu #selected::before { display: none; }
+        .desktop-menu ul li a:hover {
             background: rgba(100, 255, 218, 0.1); 
             transform: translateY(-2px); 
             box-shadow: 0 5px 15px rgba(100, 255, 218, 0.2); 
         }
-        #selected { 
+        .desktop-menu #selected { 
             background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            border: none; color: var(--dark-bg); font-weight: 500;
             border: none; color: var(--dark-bg); font-weight: 500;
         }
     
@@ -158,10 +168,13 @@
         @media (max-width: 992px) { 
             .horario-card { width: 300px; height: 460px; }
             .horarios-container { gap: 1.5rem; justify-content: center; }
+            .horario-card { width: 300px; height: 460px; }
+            .horarios-container { gap: 1.5rem; justify-content: center; }
         }
 
         @media (max-width: 767.98px) { 
             .container__menu {
+                display: flex; 
                 display: flex; 
                 justify-content: space-between; 
                 align-items: center;
@@ -308,14 +321,15 @@
             <div class="logo">VECOPO</div>
             
             <div class="menu-toggle" id="menu-toggle" role="button" aria-label="Abrir menú de navegación" aria-expanded="false">
+            <div class="logo">VECOPO</div>
+            
+            <div class="menu-toggle" id="menu-toggle" role="button" aria-label="Abrir menú de navegación" aria-expanded="false">
                 <div></div>
                 <div></div>
                 <div></div>
             </div>
 
-            <div class="menu" id="navigationMenu">
-                <nav id="nav">
-                    <ul>
+            <div class="desktop-menu"> <nav> <ul>
                         <li><a href="<?= base_url('/inicio') ?>" id="selected">Inicio</a></li>
                         <li><a href="#" onclick="abrirModalYCerrarMenu()">Añadir Tarjeta</a></li>
                         <li><a href="<?= base_url('pele') ?>">Diseño</a></li>
@@ -325,6 +339,15 @@
                 </nav>
             </div>
         </div>
+
+        <nav class="mobile-menu-panel" id="navigationMenu"> <ul>
+                <li><a href="<?= base_url('/inicio') ?>" id="selected-mobile"><i class="fas fa-home"></i> Inicio</a></li>
+                <li><a href="#" onclick="abrirModalYCerrarMenu()"><i class="fas fa-plus-square"></i> Añadir Tarjeta</a></li>
+                <li><a href="<?= base_url('pele') ?>"><i class="fas fa-palette"></i> Diseño</a></li>
+                <li><a href="<?= base_url('logout') ?>"><i class="fas fa-sign-out-alt"></i> Salir</a></li>
+                <li><a href="<?= base_url('/masivo') ?>"><i class="fas fa-cogs"></i> SERVO</a></li>
+            </ul>
+        </nav>
     </header>
 
     <div class="container__card">
@@ -334,7 +357,7 @@
                     <h3 data-idhorario="<?= esc($horario['idhorario']); ?>">
                         <span class="card-title"><?= isset($horario['nombre_tarjeta']) && !empty($horario['nombre_tarjeta'])
                             ? esc($horario['nombre_tarjeta'])
-                            : 'Horario de ' . session()->get('nombre'); ?></span>
+                            : 'Tu horario ' . session()->get('nombre'); ?></span>
                     </h3>
                     <div class="card-scrollable-content">
                         <p><strong>Ventana Apertura:</strong> <?= esc($horario['ventana_apertura']); ?></p>
@@ -439,10 +462,10 @@
         const hamburgerButton = document.getElementById('menu-toggle'); // CORREGIDO: ID del botón hamburguesa
         const navigationMenu = document.getElementById('navigationMenu');   // ID del panel de menú
         
-        if (hamburgerButton && navigationMenu) {
-            const navLinksInMenu = navigationMenu.querySelectorAll('a'); 
+        if (hamburgerToggleBtn && mobileNavigationPanel) {
+            const navLinksInMobilePanel = mobileNavigationPanel.querySelectorAll('a'); 
 
-            hamburgerButton.addEventListener('click', (event) => {
+            hamburgerToggleBtn.addEventListener('click', (event) => {
                 event.stopPropagation(); 
                 navigationMenu.classList.toggle('active');
                 // La clase 'active' en el botón hamburguesa para la X se maneja en CSS si se define
@@ -456,7 +479,7 @@
                 hamburgerButton.setAttribute('aria-expanded', !isExpanded);
             });
 
-            navLinksInMenu.forEach(link => {
+            navLinksInMobilePanel.forEach(link => {
                 link.addEventListener('click', () => {
                     if (navigationMenu.classList.contains('active')) {
                         navigationMenu.classList.remove('active');
@@ -485,11 +508,10 @@
                     hamburgerButton.setAttribute('aria-expanded', 'false');
                 }
             }
-            abrirModal(); 
+            abrirModalOriginal(); 
         }
 
-        // --- El resto de tu JavaScript existente ---
-        function abrirModal() { 
+        function abrirModalOriginal() { 
             const modal = document.getElementById('codigoModal');
             if (modal) modal.style.display = 'flex';
         }

@@ -680,7 +680,7 @@
                 </div>
                 <div class="paypalcard-item">
                     <i class="fas fa-check-circle"></i>
-                    <span>Soporte 24/7 + Asistente dedicado</span>
+                    <span>Soporte 24/7 + Asistente </span>
                 </div>
             </div>
             <div id="paypal-button-container-3"></div>

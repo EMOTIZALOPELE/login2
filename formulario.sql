@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 27-05-2025 a las 20:09:08
+-- Tiempo de generación: 12-06-2025 a las 15:01:13
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -89,7 +89,27 @@ CREATE TABLE `dispositivos` (
 --
 
 INSERT INTO `dispositivos` (`id`, `codigo`, `Nombre_tarjeta`, `usuario_id`, `created_at`, `updated_at`, `esta_usado`) VALUES
-(1, 'DISP_123', 'DISP_123', 15, '2025-05-22 08:54:25', '2025-05-23 09:46:30', 0);
+(3, '9C:B6:D0:8E:5A:E1', '', 15, '2025-06-12 09:01:03', '2025-06-12 12:05:28', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `funcional`
+--
+
+CREATE TABLE `funcional` (
+  `id` int(11) NOT NULL,
+  `Estado` varchar(25) NOT NULL,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `updated_at` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `funcional`
+--
+
+INSERT INTO `funcional` (`id`, `Estado`, `created_at`, `updated_at`) VALUES
+(1, 'CERRADO', '2025-06-12 12:51:22', '2025-06-12 12:51:22');
 
 -- --------------------------------------------------------
 
@@ -99,6 +119,7 @@ INSERT INTO `dispositivos` (`id`, `codigo`, `Nombre_tarjeta`, `usuario_id`, `cre
 
 CREATE TABLE `horarios` (
   `idhorario` int(11) NOT NULL,
+  `dispositivo_id` int(11) DEFAULT NULL,
   `diseno_id` int(11) DEFAULT NULL,
   `ventana_apertura` time DEFAULT NULL,
   `ventana_cierre` time DEFAULT NULL,
@@ -117,14 +138,13 @@ CREATE TABLE `horarios` (
 -- Volcado de datos para la tabla `horarios`
 --
 
-INSERT INTO `horarios` (`idhorario`, `diseno_id`, `ventana_apertura`, `ventana_cierre`, `cortina_apertura`, `cortina_cierre`, `postigon_apertura`, `postigon_cierre`, `dias_semana`, `created_at`, `updated_at`, `usuario_id`, `nombre_tarjeta`) VALUES
-(25, NULL, '15:12:00', '12:12:00', '15:23:00', '12:12:00', '15:12:00', '00:12:00', 0, '2025-04-10 12:39:31', '2025-04-10 12:39:31', 32, NULL),
-(30, NULL, '16:23:00', '16:23:00', '15:23:00', '14:34:00', '16:23:00', '16:23:00', 0, '2025-04-11 12:31:32', '2025-04-11 12:31:32', 32, NULL),
-(35, NULL, '12:31:00', '00:31:00', '02:31:00', '14:12:00', '12:12:00', '15:12:00', 0, '2025-05-08 15:52:06', '2025-05-08 15:52:06', 33, NULL),
-(36, NULL, '11:11:00', '11:11:00', '11:11:00', '11:11:00', '11:11:00', '11:11:00', 0, '2025-05-08 15:54:29', '2025-05-08 15:54:29', 6, NULL),
-(41, NULL, '12:12:00', '00:12:00', '14:12:00', '00:12:00', '14:12:00', '12:12:00', 0, '2025-05-16 13:07:36', '2025-05-16 15:53:07', 15, 'hola mundo'),
-(42, NULL, '11:11:00', '23:31:00', '12:31:00', '15:12:00', '15:12:00', '15:12:00', 0, '2025-05-16 13:12:27', '2025-05-16 13:12:27', 15, NULL),
-(44, NULL, '11:11:00', '11:11:00', '11:11:00', '11:11:00', '11:11:00', '11:11:00', 0, '2025-05-22 12:39:51', '2025-05-22 12:39:51', 15, NULL);
+INSERT INTO `horarios` (`idhorario`, `dispositivo_id`, `diseno_id`, `ventana_apertura`, `ventana_cierre`, `cortina_apertura`, `cortina_cierre`, `postigon_apertura`, `postigon_cierre`, `dias_semana`, `created_at`, `updated_at`, `usuario_id`, `nombre_tarjeta`) VALUES
+(25, NULL, NULL, '15:12:00', '12:12:00', '15:23:00', '12:12:00', '15:12:00', '00:12:00', 0, '2025-04-10 12:39:31', '2025-04-10 12:39:31', 32, NULL),
+(30, NULL, NULL, '16:23:00', '16:23:00', '15:23:00', '14:34:00', '16:23:00', '16:23:00', 0, '2025-04-11 12:31:32', '2025-04-11 12:31:32', 32, NULL),
+(35, NULL, NULL, '12:31:00', '00:31:00', '02:31:00', '14:12:00', '12:12:00', '15:12:00', 0, '2025-05-08 15:52:06', '2025-05-08 15:52:06', 33, NULL),
+(36, NULL, NULL, '11:11:00', '11:11:00', '11:11:00', '11:11:00', '11:11:00', '11:11:00', 0, '2025-05-08 15:54:29', '2025-05-08 15:54:29', 6, NULL),
+(41, 1, NULL, '12:12:00', '00:12:00', '14:12:00', '00:12:00', '14:12:00', '12:12:00', 0, '2025-05-16 13:07:36', '2025-06-12 12:28:28', 15, 'hola mundo'),
+(49, NULL, NULL, '07:00:00', '20:00:00', '07:00:00', '20:00:00', '07:00:00', '20:00:00', 0, '2025-06-12 12:05:28', '2025-06-12 12:05:28', 15, 'Dispositivo 5A:E1');
 
 -- --------------------------------------------------------
 
@@ -153,7 +173,9 @@ INSERT INTO `pagos` (`id`, `order_id`, `email`, `monto`, `moneda`, `fecha`, `est
 (1, '2XD69434WB4945849', 'sb-ioug541667209@personal.example.com', 0.00, 'USD', '2025-05-16 11:33:13', 'completed', '{\"id\":\"2XD69434WB4945849\",\"status\":\"COMPLETED\",\"payment_source\":{\"paypal\":{\"email_address\":\"sb-ioug541667209@personal.example.com\",\"account_id\":\"9R7FQFEQMZKN4\",\"account_status\":\"VERIFIED\",\"name\":{\"given_name\":\"John\",\"surname\":\"Doe\"},\"address\":{\"country_code\":\"AR\"}}},\"purchase_units\":[{\"reference_id\":\"default\",\"shipping\":{\"name\":{\"full_name\":\"John Doe\"},\"address\":{\"address_line_1\":\"Free Trade Zone\",\"admin_area_2\":\"Buenos Aires\",\"admin_area_1\":\"Buenos Aires\",\"postal_code\":\"B1675\",\"country_code\":\"AR\"}},\"payments\":{\"captures\":[{\"id\":\"0M584067W40087239\",\"status\":\"COMPLETED\",\"amount\":{\"currency_code\":\"USD\",\"value\":\"19.99\"},\"final_capture\":true,\"seller_protection\":{\"status\":\"ELIGIBLE\",\"dispute_categories\":[\"ITEM_NOT_RECEIVED\",\"UNAUTHORIZED_TRANSACTION\"]},\"seller_receivable_breakdown\":{\"gross_amount\":{\"currency_code\":\"USD\",\"value\":\"19.99\"},\"paypal_fee\":{\"currency_code\":\"USD\",\"value\":\"1.38\"},\"net_amount\":{\"currency_code\":\"USD\",\"value\":\"18.61\"}},\"links\":[{\"href\":\"https:\\/\\/api.sandbox.paypal.com\\/v2\\/payments\\/captures\\/0M584067W40087239\",\"rel\":\"self\",\"method\":\"GET\"},{\"href\":\"https:\\/\\/api.sandbox.paypal.com\\/v2\\/payments\\/captures\\/0M584067W40087239\\/refund\",\"rel\":\"refund\",\"method\":\"POST\"},{\"href\":\"https:\\/\\/api.sandbox.paypal.com\\/v2\\/checkout\\/orders\\/2XD69434WB4945849\",\"rel\":\"up\",\"method\":\"GET\"}],\"create_time\":\"2025-05-16T11:33:12Z\",\"update_time\":\"2025-05-16T11:33:12Z\"}]}}],\"payer\":{\"name\":{\"given_name\":\"John\",\"surname\":\"Doe\"},\"email_address\":\"sb-ioug541667209@personal.example.com\",\"payer_id\":\"9R7FQFEQMZKN4\",\"address\":{\"country_code\":\"AR\"}},\"links\":[{\"href\":\"https:\\/\\/api.sandbox.paypal.com\\/v2\\/checkout\\/orders\\/2XD69434WB4945849\",\"rel\":\"self\",\"method\":\"GET\"}]}', '2025-05-16 08:33:13', '2025-05-16 08:33:13'),
 (2, '4H8497015K033093C', 'sb-ioug541667209@personal.example.com', 0.00, 'USD', '2025-05-16 15:46:11', 'completed', '{\"id\":\"4H8497015K033093C\",\"status\":\"COMPLETED\",\"payment_source\":{\"paypal\":{\"email_address\":\"sb-ioug541667209@personal.example.com\",\"account_id\":\"9R7FQFEQMZKN4\",\"account_status\":\"VERIFIED\",\"name\":{\"given_name\":\"John\",\"surname\":\"Doe\"},\"address\":{\"country_code\":\"AR\"}}},\"purchase_units\":[{\"reference_id\":\"default\",\"shipping\":{\"name\":{\"full_name\":\"John Doe\"},\"address\":{\"address_line_1\":\"Free Trade Zone\",\"admin_area_2\":\"Buenos Aires\",\"admin_area_1\":\"Buenos Aires\",\"postal_code\":\"B1675\",\"country_code\":\"AR\"}},\"payments\":{\"captures\":[{\"id\":\"441854674S116945X\",\"status\":\"COMPLETED\",\"amount\":{\"currency_code\":\"USD\",\"value\":\"19.99\"},\"final_capture\":true,\"seller_protection\":{\"status\":\"ELIGIBLE\",\"dispute_categories\":[\"ITEM_NOT_RECEIVED\",\"UNAUTHORIZED_TRANSACTION\"]},\"seller_receivable_breakdown\":{\"gross_amount\":{\"currency_code\":\"USD\",\"value\":\"19.99\"},\"paypal_fee\":{\"currency_code\":\"USD\",\"value\":\"1.38\"},\"net_amount\":{\"currency_code\":\"USD\",\"value\":\"18.61\"}},\"links\":[{\"href\":\"https:\\/\\/api.sandbox.paypal.com\\/v2\\/payments\\/captures\\/441854674S116945X\",\"rel\":\"self\",\"method\":\"GET\"},{\"href\":\"https:\\/\\/api.sandbox.paypal.com\\/v2\\/payments\\/captures\\/441854674S116945X\\/refund\",\"rel\":\"refund\",\"method\":\"POST\"},{\"href\":\"https:\\/\\/api.sandbox.paypal.com\\/v2\\/checkout\\/orders\\/4H8497015K033093C\",\"rel\":\"up\",\"method\":\"GET\"}],\"create_time\":\"2025-05-16T15:46:10Z\",\"update_time\":\"2025-05-16T15:46:10Z\"}]}}],\"payer\":{\"name\":{\"given_name\":\"John\",\"surname\":\"Doe\"},\"email_address\":\"sb-ioug541667209@personal.example.com\",\"payer_id\":\"9R7FQFEQMZKN4\",\"address\":{\"country_code\":\"AR\"}},\"links\":[{\"href\":\"https:\\/\\/api.sandbox.paypal.com\\/v2\\/checkout\\/orders\\/4H8497015K033093C\",\"rel\":\"self\",\"method\":\"GET\"}]}', '2025-05-16 12:46:11', '2025-05-16 12:46:11'),
 (3, '7DN469118G565331L', 'sb-ioug541667209@personal.example.com', 0.00, 'USD', '2025-05-16 15:48:19', 'completed', '{\"id\":\"7DN469118G565331L\",\"status\":\"COMPLETED\",\"payment_source\":{\"paypal\":{\"email_address\":\"sb-ioug541667209@personal.example.com\",\"account_id\":\"9R7FQFEQMZKN4\",\"account_status\":\"VERIFIED\",\"name\":{\"given_name\":\"John\",\"surname\":\"Doe\"},\"address\":{\"country_code\":\"AR\"}}},\"purchase_units\":[{\"reference_id\":\"default\",\"shipping\":{\"name\":{\"full_name\":\"John Doe\"},\"address\":{\"address_line_1\":\"Free Trade Zone\",\"admin_area_2\":\"Buenos Aires\",\"admin_area_1\":\"Buenos Aires\",\"postal_code\":\"B1675\",\"country_code\":\"AR\"}},\"payments\":{\"captures\":[{\"id\":\"0FY52877W93331816\",\"status\":\"COMPLETED\",\"amount\":{\"currency_code\":\"USD\",\"value\":\"99.99\"},\"final_capture\":true,\"seller_protection\":{\"status\":\"ELIGIBLE\",\"dispute_categories\":[\"ITEM_NOT_RECEIVED\",\"UNAUTHORIZED_TRANSACTION\"]},\"seller_receivable_breakdown\":{\"gross_amount\":{\"currency_code\":\"USD\",\"value\":\"99.99\"},\"paypal_fee\":{\"currency_code\":\"USD\",\"value\":\"5.70\"},\"net_amount\":{\"currency_code\":\"USD\",\"value\":\"94.29\"}},\"links\":[{\"href\":\"https:\\/\\/api.sandbox.paypal.com\\/v2\\/payments\\/captures\\/0FY52877W93331816\",\"rel\":\"self\",\"method\":\"GET\"},{\"href\":\"https:\\/\\/api.sandbox.paypal.com\\/v2\\/payments\\/captures\\/0FY52877W93331816\\/refund\",\"rel\":\"refund\",\"method\":\"POST\"},{\"href\":\"https:\\/\\/api.sandbox.paypal.com\\/v2\\/checkout\\/orders\\/7DN469118G565331L\",\"rel\":\"up\",\"method\":\"GET\"}],\"create_time\":\"2025-05-16T15:48:18Z\",\"update_time\":\"2025-05-16T15:48:18Z\"}]}}],\"payer\":{\"name\":{\"given_name\":\"John\",\"surname\":\"Doe\"},\"email_address\":\"sb-ioug541667209@personal.example.com\",\"payer_id\":\"9R7FQFEQMZKN4\",\"address\":{\"country_code\":\"AR\"}},\"links\":[{\"href\":\"https:\\/\\/api.sandbox.paypal.com\\/v2\\/checkout\\/orders\\/7DN469118G565331L\",\"rel\":\"self\",\"method\":\"GET\"}]}', '2025-05-16 12:48:19', '2025-05-16 12:48:19'),
-(4, '9N156128SN015482X', 'sb-ioug541667209@personal.example.com', 0.00, 'USD', '2025-05-21 12:35:55', 'completed', '{\"id\":\"9N156128SN015482X\",\"status\":\"COMPLETED\",\"payment_source\":{\"paypal\":{\"email_address\":\"sb-ioug541667209@personal.example.com\",\"account_id\":\"9R7FQFEQMZKN4\",\"account_status\":\"VERIFIED\",\"name\":{\"given_name\":\"John\",\"surname\":\"Doe\"},\"address\":{\"country_code\":\"AR\"}}},\"purchase_units\":[{\"reference_id\":\"default\",\"shipping\":{\"name\":{\"full_name\":\"John Doe\"},\"address\":{\"address_line_1\":\"Free Trade Zone\",\"admin_area_2\":\"Buenos Aires\",\"admin_area_1\":\"Buenos Aires\",\"postal_code\":\"B1675\",\"country_code\":\"AR\"}},\"payments\":{\"captures\":[{\"id\":\"4B848695J79249003\",\"status\":\"COMPLETED\",\"amount\":{\"currency_code\":\"USD\",\"value\":\"19.99\"},\"final_capture\":true,\"seller_protection\":{\"status\":\"ELIGIBLE\",\"dispute_categories\":[\"ITEM_NOT_RECEIVED\",\"UNAUTHORIZED_TRANSACTION\"]},\"seller_receivable_breakdown\":{\"gross_amount\":{\"currency_code\":\"USD\",\"value\":\"19.99\"},\"paypal_fee\":{\"currency_code\":\"USD\",\"value\":\"1.38\"},\"net_amount\":{\"currency_code\":\"USD\",\"value\":\"18.61\"}},\"links\":[{\"href\":\"https:\\/\\/api.sandbox.paypal.com\\/v2\\/payments\\/captures\\/4B848695J79249003\",\"rel\":\"self\",\"method\":\"GET\"},{\"href\":\"https:\\/\\/api.sandbox.paypal.com\\/v2\\/payments\\/captures\\/4B848695J79249003\\/refund\",\"rel\":\"refund\",\"method\":\"POST\"},{\"href\":\"https:\\/\\/api.sandbox.paypal.com\\/v2\\/checkout\\/orders\\/9N156128SN015482X\",\"rel\":\"up\",\"method\":\"GET\"}],\"create_time\":\"2025-05-21T12:35:54Z\",\"update_time\":\"2025-05-21T12:35:54Z\"}]}}],\"payer\":{\"name\":{\"given_name\":\"John\",\"surname\":\"Doe\"},\"email_address\":\"sb-ioug541667209@personal.example.com\",\"payer_id\":\"9R7FQFEQMZKN4\",\"address\":{\"country_code\":\"AR\"}},\"links\":[{\"href\":\"https:\\/\\/api.sandbox.paypal.com\\/v2\\/checkout\\/orders\\/9N156128SN015482X\",\"rel\":\"self\",\"method\":\"GET\"}]}', '2025-05-21 09:35:55', '2025-05-21 09:35:55');
+(4, '9N156128SN015482X', 'sb-ioug541667209@personal.example.com', 0.00, 'USD', '2025-05-21 12:35:55', 'completed', '{\"id\":\"9N156128SN015482X\",\"status\":\"COMPLETED\",\"payment_source\":{\"paypal\":{\"email_address\":\"sb-ioug541667209@personal.example.com\",\"account_id\":\"9R7FQFEQMZKN4\",\"account_status\":\"VERIFIED\",\"name\":{\"given_name\":\"John\",\"surname\":\"Doe\"},\"address\":{\"country_code\":\"AR\"}}},\"purchase_units\":[{\"reference_id\":\"default\",\"shipping\":{\"name\":{\"full_name\":\"John Doe\"},\"address\":{\"address_line_1\":\"Free Trade Zone\",\"admin_area_2\":\"Buenos Aires\",\"admin_area_1\":\"Buenos Aires\",\"postal_code\":\"B1675\",\"country_code\":\"AR\"}},\"payments\":{\"captures\":[{\"id\":\"4B848695J79249003\",\"status\":\"COMPLETED\",\"amount\":{\"currency_code\":\"USD\",\"value\":\"19.99\"},\"final_capture\":true,\"seller_protection\":{\"status\":\"ELIGIBLE\",\"dispute_categories\":[\"ITEM_NOT_RECEIVED\",\"UNAUTHORIZED_TRANSACTION\"]},\"seller_receivable_breakdown\":{\"gross_amount\":{\"currency_code\":\"USD\",\"value\":\"19.99\"},\"paypal_fee\":{\"currency_code\":\"USD\",\"value\":\"1.38\"},\"net_amount\":{\"currency_code\":\"USD\",\"value\":\"18.61\"}},\"links\":[{\"href\":\"https:\\/\\/api.sandbox.paypal.com\\/v2\\/payments\\/captures\\/4B848695J79249003\",\"rel\":\"self\",\"method\":\"GET\"},{\"href\":\"https:\\/\\/api.sandbox.paypal.com\\/v2\\/payments\\/captures\\/4B848695J79249003\\/refund\",\"rel\":\"refund\",\"method\":\"POST\"},{\"href\":\"https:\\/\\/api.sandbox.paypal.com\\/v2\\/checkout\\/orders\\/9N156128SN015482X\",\"rel\":\"up\",\"method\":\"GET\"}],\"create_time\":\"2025-05-21T12:35:54Z\",\"update_time\":\"2025-05-21T12:35:54Z\"}]}}],\"payer\":{\"name\":{\"given_name\":\"John\",\"surname\":\"Doe\"},\"email_address\":\"sb-ioug541667209@personal.example.com\",\"payer_id\":\"9R7FQFEQMZKN4\",\"address\":{\"country_code\":\"AR\"}},\"links\":[{\"href\":\"https:\\/\\/api.sandbox.paypal.com\\/v2\\/checkout\\/orders\\/9N156128SN015482X\",\"rel\":\"self\",\"method\":\"GET\"}]}', '2025-05-21 09:35:55', '2025-05-21 09:35:55'),
+(5, '48477728NL280741D', 'sb-ioug541667209@personal.example.com', 0.00, 'USD', '2025-05-29 11:51:45', 'completed', '{\"id\":\"48477728NL280741D\",\"status\":\"COMPLETED\",\"payment_source\":{\"paypal\":{\"email_address\":\"sb-ioug541667209@personal.example.com\",\"account_id\":\"9R7FQFEQMZKN4\",\"account_status\":\"VERIFIED\",\"name\":{\"given_name\":\"John\",\"surname\":\"Doe\"},\"address\":{\"country_code\":\"AR\"}}},\"purchase_units\":[{\"reference_id\":\"default\",\"shipping\":{\"name\":{\"full_name\":\"John Doe\"},\"address\":{\"address_line_1\":\"Free Trade Zone\",\"admin_area_2\":\"Buenos Aires\",\"admin_area_1\":\"Buenos Aires\",\"postal_code\":\"B1675\",\"country_code\":\"AR\"}},\"payments\":{\"captures\":[{\"id\":\"0C405778D1876702N\",\"status\":\"COMPLETED\",\"amount\":{\"currency_code\":\"USD\",\"value\":\"19.99\"},\"final_capture\":true,\"seller_protection\":{\"status\":\"ELIGIBLE\",\"dispute_categories\":[\"ITEM_NOT_RECEIVED\",\"UNAUTHORIZED_TRANSACTION\"]},\"seller_receivable_breakdown\":{\"gross_amount\":{\"currency_code\":\"USD\",\"value\":\"19.99\"},\"paypal_fee\":{\"currency_code\":\"USD\",\"value\":\"1.38\"},\"net_amount\":{\"currency_code\":\"USD\",\"value\":\"18.61\"}},\"links\":[{\"href\":\"https:\\/\\/api.sandbox.paypal.com\\/v2\\/payments\\/captures\\/0C405778D1876702N\",\"rel\":\"self\",\"method\":\"GET\"},{\"href\":\"https:\\/\\/api.sandbox.paypal.com\\/v2\\/payments\\/captures\\/0C405778D1876702N\\/refund\",\"rel\":\"refund\",\"method\":\"POST\"},{\"href\":\"https:\\/\\/api.sandbox.paypal.com\\/v2\\/checkout\\/orders\\/48477728NL280741D\",\"rel\":\"up\",\"method\":\"GET\"}],\"create_time\":\"2025-05-29T11:51:44Z\",\"update_time\":\"2025-05-29T11:51:44Z\"}]}}],\"payer\":{\"name\":{\"given_name\":\"John\",\"surname\":\"Doe\"},\"email_address\":\"sb-ioug541667209@personal.example.com\",\"payer_id\":\"9R7FQFEQMZKN4\",\"address\":{\"country_code\":\"AR\"}},\"links\":[{\"href\":\"https:\\/\\/api.sandbox.paypal.com\\/v2\\/checkout\\/orders\\/48477728NL280741D\",\"rel\":\"self\",\"method\":\"GET\"}]}', '2025-05-29 08:51:45', '2025-05-29 08:51:45'),
+(6, '7BC00926YE4667946', 'sb-ioug541667209@personal.example.com', 0.00, 'USD', '2025-05-29 11:52:09', 'completed', '{\"id\":\"7BC00926YE4667946\",\"status\":\"COMPLETED\",\"payment_source\":{\"paypal\":{\"email_address\":\"sb-ioug541667209@personal.example.com\",\"account_id\":\"9R7FQFEQMZKN4\",\"account_status\":\"VERIFIED\",\"name\":{\"given_name\":\"John\",\"surname\":\"Doe\"},\"address\":{\"country_code\":\"AR\"}}},\"purchase_units\":[{\"reference_id\":\"default\",\"shipping\":{\"name\":{\"full_name\":\"John Doe\"},\"address\":{\"address_line_1\":\"Free Trade Zone\",\"admin_area_2\":\"Buenos Aires\",\"admin_area_1\":\"Buenos Aires\",\"postal_code\":\"B1675\",\"country_code\":\"AR\"}},\"payments\":{\"captures\":[{\"id\":\"72937302JW067653U\",\"status\":\"COMPLETED\",\"amount\":{\"currency_code\":\"USD\",\"value\":\"19.99\"},\"final_capture\":true,\"seller_protection\":{\"status\":\"ELIGIBLE\",\"dispute_categories\":[\"ITEM_NOT_RECEIVED\",\"UNAUTHORIZED_TRANSACTION\"]},\"seller_receivable_breakdown\":{\"gross_amount\":{\"currency_code\":\"USD\",\"value\":\"19.99\"},\"paypal_fee\":{\"currency_code\":\"USD\",\"value\":\"1.38\"},\"net_amount\":{\"currency_code\":\"USD\",\"value\":\"18.61\"}},\"links\":[{\"href\":\"https:\\/\\/api.sandbox.paypal.com\\/v2\\/payments\\/captures\\/72937302JW067653U\",\"rel\":\"self\",\"method\":\"GET\"},{\"href\":\"https:\\/\\/api.sandbox.paypal.com\\/v2\\/payments\\/captures\\/72937302JW067653U\\/refund\",\"rel\":\"refund\",\"method\":\"POST\"},{\"href\":\"https:\\/\\/api.sandbox.paypal.com\\/v2\\/checkout\\/orders\\/7BC00926YE4667946\",\"rel\":\"up\",\"method\":\"GET\"}],\"create_time\":\"2025-05-29T11:52:08Z\",\"update_time\":\"2025-05-29T11:52:08Z\"}]}}],\"payer\":{\"name\":{\"given_name\":\"John\",\"surname\":\"Doe\"},\"email_address\":\"sb-ioug541667209@personal.example.com\",\"payer_id\":\"9R7FQFEQMZKN4\",\"address\":{\"country_code\":\"AR\"}},\"links\":[{\"href\":\"https:\\/\\/api.sandbox.paypal.com\\/v2\\/checkout\\/orders\\/7BC00926YE4667946\",\"rel\":\"self\",\"method\":\"GET\"}]}', '2025-05-29 08:52:09', '2025-05-29 08:52:09');
 
 -- --------------------------------------------------------
 
@@ -188,7 +210,7 @@ INSERT INTO `usuarios` (`id`, `nombre`, `apellido`, `email`, `password`, `create
 (12, 'Valentìn', 'Quiroga', 'zerbini@gmail.com', '$2y$10$tVqTzoYyY2unwyxltbcU5Ohb3SydtQRdAdwdWS/l1qkpcKApeQkce', '2024-09-17 22:46:49', '2024-09-17 22:46:49', NULL, NULL),
 (13, 'dasdasd', 'sadasdasd', 'asdasdasd@gmail.com', '$2y$10$W5eG7l9eHdw.LWpN9j2FVOVDmZWefy/KkrjYuZOmos14qt3u3Qmgu', '2024-09-17 23:49:17', '2024-09-17 23:49:17', NULL, NULL),
 (14, 'camila', 'godoy', 'camiii@gmail.com', '$2y$10$YFGjwpGHGJt3WrdGmcSKYO0fBunkqBdHbG/3/KtNthoBMkjO/fzPy', '2024-09-18 00:14:36', '2024-09-18 00:14:36', NULL, NULL),
-(15, 'ivo', 'ferrer', 'ivosoloclash1@gmail.com', '$2y$10$IL2QCLhwKmissgivhZoSN.VgNcyHmb1rrvY/COQGk5jLh8sfKrSaC', '2024-09-23 20:59:44', '2025-04-11 11:07:44', 'a776e6fca55e56915d657c79ef7dc8e39f1892dc903e0f1bb0c752ebb156cb47d253d96c0eebb0df3cf41013d277be1e16eb', '2025-04-11 12:07:44'),
+(15, 'ivo', 'ferrer', 'ivosoloclash1@gmail.com', '$2y$10$IL2QCLhwKmissgivhZoSN.VgNcyHmb1rrvY/COQGk5jLh8sfKrSaC', '2024-09-23 20:59:44', '2025-06-10 16:07:42', '984448a07461164bdebe01783e0dd31dc7b2668fcd409d3c4e0539e2de9382295c452ce9e9de10a87e5ab1a04c08b7209368', '2025-06-10 17:07:42'),
 (16, 'bruno', 'cameille', 'brunocameille@alumnos.itr3.edu.ar', '$2y$10$Q22QRi.CCBISg2B1TwnaMOx4OvjwwzAkzNLho5I8.cN5wLyRQ00oy', '2024-09-24 20:53:34', '2024-09-24 20:54:05', '0f772d5d4f3fb465728325fac911dbd5c4a36c52515fc1380e1eccbe16e6086516350034b187ca2242f032bf2e120d9aaf7f', '2024-09-24 21:54:05'),
 (17, 'user', 'user', 'user@gmail.com', '$2y$10$diTjE0nSIw9F5B0vDwlhNehlpw6QIwWGxiY/H.Yqc5U.ir..iiaR.', '2024-10-01 22:47:48', '2024-10-01 22:47:48', NULL, NULL),
 (18, 'cami', 'godoy', 'cami@gmail.com', '$2y$10$MpA2jjBnCbiSgu83sg5LV..cJIyNed5UvzToh54mpfh8hQOsQ63.G', '2024-10-16 00:03:23', '2024-10-16 00:03:23', NULL, NULL),
@@ -218,6 +240,12 @@ ALTER TABLE `disenos`
 ALTER TABLE `dispositivos`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `codigo` (`codigo`);
+
+--
+-- Indices de la tabla `funcional`
+--
+ALTER TABLE `funcional`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indices de la tabla `horarios`
@@ -255,19 +283,25 @@ ALTER TABLE `disenos`
 -- AUTO_INCREMENT de la tabla `dispositivos`
 --
 ALTER TABLE `dispositivos`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT de la tabla `funcional`
+--
+ALTER TABLE `funcional`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `horarios`
 --
 ALTER TABLE `horarios`
-  MODIFY `idhorario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
+  MODIFY `idhorario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
 
 --
 -- AUTO_INCREMENT de la tabla `pagos`
 --
 ALTER TABLE `pagos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`

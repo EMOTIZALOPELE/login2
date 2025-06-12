@@ -178,36 +178,45 @@
 
     <script>
         // --- CONFIGURACIÓN ---
-        const ESP32_IP = '10.81.11.81'; // ¡MUY IMPORTANTE! Usa la IP que te da el Monitor Serie.
-        const URL_BASE_CI = '<?= base_url() ?>'; // URL base de tu proyecto CodeIgniter
+        // 1. Leemos el ID del dispositivo que guardamos en la página anterior
+        const dispositivoId = sessionStorage.getItem('selected_device_id');
 
+        // 2. Si por alguna razón no hay un ID, redirigimos por seguridad
+        if (!dispositivoId) {
+            alert("Error: No se ha seleccionado ningún dispositivo. Volviendo al inicio.");
+            window.location.href = '<?= base_url('/irainicio') ?>';
+        }
+        
+         // AHORA USAMOS EL HOSTNAME MDNS EN LUGAR DE LA IP
+        const ESP32_HOSTNAME = 'http://345f45aa0804.local'; // <-- ¡ESTE ES EL CAMBIO!
+    
+        const URL_BASE_CI = '<?= base_url() ?>'; 
         const statusElement = document.getElementById('estado');
         const servoIcon = document.getElementById('servoIcon');
 
         // --- FUNCIÓN PRINCIPAL DE CONTROL ---
+        // --- FUNCIÓN PRINCIPAL DE CONTROL (CORREGIDA) ---
         function controlarServo(comando) {
             const endpoint = (comando === 'abierto') ? 'Open' : 'Close';
             
-            // 1. Enviar orden al ESP32 para mover el servo
+            // 1. Enviar orden al ESP32 para mover el servo físicamente
             fetch(`http://${ESP32_IP}/servo${endpoint}`)
                 .then(response => {
                     if (!response.ok) {
-                        // Si falla la conexión con el ESP32, muestra una alerta.
                         throw new Error('No se pudo conectar con el dispositivo ESP32.');
                     }
                     console.log(`Orden "${comando}" enviada al ESP32 con éxito.`);
                     // 2. Si la orden al ESP32 fue exitosa, actualizamos el estado en el backend
-                    return fetch(`${URL_BASE_CI}/funcional/actualizarEstado/${comando}`);
+                    return fetch(`${URL_BASE_CI}/funcional/actualizarEstado/${dispositivoId}/${comando}`);
                 })
                 .then(response => response.json())
                 .then(data => {
                     if (data.status === 'ok') {
                         console.log('Estado actualizado en la BD:', data.estado);
-                        // Actualizar la UI con la respuesta final del servidor
                         actualizarUI(data.estado);
                     } else {
-                        // El backend devolvió un error
-                        throw new Error('El servidor no pudo actualizar el estado.');
+                        // CORRECCIÓN AQUÍ: Ahora busca en 'data.errores' en lugar de 'data.messages.error'
+                        throw new Error(data.errores || 'El servidor no pudo actualizar el estado.');
                     }
                 })
                 .catch(error => {
@@ -218,7 +227,8 @@
 
         // --- FUNCIONES DE ACTUALIZACIÓN DE LA INTERFAZ ---
         function actualizarEstadoDesdeServidor() {
-            fetch(`${URL_BASE_CI}/funcional/obtenerUltimoEstado`)
+            // AHORA PEDIMOS EL ESTADO DEL DISPOSITIVO ESPECÍFICO
+            fetch(`${URL_BASE_CI}/funcional/obtenerUltimoEstado/${dispositivoId}`)
                 .then(res => res.json())
                 .then(data => {
                     if (data && data.estado) {
@@ -236,10 +246,7 @@
         }
 
         // --- EJECUCIÓN INICIAL Y PERIÓDICA ---
-        // Actualizar el estado cada 5 segundos para mantener la sincronización
         setInterval(actualizarEstadoDesdeServidor, 5000);
-
-        // Actualizar al cargar la página por primera vez
         document.addEventListener('DOMContentLoaded', actualizarEstadoDesdeServidor);
     </script>
 </body>

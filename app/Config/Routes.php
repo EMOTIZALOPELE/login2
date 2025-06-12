@@ -42,11 +42,9 @@ $routes->post('/actualizar_nombre_tarjeta', 'HorariosController::actualizarNombr
 
 
 // PÁGINA DE SERVO
-$routes->get('/funcional', 'ServoController::nazi');
-$routes->get('/funcional/actualizarEstado/(:any)', 'ServoController::actualizarEstado/$1');
-$routes->get('/funcional/obtenerUltimoEstado', 'ServoController::obtenerUltimoEstado');
-$routes->get('/funcional/obtenerEstado', 'ServoController::obtenerEstado');
-$routes->get('/masivo', 'ServoController::estado');
+$routes->get('/masivo', 'ServoController::estado'); // Carga la vista de control
+$routes->get('/funcional/actualizarEstado/(:num)/(:any)', 'ServoController::actualizarEstado/$1/$2');
+$routes->get('/funcional/obtenerUltimoEstado/(:num)', 'ServoController::obtenerUltimoEstado/$1');
 
 
 // INICIO 2

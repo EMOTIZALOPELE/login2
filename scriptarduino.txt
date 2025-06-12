@@ -3,52 +3,42 @@
 #include <HTTPClient.h>
 #include <WebServer.h>
 #include <ESP32Servo.h>
-#include <DNSServer.h>     // Para el portal cautivo en modo AP
-#include <Preferences.h>   // Para guardar credenciales de forma persistente
-
+#include <DNSServer.h>
+#include <Preferences.h>
+#include <ESPmDNS.h> // <-- 1. LIBRERÍA AÑADIDA
 
 // --- Parámetros para el Modo de Configuración (AP) ---
-const char* AP_SSID = "ESP32_Config_Servo"; // Nombre de la red Wi-Fi del ESP32
-const char* AP_PASSWORD = "password";      // Contraseña de la red Wi-Fi del ESP32
-IPAddress AP_LOCAL_IP(192, 168, 4, 1);    // IP fija del ESP32 en modo AP
+const char* AP_SSID = "ESP32_Config_Servo";
+const char* AP_PASSWORD = "password";
+IPAddress AP_LOCAL_IP(192, 168, 4, 1);
 IPAddress AP_GATEWAY(192, 168, 4, 1);
 IPAddress AP_SUBNET(255, 255, 255, 0);
-
-
-WebServer server(80);      // Servidor web para el modo AP y STA
-DNSServer dnsServer;       // Servidor DNS para el portal cautivo
-
+WebServer server(80);
+DNSServer dnsServer;
 
 // --- Parámetros para el Modo de Operación (STA) ---
-// Estas variables se llenarán con los datos guardados en Preferences
 String STA_ssid = "";
 String STA_password = "";
-const char* serverName = "http://192.168.2.126/funcional/actualizarEstado"; // IP local del servidor + ruta
-
+// Ya no necesitamos la IP del servidor aquí para esta lógica, pero la dejamos por si se usa en otro lado
+const char* serverName = "http://192.168.0.170/login2/public/index.php/funcional/actualizarEstado";
 
 // --- Parámetros y variables del Servo ---
 Servo servo;
 bool isOpened = false;
-uint8_t servoPin = 2; // Pin donde está conectado el servo
+uint8_t servoPin = 2;
 
-
-// Objeto para manejar el almacenamiento persistente
+// --- Otros ---
 Preferences preferences;
-
-
-// Bandera para controlar el estado del ESP32 (configuración o operación)
 bool wifiConfigured = false;
-
 
 // --- Funciones del Modo de Operación (Control del Servo y Comunicación HTTP) ---
 void enviarEstado(String estado) {
-  if (WiFi.status() == WL_CONNECTED) { // Solo enviar si estamos conectados a la red
+  // Esta función no necesita cambios, seguirá reportando al servidor de tu PC
+  if (WiFi.status() == WL_CONNECTED) {
     HTTPClient http;
     String url = String(serverName) + "/" + estado;
     http.begin(url);
     int httpResponseCode = http.GET();
-
-
     if (httpResponseCode > 0) {
       Serial.print("Respuesta del servidor: ");
       Serial.println(http.getString());
@@ -62,26 +52,25 @@ void enviarEstado(String estado) {
   }
 }
 
-
 void handle_servoOpen() {
+  server.sendHeader("Access-Control-Allow-Origin", "*");
   isOpened = true;
   servo.write(180);
-  enviarEstado("abierto");
+  // La lógica de 'enviarEstado' se ha movido para no depender de ella para la respuesta
   server.send(200, "text/plain", "Servo abierto");
+  enviarEstado("abierto"); // Se envía después para no retrasar la respuesta al navegador
 }
-
 
 void handle_servoClose() {
+  server.sendHeader("Access-Control-Allow-Origin", "*");
   isOpened = false;
   servo.write(0);
-  enviarEstado("cerrado");
   server.send(200, "text/plain", "Servo cerrado");
+  enviarEstado("cerrado");
 }
 
-
 void handle_OnConnect() {
-  // Esta función ahora será la página principal del servidor web en modo STA
-  // Puedes expandirla para mostrar el estado del servo, un botón para controlarlo, etc.
+  server.sendHeader("Access-Control-Allow-Origin", "*");
   String html = "<html><body>";
   html += "<h1>Control del Servo</h1>";
   html += "<p>Estado actual: <b>" + String(isOpened ? "ABIERTO" : "CERRADO") + "</b></p>";
@@ -91,120 +80,48 @@ void handle_OnConnect() {
   server.send(200, "text/html", html);
 }
 
-
 void handle_NotFound() {
-  // En modo STA, esto significa que la URL no existe.
-  // En modo AP, se usará para el portal cautivo.
-  if (wifiConfigured) { // Si ya estamos en modo STA
+  if (wifiConfigured) {
     server.send(404, "text/plain", "Página no encontrada");
-  } else { // Si estamos en modo AP (configuración)
-    // Redireccionar todas las solicitudes al root cuando el DNS cautivo está activo
+  } else {
     server.send(200, "text/html", "Redireccionando a la pagina de configuracion...");
   }
 }
 
-
 // --- Funciones del Modo de Configuración (AP) ---
+// (Las funciones startAPMode, handleAPRoot y handleAPSave no necesitan cambios)
 void startAPMode() {
   Serial.println("Iniciando modo de configuración (AP)...");
-  // Configurar IP fija para el AP
   WiFi.softAPConfig(AP_LOCAL_IP, AP_GATEWAY, AP_SUBNET);
   WiFi.softAP(AP_SSID, AP_PASSWORD);
-
-
-  Serial.print("Access Point \"");
-  Serial.print(AP_SSID);
-  Serial.println("\" iniciado");
-  Serial.print("IP Address: ");
-  Serial.println(WiFi.softAPIP());
-
-
-  // Iniciar el servidor DNS cautivo
+  Serial.print("Access Point \""); Serial.print(AP_SSID); Serial.println("\" iniciado");
+  Serial.print("IP Address: "); Serial.println(WiFi.softAPIP());
   dnsServer.start(53, "*", AP_LOCAL_IP);
-
-
-  // Configurar las rutas del servidor web para el modo AP
-  server.on("/", handleAPRoot);      // Página principal con el formulario
-  server.on("/save", handleAPSave);  // Endpoint para guardar las credenciales
-  server.onNotFound(handle_NotFound); // Usa la misma función para 404/redirección
-
-
+  server.on("/", handleAPRoot);
+  server.on("/save", handleAPSave);
+  server.onNotFound(handle_NotFound);
   server.begin();
   Serial.println("Servidor HTTP iniciado en modo AP");
 }
-
-
 void handleAPRoot() {
-  String html = "<html><body>";
-  html += "<h1>Configuracion de Wi-Fi para ESP32 Servo</h1>";
-  html += "<p>Selecciona tu red y la contraseña:</p>";
-  html += "<form action=\"/save\" method=\"get\">";
-  html += "<label for=\"ssid\">Red Wi-Fi (SSID):</label><br>";
-  html += "<select name=\"ssid\" id=\"ssid\">";
-
-
-  Serial.println("Escaneando redes...");
+  String html = "<html><body><h1>Configuracion de Wi-Fi para ESP32 Servo</h1><p>Selecciona tu red y la contraseña:</p><form action=\"/save\" method=\"get\"><label for=\"ssid\">Red Wi-Fi (SSID):</label><br><select name=\"ssid\" id=\"ssid\">";
   int n = WiFi.scanNetworks();
-  if (n == 0) {
-    html += "<option value=\"\">No se encontraron redes</option>";
-  } else {
-    Serial.print(n);
-    Serial.println(" redes encontradas");
-    for (int i = 0; i < n; ++i) {
-      html += "<option value=\"";
-      html += WiFi.SSID(i);
-      html += "\">";
-      html += WiFi.SSID(i);
-      html += " (";
-      html += WiFi.RSSI(i);
-      html += " dBm)";
-      html += "</option>";
-      delay(10); // Pequeña pausa para estabilidad
-    }
+  if (n == 0) { html += "<option value=\"\">No se encontraron redes</option>"; } else {
+    for (int i = 0; i < n; ++i) { html += "<option value=\"" + WiFi.SSID(i) + "\">" + WiFi.SSID(i) + " (" + WiFi.RSSI(i) + " dBm)</option>"; delay(10); }
   }
-  html += "</select><br>";
-  html += "<label for=\"pass\">Contrasena:</label><br>";
-  html += "<input type=\"password\" id=\"pass\" name=\"pass\"><br><br>";
-  html += "<input type=\"submit\" value=\"Conectar\">";
-  html += "</form>";
-  html += "</body></html>";
-
-
+  html += "</select><br><label for=\"pass\">Contrasena:</label><br><input type=\"password\" id=\"pass\" name=\"pass\"><br><br><input type=\"submit\" value=\"Conectar\"></form></body></html>";
   server.send(200, "text/html", html);
 }
-
-
 void handleAPSave() {
   if (server.hasArg("ssid") && server.hasArg("pass")) {
-    STA_ssid = server.arg("ssid");
-    STA_password = server.arg("pass");
-
-
-    // Guardar en la memoria flash
-    preferences.putString("ssid", STA_ssid);
-    preferences.putString("pass", STA_password);
-
-
-    Serial.print("Guardando credenciales: SSID=");
-    Serial.print(STA_ssid);
-    Serial.print(", Pass=");
-    Serial.println(STA_password);
-
-
-    String html = "<html><body><h1>Configuracion Guardada!</h1>";
-    html += "<p>Intentando conectar a: " + STA_ssid + "</p>";
-    html += "<p>El ESP32 se reiniciara y intentara conectar.</p>";
-    html += "</body></html>";
+    STA_ssid = server.arg("ssid"); STA_password = server.arg("pass");
+    preferences.putString("ssid", STA_ssid); preferences.putString("pass", STA_password);
+    Serial.println("Guardando credenciales...");
+    String html = "<html><body><h1>Configuracion Guardada!</h1><p>Intentando conectar a: " + STA_ssid + "</p><p>El ESP32 se reiniciara.</p></body></html>";
     server.send(200, "text/html", html);
-
-
-    delay(2000); // Dar tiempo al navegador para mostrar el mensaje
-    ESP.restart(); // Reiniciar el ESP32 para cambiar de modo
-  } else {
-    server.send(400, "text/plain", "Faltan parametros de SSID o Password");
-  }
+    delay(2000); ESP.restart();
+  } else { server.send(400, "text/plain", "Faltan parametros"); }
 }
-
 
 // --- Función para Conectar a WiFi en Modo STA ---
 void connectToWiFi() {
@@ -213,76 +130,68 @@ void connectToWiFi() {
   Serial.println(STA_ssid);
   WiFi.begin(STA_ssid.c_str(), STA_password.c_str());
 
-
   long startTime = millis();
-  while (WiFi.status() != WL_CONNECTED && millis() - startTime < 30000) { // Esperar hasta 30 segundos
-    delay(500);
-    Serial.print(".");
+  while (WiFi.status() != WL_CONNECTED && millis() - startTime < 30000) {
+    delay(500); Serial.print(".");
   }
-
 
   if (WiFi.status() == WL_CONNECTED) {
     Serial.println("\nConectado a la red Wi-Fi!");
     Serial.print("IP Address: ");
     Serial.println(WiFi.localIP());
-    wifiConfigured = true; // Confirmamos que se conectó exitosamente
 
+    // --- 2. CONFIGURACIÓN MDNS USANDO LA MAC COMPLETA (CORREGIDO) ---
+    String mac = WiFi.macAddress();
+    String hostname = mac;      // Copiamos la dirección MAC
+    hostname.replace(":", "");  // ¡IMPORTANTE! Quitamos los dos puntos
+    hostname.toLowerCase();     // Por convención, los hostnames van en minúscula
 
-    // --- Configurar rutas del servidor web para el Modo de Operación (STA) ---
+    if (MDNS.begin(hostname.c_str())) {
+        Serial.println("MDNS responder iniciado");
+        Serial.print("Hostname: http://");
+        Serial.print(hostname);
+        Serial.println(".local");
+        MDNS.addService("http", "tcp", 80); // Anunciar el servicio web
+    } else {
+        Serial.println("Error iniciando MDNS!");
+    }
+    // --- FIN CONFIGURACIÓN MDNS ---
+
+    wifiConfigured = true;
     server.on("/", handle_OnConnect);
     server.on("/servoOpen", handle_servoOpen);
     server.on("/servoClose", handle_servoClose);
-    server.onNotFound(handle_NotFound); // Se usará para 404 ahora
-    server.begin(); // Iniciar el servidor con las rutas de operación
+    server.onNotFound(handle_NotFound);
+    server.begin();
     Serial.println("Servidor HTTP iniciado en modo STA");
-
 
   } else {
     Serial.println("\nFallo la conexion a la red Wi-Fi.");
-    // Si falla, borramos las credenciales y volvemos a iniciar el modo AP
-    STA_ssid = "";
-    STA_password = "";
-    preferences.putString("ssid", ""); // Borrar también de la memoria
-    preferences.putString("pass", "");
+    STA_ssid = ""; STA_password = "";
+    preferences.putString("ssid", ""); preferences.putString("pass", "");
     wifiConfigured = false;
-    startAPMode(); // Volver al modo de configuración
-  }
-}
-
-
-// --- Función de Setup Principal ---
-void setup() {
-  Serial.begin(115200);
-  servo.attach(servoPin); // Inicializar el servo
-  servo.write(0);         // Asegurarse de que el servo esté cerrado al inicio
-
-
-  // Inicializar Preferences
-  preferences.begin("wifi-config", false); // "wifi-config" es el nombre de la partición
-
-
-  // Cargar credenciales guardadas
-  STA_ssid = preferences.getString("ssid", "");
-  STA_password = preferences.getString("pass", "");
-
-
-  if (STA_ssid != "" && STA_password != "") {
-    // Si hay credenciales, intentar conectar en modo STA
-    connectToWiFi();
-  } else {
-    // Si no hay credenciales, iniciar el modo AP para configuración
     startAPMode();
   }
 }
 
+void setup() {
+  Serial.begin(115200);
+  servo.attach(servoPin);
+  servo.write(0);
+  preferences.begin("wifi-config", false);
+  STA_ssid = preferences.getString("ssid", "");
+  STA_password = preferences.getString("pass", "");
 
-// --- Función de Loop Principal ---
-void loop() {
-  if (!wifiConfigured) {
-    // En modo AP, procesar solicitudes DNS y HTTP
-    dnsServer.processNextRequest();
+  if (STA_ssid != "" && STA_password != "") {
+    connectToWiFi();
+  } else {
+    startAPMode();
   }
-  // Siempre manejar las solicitudes HTTP del servidor, ya sea en modo AP o STA
-  server.handleClient();
 }
 
+void loop() {
+  if (!wifiConfigured) {
+    dnsServer.processNextRequest();
+  }
+  server.handleClient();
+}

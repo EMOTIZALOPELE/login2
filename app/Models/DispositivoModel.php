@@ -8,18 +8,18 @@ class DispositivoModel extends Model
     protected $table = 'dispositivos';
     protected $primaryKey = 'id';
     protected $allowedFields = [
-        'mac_address', 
+        'codigo',
         'Nombre_tarjeta',
         'usuario_id', 
         'created_at', 
         'updated_at',
-        'esta_usado'  
+        'esta_usado',
+        'estado'
     ];
 
-    // Función útil para verificar si una MAC está disponible
-    public function macDisponible($mac)
+    // Función útil para verificar si un código está disponible
+    public function codigoDisponible($codigo)
     {
-        // CAMBIADO: Ahora busca en la columna 'mac_address'
-        return $this->where('mac_address', $mac)->where('esta_usado', 0)->first();
+        return $this->where('codigo', $codigo)->where('esta_usado', 0)->first();
     }
 }

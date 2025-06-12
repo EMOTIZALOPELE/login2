@@ -178,7 +178,7 @@
 
     <script>
         // --- CONFIGURACIÓN ---
-        const ESP32_IP = '192.168.0.30'; // ¡MUY IMPORTANTE! Usa la IP que te da el Monitor Serie.
+        const ESP32_IP = '10.81.11.81'; // ¡MUY IMPORTANTE! Usa la IP que te da el Monitor Serie.
         const URL_BASE_CI = '<?= base_url() ?>'; // URL base de tu proyecto CodeIgniter
 
         const statusElement = document.getElementById('estado');

@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\HorariosModel;
+use App\Models\DispositivoModel; 
 use App\Models\DisenoModel;
 use CodeIgniter\API\ResponseTrait; // Importar ResponseTrait para respuestas JSON
 
@@ -17,6 +18,7 @@ class HorariosController extends BaseController
     {
         $this->horariosModel = new HorariosModel();
         $this->disenoModel = new DisenoModel();
+        $this->dispositivoModel = new DispositivoModel();
     }
 
     public function index()
@@ -386,7 +388,7 @@ class HorariosController extends BaseController
     }
 
     public function guardarTarjeta()
-{
+    {
     $session = \Config\Services::session();
     $usuario_id = $session->get('id');
 
@@ -420,7 +422,103 @@ class HorariosController extends BaseController
         log_message('error', 'Error al crear la tarjeta: ' . $e->getMessage());
         return redirect()->back()->withInput()->with('error', 'Error al crear la tarjeta: ' . $e->getMessage());
     }
-}
+    }
 
+    public function reclamarDispositivoPorMac()
+    {
+        // Para seguridad, nos aseguramos de que esta función solo responda a peticiones AJAX
+        if (!$this->request->isAJAX()) {
+            return $this->failForbidden('Acceso no permitido.');
+        }
+
+        // 1. Obtener la MAC del formulario y el ID del usuario de la sesión
+        $macAddress = $this->request->getPost('mac_address');
+        $usuarioId = session()->get('id');
+
+        if (empty($macAddress) || empty($usuarioId)) {
+            return $this->fail('Faltan datos o no ha iniciado sesión.', 400);
+        }
+
+        // 2. Buscamos un dispositivo que coincida con la MAC y que NO esté usado
+        // Usamos el modelo que ya está inicializado en el constructor
+        $dispositivo = $this->dispositivoModel
+                            ->where('mac_address', $macAddress) // Usando la columna renombrada
+                            ->where('esta_usado', 0)
+                            ->first();
+
+        if ($dispositivo) {
+            // 3. ¡Éxito! El dispositivo está disponible. Lo "reclamamos".
+            $dataToUpdate = [
+                'usuario_id' => $usuarioId,
+                'esta_usado' => 1,
+                'updated_at' => date('Y-m-d H:i:s')
+            ];
+            
+            $this->dispositivoModel->update($dispositivo['id'], $dataToUpdate);
+
+            // 4. Creamos automáticamente una nueva "tarjeta de horario" para este dispositivo
+            // Usamos el modelo que ya está inicializado en el constructor
+            $this->horariosModel->insert([
+                'usuario_id'     => $usuarioId,
+                'dispositivo_id' => $dispositivo['id'], // El vínculo clave que añadimos a la BD
+                'nombre_tarjeta' => 'Dispositivo ' . substr($macAddress, -5), // Un nombre por defecto
+                // Asignamos horarios por defecto para que no esté vacía
+                'ventana_apertura'  => '07:00:00',
+                'ventana_cierre'    => '20:00:00',
+                'cortina_apertura'  => '07:00:00',
+                'cortina_cierre'    => '20:00:00',
+                'postigon_apertura' => '07:00:00',
+                'postigon_cierre'   => '20:00:00',
+            ]);
+            
+            // Devolvemos una respuesta de éxito
+            return $this->respondCreated([
+                'success' => true,
+                'message' => '¡Dispositivo reclamado y tarjeta creada con éxito! La página se recargará.'
+            ]);
+
+        } else {
+            // Si no se encontró un dispositivo disponible, averiguamos por qué
+            $dispositivoExistente = $this->dispositivoModel->where('mac_address', $macAddress)->first();
+            
+            if ($dispositivoExistente) {
+                return $this->fail('Este dispositivo ya ha sido reclamado por otro usuario.', 409); // 409: Conflicto
+            } else {
+                return $this->failNotFound('Dispositivo no encontrado. Verifique la dirección MAC.');
+            }
+        }
+    }
+
+    public function seleccionarDispositivoPorNombre()
+    {
+        if (!$this->request->isAJAX()) {
+            return $this->failForbidden('Acceso no permitido.');
+        }
+
+        $nombreTarjeta = $this->request->getPost('nombre_tarjeta');
+        $usuarioId = session()->get('id');
+
+        if (empty($nombreTarjeta) || empty($usuarioId)) {
+            return $this->fail('Falta el nombre de la tarjeta o no ha iniciado sesión.', 400);
+        }
+
+        // Buscamos en la tabla de horarios una tarjeta con ese nombre que pertenezca al usuario
+        $horario = $this->horariosModel
+                        ->where('nombre_tarjeta', $nombreTarjeta)
+                        ->where('usuario_id', $usuarioId)
+                        ->first();
+
+        if (!$horario) {
+            return $this->failNotFound('No se encontró una tarjeta con ese nombre.');
+        }
+
+        // Si la tarjeta no tiene un dispositivo asociado, devolvemos un error
+        if (empty($horario['dispositivo_id'])) {
+            return $this->fail('Esta tarjeta no está vinculada a un dispositivo físico.', 409);
+        }
+
+        // Éxito: Devolvemos el ID del dispositivo para que el frontend pueda redirigir
+        return $this->respond(['success' => true, 'dispositivo_id' => $horario['dispositivo_id']]);
+    }
 
 }

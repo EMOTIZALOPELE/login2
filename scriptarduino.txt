@@ -6,6 +6,7 @@
 #include <DNSServer.h>     // Para el portal cautivo en modo AP
 #include <Preferences.h>   // Para guardar credenciales de forma persistente
 
+
 // --- Parámetros para el Modo de Configuración (AP) ---
 const char* AP_SSID = "ESP32_Config_Servo"; // Nombre de la red Wi-Fi del ESP32
 const char* AP_PASSWORD = "password";      // Contraseña de la red Wi-Fi del ESP32
@@ -13,8 +14,10 @@ IPAddress AP_LOCAL_IP(192, 168, 4, 1);    // IP fija del ESP32 en modo AP
 IPAddress AP_GATEWAY(192, 168, 4, 1);
 IPAddress AP_SUBNET(255, 255, 255, 0);
 
+
 WebServer server(80);      // Servidor web para el modo AP y STA
 DNSServer dnsServer;       // Servidor DNS para el portal cautivo
+
 
 // --- Parámetros para el Modo de Operación (STA) ---
 // Estas variables se llenarán con los datos guardados en Preferences
@@ -22,16 +25,20 @@ String STA_ssid = "";
 String STA_password = "";
 const char* serverName = "http://192.168.2.126/funcional/actualizarEstado"; // IP local del servidor + ruta
 
+
 // --- Parámetros y variables del Servo ---
 Servo servo;
 bool isOpened = false;
 uint8_t servoPin = 2; // Pin donde está conectado el servo
 
+
 // Objeto para manejar el almacenamiento persistente
 Preferences preferences;
 
+
 // Bandera para controlar el estado del ESP32 (configuración o operación)
 bool wifiConfigured = false;
+
 
 // --- Funciones del Modo de Operación (Control del Servo y Comunicación HTTP) ---
 void enviarEstado(String estado) {
@@ -40,6 +47,7 @@ void enviarEstado(String estado) {
     String url = String(serverName) + "/" + estado;
     http.begin(url);
     int httpResponseCode = http.GET();
+
 
     if (httpResponseCode > 0) {
       Serial.print("Respuesta del servidor: ");
@@ -54,6 +62,7 @@ void enviarEstado(String estado) {
   }
 }
 
+
 void handle_servoOpen() {
   isOpened = true;
   servo.write(180);
@@ -61,12 +70,14 @@ void handle_servoOpen() {
   server.send(200, "text/plain", "Servo abierto");
 }
 
+
 void handle_servoClose() {
   isOpened = false;
   servo.write(0);
   enviarEstado("cerrado");
   server.send(200, "text/plain", "Servo cerrado");
 }
+
 
 void handle_OnConnect() {
   // Esta función ahora será la página principal del servidor web en modo STA
@@ -80,6 +91,7 @@ void handle_OnConnect() {
   server.send(200, "text/html", html);
 }
 
+
 void handle_NotFound() {
   // En modo STA, esto significa que la URL no existe.
   // En modo AP, se usará para el portal cautivo.
@@ -91,6 +103,7 @@ void handle_NotFound() {
   }
 }
 
+
 // --- Funciones del Modo de Configuración (AP) ---
 void startAPMode() {
   Serial.println("Iniciando modo de configuración (AP)...");
@@ -98,23 +111,28 @@ void startAPMode() {
   WiFi.softAPConfig(AP_LOCAL_IP, AP_GATEWAY, AP_SUBNET);
   WiFi.softAP(AP_SSID, AP_PASSWORD);
 
+
   Serial.print("Access Point \"");
   Serial.print(AP_SSID);
   Serial.println("\" iniciado");
   Serial.print("IP Address: ");
   Serial.println(WiFi.softAPIP());
 
+
   // Iniciar el servidor DNS cautivo
   dnsServer.start(53, "*", AP_LOCAL_IP);
+
 
   // Configurar las rutas del servidor web para el modo AP
   server.on("/", handleAPRoot);      // Página principal con el formulario
   server.on("/save", handleAPSave);  // Endpoint para guardar las credenciales
   server.onNotFound(handle_NotFound); // Usa la misma función para 404/redirección
 
+
   server.begin();
   Serial.println("Servidor HTTP iniciado en modo AP");
 }
+
 
 void handleAPRoot() {
   String html = "<html><body>";
@@ -123,6 +141,7 @@ void handleAPRoot() {
   html += "<form action=\"/save\" method=\"get\">";
   html += "<label for=\"ssid\">Red Wi-Fi (SSID):</label><br>";
   html += "<select name=\"ssid\" id=\"ssid\">";
+
 
   Serial.println("Escaneando redes...");
   int n = WiFi.scanNetworks();
@@ -150,28 +169,34 @@ void handleAPRoot() {
   html += "</form>";
   html += "</body></html>";
 
+
   server.send(200, "text/html", html);
 }
+
 
 void handleAPSave() {
   if (server.hasArg("ssid") && server.hasArg("pass")) {
     STA_ssid = server.arg("ssid");
     STA_password = server.arg("pass");
 
+
     // Guardar en la memoria flash
     preferences.putString("ssid", STA_ssid);
     preferences.putString("pass", STA_password);
+
 
     Serial.print("Guardando credenciales: SSID=");
     Serial.print(STA_ssid);
     Serial.print(", Pass=");
     Serial.println(STA_password);
 
+
     String html = "<html><body><h1>Configuracion Guardada!</h1>";
     html += "<p>Intentando conectar a: " + STA_ssid + "</p>";
     html += "<p>El ESP32 se reiniciara y intentara conectar.</p>";
     html += "</body></html>";
     server.send(200, "text/html", html);
+
 
     delay(2000); // Dar tiempo al navegador para mostrar el mensaje
     ESP.restart(); // Reiniciar el ESP32 para cambiar de modo
@@ -180,6 +205,7 @@ void handleAPSave() {
   }
 }
 
+
 // --- Función para Conectar a WiFi en Modo STA ---
 void connectToWiFi() {
   WiFi.mode(WIFI_STA);
@@ -187,17 +213,20 @@ void connectToWiFi() {
   Serial.println(STA_ssid);
   WiFi.begin(STA_ssid.c_str(), STA_password.c_str());
 
+
   long startTime = millis();
   while (WiFi.status() != WL_CONNECTED && millis() - startTime < 30000) { // Esperar hasta 30 segundos
     delay(500);
     Serial.print(".");
   }
 
+
   if (WiFi.status() == WL_CONNECTED) {
     Serial.println("\nConectado a la red Wi-Fi!");
     Serial.print("IP Address: ");
     Serial.println(WiFi.localIP());
     wifiConfigured = true; // Confirmamos que se conectó exitosamente
+
 
     // --- Configurar rutas del servidor web para el Modo de Operación (STA) ---
     server.on("/", handle_OnConnect);
@@ -206,6 +235,7 @@ void connectToWiFi() {
     server.onNotFound(handle_NotFound); // Se usará para 404 ahora
     server.begin(); // Iniciar el servidor con las rutas de operación
     Serial.println("Servidor HTTP iniciado en modo STA");
+
 
   } else {
     Serial.println("\nFallo la conexion a la red Wi-Fi.");
@@ -219,18 +249,22 @@ void connectToWiFi() {
   }
 }
 
+
 // --- Función de Setup Principal ---
 void setup() {
   Serial.begin(115200);
   servo.attach(servoPin); // Inicializar el servo
   servo.write(0);         // Asegurarse de que el servo esté cerrado al inicio
 
+
   // Inicializar Preferences
   preferences.begin("wifi-config", false); // "wifi-config" es el nombre de la partición
+
 
   // Cargar credenciales guardadas
   STA_ssid = preferences.getString("ssid", "");
   STA_password = preferences.getString("pass", "");
+
 
   if (STA_ssid != "" && STA_password != "") {
     // Si hay credenciales, intentar conectar en modo STA
@@ -241,6 +275,7 @@ void setup() {
   }
 }
 
+
 // --- Función de Loop Principal ---
 void loop() {
   if (!wifiConfigured) {
@@ -250,3 +285,4 @@ void loop() {
   // Siempre manejar las solicitudes HTTP del servidor, ya sea en modo AP o STA
   server.handleClient();
 }
+

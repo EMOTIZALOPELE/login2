@@ -64,6 +64,7 @@ $routes->post('diseno/guardar', 'DisenoController::guardar'); // Guarda el diseÃ
 // PAYPAL
 $routes->post('/paypal/createOrder', 'PayPalController::createOrder');
 $routes->post('/paypal/captureOrder', 'PayPalController::captureOrder');
+
 // Rutas para horarios de ventana
 $routes->get('horario-ventana/configurar/(:num)', 'HorarioVentanaController::configurar/$1');
 $routes->get('api/horario-ventana/(:num)', 'HorarioVentanaController::index/$1');
@@ -76,6 +77,8 @@ $routes->post('diseno/guardar', 'DisenoController::guardar');
 
 // Rutas para horarios
 $routes->get('horarios/configuracion/(:num)', 'HorariosController::configuracion/$1');
+$routes->post('/dispositivos/reclamar', 'HorariosController::reclamarDispositivoPorMac');
+$routes->post('/servos/seleccionar', 'HorariosController::seleccionarDispositivoPorNombre');
 $routes->post('horarios/guardar', 'HorariosController::guardar');
 
 

@@ -13,17 +13,20 @@ class HorariosModel extends Model
     
     // Definir los campos que se pueden insertar/actualizar
     protected $allowedFields = [
+        'dispositivo_id', 
+        'diseno_id',
         'ventana_apertura',
         'ventana_cierre',
         'cortina_apertura',
         'cortina_cierre',
         'postigon_apertura',
         'postigon_cierre',
+        'dias_semana',
+        'created_at',
+        'updated_at',
         'usuario_id',
-        'nombre_tarjeta',
-        'diseno_id',
-        'dias_semana'
-    ]; 
+        'nombre_tarjeta'
+    ];
 
     protected $beforeInsert = ['setUsuarioId'];
     protected $beforeUpdate = ['checkUsuarioId'];

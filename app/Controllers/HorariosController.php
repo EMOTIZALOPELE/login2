@@ -13,6 +13,7 @@ class HorariosController extends BaseController
 
     protected $horariosModel;
     protected $disenoModel;
+    protected $dispositivoModel; // Añadir propiedad
 
     public function __construct()
     {
@@ -425,97 +426,54 @@ class HorariosController extends BaseController
     }
 
    public function reclamarDispositivoPorMac()
-{
-    // Usamos el ResponseTrait que ya tienes en tu controlador para respuestas JSON
-    if (!$this->request->isAJAX()) {
-        return $this->failForbidden('Acceso no permitido.');
-    }
+    {
+        if (!$this->request->isAJAX()) { return $this->failForbidden('Acceso no permitido.'); }
+        $macAddress = $this->request->getPost('mac_address');
+        $usuarioId = session()->get('id');
+        if (empty($macAddress) || empty($usuarioId)) { return $this->fail('Faltan datos.', 400); }
 
-    $macAddress = $this->request->getPost('mac_address');
-    $usuarioId = session()->get('id');
+        $dispositivo = $this->dispositivoModel->where('codigo', $macAddress)->first();
 
-    if (empty($macAddress) || empty($usuarioId)) {
-        return $this->fail('Faltan datos o no ha iniciado sesión.', 400);
-    }
-
-    $dispositivoModel = new DispositivoModel();
-    
-    // Buscamos un dispositivo que coincida con la MAC (que está en la columna 'codigo')
-    $dispositivo = $dispositivoModel->where('codigo', $macAddress)->first();
-
-    if (!$dispositivo) {
-        return $this->failNotFound('Dispositivo no encontrado. Verifique la dirección MAC.');
-    }
-    
-    if ($dispositivo['esta_usado'] == 1) {
-        if ($dispositivo['usuario_id'] == $usuarioId) {
-            return $this->fail('Ya has reclamado este dispositivo anteriormente.', 409);
-        } else {
-            return $this->fail('Este dispositivo ya pertenece a otro usuario.', 409); 
+        if (!$dispositivo) {
+            return $this->failNotFound('Dispositivo no encontrado. Verifique la dirección MAC.');
         }
-    }
-
-    // ¡Éxito! El dispositivo está disponible. Lo reclamamos.
-    $dataToUpdate = [
-        'usuario_id' => $usuarioId,
-        'esta_usado' => 1,
-        'updated_at' => date('Y-m-d H:i:s')
-    ];
-    
-    if ($dispositivoModel->update($dispositivo['id'], $dataToUpdate)) {
-        // Creamos automáticamente una nueva "tarjeta de horario" para este dispositivo
-        $horariosModel = new HorariosModel();
-        $horariosModel->insert([
+        if ($dispositivo['esta_usado'] == 1) {
+            return $this->fail('Este dispositivo ya ha sido reclamado.', 409);
+        }
+        
+        $this->dispositivoModel->update($dispositivo['id'], ['usuario_id' => $usuarioId, 'esta_usado' => 1]);
+        
+        $this->horariosModel->insert([
             'usuario_id'     => $usuarioId,
             'dispositivo_id' => $dispositivo['id'],
             'nombre_tarjeta' => 'Dispositivo ' . substr($macAddress, -5),
-            'ventana_apertura'  => '07:00:00', 'ventana_cierre'    => '20:00:00',
-            'cortina_apertura'  => '07:00:00', 'cortina_cierre'    => '20:00:00',
-            'postigon_apertura' => '07:00:00', 'postigon_cierre'   => '20:00:00',
+            'ventana_apertura' => '07:00:00', 'ventana_cierre' => '20:00:00',
+            'cortina_apertura' => '07:00:00', 'cortina_cierre' => '20:00:00',
+            'postigon_apertura' => '07:00:00', 'postigon_cierre' => '20:00:00',
         ]);
         
-        return $this->respondCreated([
-            'success' => true,
-            'message' => '¡Dispositivo reclamado y tarjeta creada con éxito! La página se recargará.'
-        ]);
-    } else {
-        return $this->failServerError('No se pudo reclamar el dispositivo en este momento.');
+        return $this->respondCreated(['success' => true, 'message' => '¡Dispositivo reclamado y tarjeta creada!']);
     }
-}
 
     public function seleccionarDispositivoPorNombre()
     {
-        // Aseguramos que sea una petición AJAX
-        if (!$this->request->isAJAX()) {
-            return $this->failForbidden('Acceso no permitido.');
-        }
-
+        if (!$this->request->isAJAX()) { return $this->failForbidden('Acceso no permitido.'); }
+        
         $nombreTarjeta = $this->request->getPost('nombre_tarjeta');
         $usuarioId = session()->get('id');
 
-        if (empty($nombreTarjeta) || empty($usuarioId)) {
-            return $this->fail('Falta el nombre de la tarjeta o no ha iniciado sesión.', 400);
-        }
+        if (empty($nombreTarjeta) || empty($usuarioId)) { return $this->fail('Faltan datos.', 400); }
 
-        // Buscamos en la tabla de horarios una tarjeta con ese nombre que pertenezca al usuario
         $horario = $this->horariosModel
                         ->where('nombre_tarjeta', $nombreTarjeta)
                         ->where('usuario_id', $usuarioId)
                         ->first();
 
-        if (!$horario) {
-            return $this->failNotFound('No se encontró una tarjeta con ese nombre.');
-        }
+        if (!$horario) { return $this->failNotFound('No se encontró una tarjeta con ese nombre.'); }
+        if (empty($horario['dispositivo_id'])) { return $this->fail('Esta tarjeta no está vinculada a un dispositivo físico.', 409); }
 
-        // Si la tarjeta no tiene un dispositivo asociado, devolvemos el error que estás viendo
-        if (empty($horario['dispositivo_id'])) {
-            return $this->fail('Esta tarjeta no está vinculada a un dispositivo físico.', 409);
-        }
-
-        // ¡Éxito! Devolvemos el ID del dispositivo para que el frontend pueda redirigir
-        return $this->respond([
-            'success' => true, 
-            'dispositivo_id' => $horario['dispositivo_id']
-        ]);
+        // Éxito: Guardamos el ID en la sesión y respondemos al JavaScript
+        session()->set('selected_device_id', $horario['dispositivo_id']);
+        return $this->respond(['success' => true, 'dispositivo_id' => $horario['dispositivo_id']]);
     }
 }

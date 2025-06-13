@@ -16,7 +16,7 @@ class App extends BaseConfig
      *
      * E.g., http://example.com/
      */
-    public string $baseURL = 'http://localhost/login2/public/';
+    public string $baseURL = 'https://vecopo.ddns.net/vecopo/public/';
 
     /**
      * Allowed Hostnames in the Site URL other than the hostname in the baseURL.

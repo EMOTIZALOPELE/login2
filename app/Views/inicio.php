@@ -21,7 +21,7 @@
             --danger-color: #ff4d4d;
             --success-color: #00ff9d;
             --input-border: rgba(100, 255, 218, 0.2);
-            /* Colores del menú de referencia */
+            /* Colores del men� de referencia */
             --menu-icon-color: #00e0ff; 
             --menu-bg-color: rgba(10, 25, 47, 0.97); 
             --menu-border-color: rgba(0, 224, 255, 0.08); 
@@ -117,15 +117,15 @@
                 <nav>
                     <ul>
                         <li><a href="<?= base_url('/inicio') ?>" id="selected">Inicio</a></li>
-                        <li><a href="#" onclick="abrirModal()">Añadir Tarjeta</a></li>
-                        <li><a href="<?= base_url('pele') ?>">Diseño</a></li>
+                        <li><a href="#" onclick="abrirModal()">A�adir Tarjeta</a></li>
+                        <li><a href="<?= base_url('pele') ?>">Dise�o</a></li>
                         <li><a href="<?= base_url('logout') ?>">Salir</a></li>
                         <li><a href="#" onclick="abrirServoModal()">SERVO</a></li> 
                     </ul>
                 </nav>
             </div>
 
-            <div class="menu-toggle" id="menu-toggle" role="button" aria-label="Abrir menú de navegación" aria-expanded="false">
+            <div class="menu-toggle" id="menu-toggle" role="button" aria-label="Abrir men� de navegaci�n" aria-expanded="false">
                 <div></div>
                 <div></div>
                 <div></div>
@@ -135,10 +135,10 @@
         <nav class="mobile-menu-panel" id="navigationMenu">
             <ul>
                 <li><a href="<?= base_url('/inicio') ?>" id="selected-mobile"><i class="fas fa-home"></i> Inicio</a></li>
-                <li><a href="#" onclick="abrirModalYCerrarMenu()"><i class="fas fa-plus-square"></i> Añadir Tarjeta</a></li>
-                <li><a href="<?= base_url('pele') ?>"><i class="fas fa-palette"></i> Diseño</a></li>
+                <li><a href="#" onclick="abrirModalYCerrarMenu()"><i class="fas fa-plus-square"></i> A�adir Tarjeta</a></li>
+                <li><a href="<?= base_url('pele') ?>"><i class="fas fa-palette"></i> Dise�o</a></li>
                 <li><a href="<?= base_url('logout') ?>"><i class="fas fa-sign-out-alt"></i> Salir</a></li>
-                <li><a href="#" onclick="abrirServoModalYCerrarMenu()"><i class="fas fa-cogs"></i> SERVO</a></li>
+                <li><a href="#" onclick="abrirServoModal()">SERVO</a></li>
             </ul>
         </nav>
     </header>
@@ -175,7 +175,7 @@
                             </button>
                         </div>
                         
-                        <form action="<?= site_url('borrar_tarjeta/' . esc($horario['idhorario'])) ?>" method="POST" onsubmit="return confirm('¿Seguro que quieres eliminar esta tarjeta?');">
+                        <form action="<?= site_url('borrar_tarjeta/' . esc($horario['idhorario'])) ?>" method="POST" onsubmit="return confirm('�Seguro que quieres eliminar esta tarjeta?');">
                             <button type="submit" class="delete-button">Eliminar</button>
                         </form>
                     </div>
@@ -209,7 +209,7 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="successModalLabel">Éxito</h5>
+                    <h5 class="modal-title" id="successModalLabel">�xito</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -224,9 +224,9 @@
 
     <div id="codigoModal" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(10, 25, 47, 0.95); justify-content:center; align-items:center;">
         <div>
-            <h3>Añadir Nuevo Dispositivo</h3>
+            <h3>A�adir Nuevo Dispositivo</h3>
             <form id="reclamarForm"> 
-                <input type="text" id="macInput" name="mac_address" placeholder="Ingrese la Dirección MAC del Dispositivo" required style="text-transform:uppercase;">
+                <input type="text" id="macInput" name="mac_address" placeholder="Ingrese la Direcci�n MAC del Dispositivo" required style="text-transform:uppercase;">
                 <div id="macError" style="color:var(--danger-color); display:none; margin-top:10px; font-size: 0.9rem;"></div>
                 <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 1rem;">
                     <button type="submit">Reclamar Dispositivo</button>
@@ -238,7 +238,7 @@
 
     <div id="servoModal" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(10, 25, 47, 0.95); justify-content:center; align-items:center;">
         <div>
-            <h3>¿Qué servo deseas mover?</h3>
+            <h3>�Qu� servo deseas mover?</h3>
             <form id="selectServoForm"> 
                 <input type="text" id="tarjetaInput" name="nombre_tarjeta" placeholder="Escribe el nombre de la tarjeta" required>
                 <div id="servoError" style="color:var(--danger-color); display:none; margin-top:10px; font-size: 0.9rem;"></div>
@@ -349,16 +349,16 @@
                 })
                 .then(({ status, body }) => {
                     if (body.success) { 
-                        alert(body.message || '¡Dispositivo añadido con éxito!'); 
+                        alert(body.message || '�Dispositivo a�adido con �xito!'); 
                         window.location.reload(); 
                     } else {
-                        macError.textContent = body.messages.error || 'Ocurrió un error inesperado.';
+                        macError.textContent = body.messages.error || 'Ocurri� un error inesperado.';
                         macError.style.display = 'block';
                     }
                 })
                 .catch(error => {
                     console.error('Error en fetch:', error);
-                    macError.textContent = 'Error de conexión con el servidor. Intente nuevamente.';
+                    macError.textContent = 'Error de conexi�n con el servidor. Intente nuevamente.';
                     macError.style.display = 'block';
                 })
                 .finally(() => {
@@ -382,7 +382,7 @@
                 const cardId = $('#cardIdToChange').val();
                 const newName = $('#newCardName').val();
                 if (!newName.trim()) {
-                    alert('El nombre de la tarjeta no puede estar vacío.');
+                    alert('El nombre de la tarjeta no puede estar vac�o.');
                     return;
                 }
                 $.ajax({
@@ -397,7 +397,7 @@
                     success: function(response) {
                         if (response.success) {
                             $('#changeNameModal').modal('hide');
-                            $('#successModalBody').text(response.message || 'Nombre actualizado con éxito.');
+                            $('#successModalBody').text(response.message || 'Nombre actualizado con �xito.');
                             $('#successModal').modal('show');
                             $(`.horario-card h3[data-idhorario="${cardId}"] .card-title`).text(newName);
                             $(`button[data-idhorario="${cardId}"][data-target="#changeNameModal"]`).data('current-name', newName);
@@ -409,7 +409,7 @@
                     error: function(xhr, status, error) {
                         console.error('Error AJAX:', status, error, xhr.responseText);
                         $('#changeNameModal').modal('hide');
-                        alert('Ocurrió un error al comunicarse con el servidor. Detalles: ' + xhr.responseText);
+                        alert('Ocurri� un error al comunicarse con el servidor. Detalles: ' + xhr.responseText);
                     }
                 });
             });
@@ -417,67 +417,65 @@
             $('#successModal').on('hidden.bs.modal', function () { /* location.reload(); */ });
         });
 
-        // --- LÓGICA PARA EL NUEVO MODAL DE SELECCIÓN DE SERVO ---
+        // --- L�GICA PARA EL NUEVO MODAL DE SELECCI�N DE SERVO ---
 
         const servoModal = document.getElementById('servoModal');
         const selectServoForm = document.getElementById('selectServoForm');
 
         function abrirServoModal() {
-            if (navigationMenu.classList.contains('active')) { // Cierra el menú hamburguesa si está abierto
-                navigationMenu.classList.remove('active');
-                hamburgerButton.classList.remove('active');
-                hamburgerButton.setAttribute('aria-expanded', 'false');
-            }
             if (servoModal) servoModal.style.display = 'flex';
         }
-
         function cerrarServoModal() {
-            if (servoModal) servoModal.style.display = 'none';
+        if (servoModal) servoModal.style.display = 'none';
         }
 
-        if (selectServoForm) {
-            selectServoForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                const tarjetaInput = document.getElementById('tarjetaInput');
-                const servoError = document.getElementById('servoError');
-                const submitButton = selectServoForm.querySelector('button[type="submit"]');
+       
 
-                submitButton.disabled = true;
-                submitButton.textContent = 'Buscando...';
-                servoError.style.display = 'none';
+    if (selectServoForm) {
+        selectServoForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const tarjetaInput = document.getElementById('tarjetaInput');
+            const servoError = document.getElementById('servoError');
+            const submitButton = selectServoForm.querySelector('button[type="submit"]');
 
-                const formData = new FormData();
-                formData.append('nombre_tarjeta', tarjetaInput.value);
+            submitButton.disabled = true;
+            submitButton.textContent = 'Buscando...';
+            servoError.style.display = 'none';
 
-                fetch('<?= base_url('/servos/seleccionar') ?>', {
-                    method: 'POST',
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'X-CSRF-TOKEN': '<?= csrf_hash() ?>'
-                    },
-                    body: formData
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        sessionStorage.setItem('selected_device_id', data.dispositivo_id);
-                        window.location.href = '<?= base_url('/masivo') ?>';
-                    } else {
-                        servoError.textContent = data.messages.error || 'Error desconocido.';
-                        servoError.style.display = 'block';
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    servoError.textContent = 'Error de conexión.';
+            const formData = new FormData();
+            formData.append('nombre_tarjeta', tarjetaInput.value);
+
+            fetch('<?= base_url('/servos/seleccionar') ?>', {
+                method: 'POST',
+                headers: { 'X-Requested-With': 'XMLHttpRequest', 'X-CSRF-TOKEN': '<?= csrf_hash() ?>' },
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => { throw new Error(err.messages.error || 'Error del servidor'); });
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // --- CORRECCIÓN CLAVE ---
+                    // Redirigimos a la URL correcta, pasando el ID del dispositivo.
+                    window.location.href = `<?= base_url('/masivo') ?>/${data.dispositivo_id}`;
+                } else {
+                    servoError.textContent = data.messages.error || 'Error desconocido.';
                     servoError.style.display = 'block';
-                })
-                .finally(() => {
-                    submitButton.disabled = false;
-                    submitButton.textContent = 'Continuar';
-                });
+                }
+            })
+            .catch(error => {
+                servoError.textContent = error.message;
+                servoError.style.display = 'block';
+            })
+            .finally(() => {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Continuar';
             });
-        }
+        });
+    }
     </script>
 </body>
 </html>

@@ -10,7 +10,7 @@ use CodeIgniter\Router\RouteCollection;
 $routes->get('/', 'Home::iniciar2'); 
 $routes->post('login', 'Home::login');
 $routes->get('/logout', 'Home::logout');  
-$routes->post('/register/store', 'RegisterController::store'); 
+$routes->post('/register/store', 'registerController::store'); 
 
 // RECUPERACION DE CONTRASEÑA
 $routes->get('/forgotpassword', 'Home::forgotpassword'); 
@@ -42,9 +42,9 @@ $routes->post('/actualizar_nombre_tarjeta', 'HorariosController::actualizarNombr
 
 
 // PÁGINA DE SERVO
-$routes->get('/masivo', 'ServoController::estado'); // Carga la vista de control
-$routes->get('/funcional/actualizarEstado/(:num)/(:any)', 'ServoController::actualizarEstado/$1/$2');
-$routes->get('/funcional/obtenerUltimoEstado/(:num)', 'ServoController::obtenerUltimoEstado/$1');
+$routes->get('/masivo/(:num)', 'ServoController::estado/$1'); // Para cargar la vista
+$routes->get('/funcional/actualizarEstado/(:num)/(:any)', 'ServoController::actualizarEstado/$1/$2'); // Para enviar comandos
+$routes->get('/dispositivos/estado/(:segment)', 'ServoController::obtenerEstadoDispositivo/$1'); // Para pedir el estado
 
 
 // INICIO 2

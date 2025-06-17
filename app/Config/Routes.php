@@ -47,6 +47,7 @@ $routes->get('/funcional/actualizarEstado/(:num)/(:any)', 'ServoController::actu
 $routes->get('/dispositivos/estado/(:segment)', 'ServoController::obtenerEstadoDispositivo/$1'); // Para pedir el estado
 
 
+
 // INICIO 2
 $routes->get('/iniciovalogin', 'Home::iralogin');
 $routes->get('/iniciovaregister', 'Home::inicioregister');
@@ -78,6 +79,7 @@ $routes->get('horarios/configuracion/(:num)', 'HorariosController::configuracion
 $routes->post('/dispositivos/reclamar', 'HorariosController::reclamarDispositivoPorMac');
 $routes->post('/servos/seleccionar', 'HorariosController::seleccionarDispositivoPorNombre');
 $routes->post('horarios/guardar', 'HorariosController::guardar');
+
 
 
 

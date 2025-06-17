@@ -3,23 +3,26 @@
 namespace App\Controllers;
 
 use App\Models\HorariosModel;
-use App\Models\DispositivoModel; 
+use App\Models\DispositivoModel;
 use App\Models\DisenoModel;
-use CodeIgniter\API\ResponseTrait; // Importar ResponseTrait para respuestas JSON
+use App\Models\ServoModel; // Asegúrate de importar ServoModel
+use CodeIgniter\API\ResponseTrait;
 
 class HorariosController extends BaseController
 {
-    use ResponseTrait; // Usar ResponseTrait
+    use ResponseTrait;
 
     protected $horariosModel;
     protected $disenoModel;
-    protected $dispositivoModel; // Añadir propiedad
+    protected $dispositivoModel;
+    protected $servoModel; // Propiedad para el nuevo ServoModel
 
     public function __construct()
     {
         $this->horariosModel = new HorariosModel();
         $this->disenoModel = new DisenoModel();
         $this->dispositivoModel = new DispositivoModel();
+        $this->servoModel = new ServoModel(); // Inicializar ServoModel
     }
 
     public function index()
@@ -54,7 +57,12 @@ class HorariosController extends BaseController
         }
     }
 
-    public function configuracion($id)
+    /**
+     * Carga el formulario de configuración de horarios para una tarjeta específica.
+     * Esta función se llama desde el botón "Configurar" en inicio.php.
+     * Recibe el idhorario.
+     */
+    public function configuracion($idhorario = null)
     {
         $session = \Config\Services::session();
 
@@ -62,49 +70,39 @@ class HorariosController extends BaseController
             return redirect()->to(base_url('login'));
         }
 
-        // Obtener el diseño específico por ID
-        $diseno = $this->disenoModel->find($id);
-
-        if (!$diseno) {
-            log_message('error', 'Diseño no encontrado con ID: ' . $id);
-            return redirect()->to(base_url('irainicio'))->with('error', 'Diseño no encontrado');
+        if (empty($idhorario)) {
+            return redirect()->to(base_url('irainicio'))->with('error', 'No se especificó un ID de horario para configurar.');
         }
 
-        // Verificar que el diseño pertenece al usuario actual
-        if ($diseno['usuario_id'] != $session->get('id')) {
-            log_message('error', 'Usuario ' . $session->get('id') . ' intentó acceder al diseño ' . $id . ' que pertenece a ' . $diseno['usuario_id']);
-            return redirect()->to(base_url('irainicio'))->with('error', 'No tienes permiso para acceder a este diseño');
+        // Obtener el horario específico por ID
+        $horarios = $this->horariosModel->find($idhorario); // $horarios contendrá un solo registro de horario
+
+        if (!$horarios) {
+            log_message('error', 'HorariosController::configuracion - Horario no encontrado con ID: ' . $idhorario);
+            return redirect()->to(base_url('irainicio'))->with('error', 'Horario no encontrado.');
         }
 
-        // Asegurar que los valores sean exactamente 'si' o 'no' en minúsculas
-        $diseno['ventana'] = strtolower(trim($diseno['ventana']));
-        $diseno['cortina'] = strtolower(trim($diseno['cortina']));
-        $diseno['postigon'] = strtolower(trim($diseno['postigon']));
+        // Verificar que el horario pertenece al usuario actual
+        if ($horarios['usuario_id'] != $session->get('id')) {
+            log_message('warning', 'HorariosController::configuracion - Usuario ' . $session->get('id') . ' intentó acceder al horario ' . $idhorario . ' que pertenece a ' . $horarios['usuario_id']);
+            return redirect()->to(base_url('irainicio'))->with('error', 'No tienes permiso para acceder a este horario.');
+        }
 
-        // Depuración detallada
-        log_message('debug', '=== DATOS DEL DISEÑO ANTES DE PASAR A LA VISTA ===');
-        log_message('debug', 'ID: ' . $diseno['id_diseno']);
-        log_message('debug', 'Nombre: ' . $diseno['nombre']);
-        log_message('debug', 'Ventana (raw): [' . $diseno['ventana'] . ']');
-        log_message('debug', 'Cortina (raw): [' . $diseno['cortina'] . ']');
-        log_message('debug', 'Postigon (raw): [' . $diseno['postigon'] . ']');
-        log_message('debug', 'Ventana === "si": ' . ($diseno['ventana'] === 'si' ? 'true' : 'false'));
-        log_message('debug', 'Cortina === "si": ' . ($diseno['cortina'] === 'si' ? 'true' : 'false'));
-        log_message('debug', 'Postigon === "si": ' . ($diseno['postigon'] === 'si' ? 'true' : 'false'));
-        log_message('debug', 'Longitud Ventana: ' . strlen($diseno['ventana']));
-        log_message('debug', 'Longitud Cortina: ' . strlen($diseno['cortina']));
-        log_message('debug', 'Longitud Postigon: ' . strlen($diseno['postigon']));
-        log_message('debug', '=== FIN DATOS DEL DISEÑO ===');
-
-        // Obtener horarios existentes si los hay
-        $horarios = $this->horariosModel->where('diseno_id', $id)->first();
+        $diseno = null; // Inicializa a null
+        if (!empty($horarios['diseno_id'])) {
+            $diseno = $this->disenoModel->find($horarios['diseno_id']);
+        }
 
         return view('configuracion', [
-            'diseno' => $diseno,
-            'horarios' => $horarios ?? null
+            'horarios' => $horarios,
+            'diseno' => $diseno // Asegurarse de pasar el objeto $diseno
         ]);
     }
 
+    /**
+     * Procesa el formulario de configuración de horarios y guarda los datos en la base de datos.
+     * Se llama desde el formulario en configuracion.php.
+     */
     public function guardar()
     {
         $session = \Config\Services::session();
@@ -113,81 +111,116 @@ class HorariosController extends BaseController
             return redirect()->to(base_url('login'));
         }
 
-        $disenoId = $this->request->getPost('diseno_id');
-        $diseno = $this->disenoModel->find($disenoId);
+        $idhorario = $this->request->getPost('idhorario');
+        $usuarioId = $session->get('id');
 
-        if (!$diseno) {
-            return redirect()->to(base_url('irainicio'))->with('error', 'Diseño no encontrado');
+        $horarioExistente = null;
+        if (!empty($idhorario)) {
+            $horarioExistente = $this->horariosModel->where('idhorario', $idhorario)
+                                                    ->where('usuario_id', $usuarioId)
+                                                    ->first();
+            if (!$horarioExistente) {
+                return redirect()->back()->withInput()->with('error', 'Horario no encontrado o no tienes permiso para modificarlo.');
+            }
+        } else {
+            return redirect()->back()->withInput()->with('error', 'ID de horario no proporcionado para guardar.');
         }
 
-        // Verificar que el diseño pertenece al usuario actual
-        if ($diseno['usuario_id'] != $session->get('id')) {
-            return redirect()->to(base_url('irainicio'))->with('error', 'No tienes permiso para modificar este diseño');
-        }
-
-        // Asegurar que los valores sean exactamente 'si' o 'no' en minúsculas
-        $diseno['ventana'] = strtolower(trim($diseno['ventana']));
-        $diseno['cortina'] = strtolower(trim($diseno['cortina']));
-        $diseno['postigon'] = strtolower(trim($diseno['postigon']));
-
-        // Preparar los datos del horario
         $datos = [
-            'diseno_id' => $disenoId,
-            'usuario_id' => $session->get('id')
+            'ventana_apertura'  => $this->request->getPost('ventana_apertura'),
+            'ventana_cierre'    => $this->request->getPost('ventana_cierre'),
+            'cortina_apertura'  => $this->request->getPost('cortina_apertura'),
+            'cortina_cierre'    => $this->request->getPost('cortina_cierre'),
+            'postigon_apertura' => $this->request->getPost('postigon_apertura'),
+            'postigon_cierre'   => $this->request->getPost('postigon_cierre'),
         ];
 
-        // Solo agregar los horarios para los elementos que están activos en el diseño
-        if ($diseno['ventana'] === 'si') {
-            $ventana_apertura = $this->request->getPost('ventana_apertura');
-            $ventana_cierre = $this->request->getPost('ventana_cierre');
-
-            if (empty($ventana_apertura) || empty($ventana_cierre)) {
-                return redirect()->back()->withInput()->with('error', 'Debes especificar los horarios de la ventana');
+        // Suavizar la validación: establecer a NULL si están vacíos
+        foreach ($datos as $key => $value) {
+            if (empty($value)) {
+                $datos[$key] = null;
             }
-
-            $datos['ventana_apertura'] = $ventana_apertura;
-            $datos['ventana_cierre'] = $ventana_cierre;
-        }
-
-        if ($diseno['cortina'] === 'si') {
-            $cortina_apertura = $this->request->getPost('cortina_apertura');
-            $cortina_cierre = $this->request->getPost('cortina_cierre');
-
-            if (empty($cortina_apertura) || empty($cortina_cierre)) {
-                return redirect()->back()->withInput()->with('error', 'Debes especificar los horarios de la cortina');
-            }
-
-            $datos['cortina_apertura'] = $cortina_apertura;
-            $datos['cortina_cierre'] = $cortina_cierre;
-        }
-
-        if ($diseno['postigon'] === 'si') {
-            $postigon_apertura = $this->request->getPost('postigon_apertura');
-            $postigon_cierre = $this->request->getPost('postigon_cierre');
-
-            if (empty($postigon_apertura) || empty($postigon_cierre)) {
-                return redirect()->back()->withInput()->with('error', 'Debes especificar los horarios del postigo');
-            }
-
-            $datos['postigon_apertura'] = $postigon_apertura;
-            $datos['postigon_cierre'] = $postigon_cierre;
         }
 
         try {
-            // Verificar si ya existe un horario para este diseño
-            $horarioExistente = $this->horariosModel->where('diseno_id', $disenoId)->first();
+            if ($this->horariosModel->update($horarioExistente['idhorario'], $datos)) {
+                log_message('info', 'HorariosController::guardar - Horario ID ' . $horarioExistente['idhorario'] . ' actualizado correctamente en tabla horarios.');
 
-            if ($horarioExistente) {
-                // Actualizar horario existente
-                $this->horariosModel->update($horarioExistente['idhorario'], $datos);
+                // --- NUEVO: Propagar los cambios a los servos asociados ---
+                // 1. Encontrar los dispositivos vinculados al usuario
+                $dispositivosDelUsuario = $this->dispositivoModel->where('usuario_id', $usuarioId)->findAll();
+                $dispositivoIds = array_column($dispositivosDelUsuario, 'id');
+
+                // 2. Encontrar todos los servos que pertenecen a estos dispositivos
+                if (!empty($dispositivoIds)) {
+                    $servosDelUsuario = $this->servoModel->whereIn('dispositivo_id', $dispositivoIds)->findAll();
+                } else {
+                    $servosDelUsuario = [];
+                }
+                
+
+                // 3. Iterar sobre los servos y actualizar sus horarios según el tipo_elemento
+                foreach ($servosDelUsuario as $servo) {
+                    $servoDataToUpdate = [];
+                    $updateNeeded = false;
+
+                    $currentHorarioApertura = $servo['horario_apertura'];
+                    $currentHorarioCierre = $servo['horario_cierre'];
+
+                    switch (strtoupper($servo['tipo_elemento'])) {
+                        case 'VENTANA':
+                            if ($currentHorarioApertura !== $datos['ventana_apertura']) {
+                                $servoDataToUpdate['horario_apertura'] = $datos['ventana_apertura'];
+                                $updateNeeded = true;
+                            }
+                            if ($currentHorarioCierre !== $datos['ventana_cierre']) {
+                                $servoDataToUpdate['horario_cierre'] = $datos['ventana_cierre'];
+                                $updateNeeded = true;
+                            }
+                            break;
+                        case 'CORTINA':
+                            if ($currentHorarioApertura !== $datos['cortina_apertura']) {
+                                $servoDataToUpdate['horario_apertura'] = $datos['cortina_apertura'];
+                                $updateNeeded = true;
+                            }
+                            if ($currentHorarioCierre !== $datos['cortina_cierre']) {
+                                $servoDataToUpdate['horario_cierre'] = $datos['cortina_cierre'];
+                                $updateNeeded = true;
+                            }
+                            break;
+                        case 'POSTIGON':
+                            if ($currentHorarioApertura !== $datos['postigon_apertura']) {
+                                $servoDataToUpdate['horario_apertura'] = $datos['postigon_apertura'];
+                                $updateNeeded = true;
+                            }
+                            if ($currentHorarioCierre !== $datos['postigon_cierre']) {
+                                $servoDataToUpdate['horario_cierre'] = $datos['postigon_cierre'];
+                                $updateNeeded = true;
+                            }
+                            break;
+                        // 'OTRO' o tipos no mapeados no se actualizan por horario
+                    }
+
+                    if ($updateNeeded) {
+                        try {
+                            $this->servoModel->update($servo['id'], $servoDataToUpdate);
+                            log_message('info', 'HorariosController::guardar - Servo ID ' . $servo['id'] . ' actualizado con nuevos horarios de ' . strtoupper($servo['tipo_elemento']) . '.');
+                        } catch (\Exception $e) {
+                            log_message('error', 'HorariosController::guardar - Error al actualizar horarios para Servo ID ' . $servo['id'] . ': ' . $e->getMessage());
+                        }
+                    }
+                }
+                // --- FIN NUEVO: Propagar cambios ---
+
+                return redirect()->to(base_url('irainicio'))->with('mensaje', 'Horarios guardados correctamente');
+
             } else {
-                // Crear nuevo horario
-                $this->horariosModel->insert($datos);
+                log_message('error', 'HorariosController::guardar - Fallo al actualizar el horario ID ' . $horarioExistente['idhorario'] . ' en la tabla horarios. Errores: ' . json_encode($this->horariosModel->errors()));
+                return redirect()->back()->withInput()->with('error', 'Error al guardar los horarios: La base de datos no pudo actualizar.');
             }
 
-            return redirect()->to(base_url('irainicio'))->with('mensaje', 'Horarios guardados correctamente');
         } catch (\Exception $e) {
-            log_message('error', 'Error al guardar horarios: ' . $e->getMessage());
+            log_message('error', 'HorariosController::guardar - Error al guardar horarios: ' . $e->getMessage());
             return redirect()->back()->withInput()->with('error', 'Error al guardar los horarios: ' . $e->getMessage());
         }
     }

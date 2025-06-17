@@ -4,137 +4,183 @@
 #include <Preferences.h>
 #include <AsyncTCP.h>
 #include <ESPAsyncWebServer.h>
-#include <ArduinoJson.h> // Â¡AÃ±ade esta lÃ­nea!
+#include <ArduinoJson.h>
+#include <map>
 
-// --- CONFIGURACIÃ“N ---
-String serverUrl = "https://vecopo.ddns.net/vecopo/public/dispositivos/estado/"; // URL corregida
+// --- CONFIGURACIÓN ---
+// ¡Asegúrate de que esta sea la dirección pública de tu servidor!
+const char* serverHost = "vecopo.ddns.net"; 
+const char* serverPath = "/vecopo/public/dispositivos/estado/";
+const int serverPort = 443; // Puerto HTTPS
 const char* AP_SSID = "ESP32_Config_Servo";
 const char* AP_PASSWORD = "password";
 IPAddress AP_LOCAL_IP(192, 168, 4, 1);
 
-Servo servo;
-const int servoPin = 2;
-String servoState = "CERRADO"; // Estado inicial del servo
+// --- MULTIPLES SERVOS ---
+Servo servoPin2;
+Servo servoPin4;
+Servo servoPin16;
+std::map<int, String> servoLocalStates;
 
+// Función para obtener el objeto Servo según el pin GPIO
+Servo* getServoObject(int pin) {
+    switch (pin) {
+        case 2: return &servoPin2;
+        case 4: return &servoPin4;
+        case 16: return &servoPin16;
+        default: return nullptr;
+    }
+}
+
+// --- VARIABLES GLOBALES ---
 Preferences preferences;
-bool isStaMode = false;
 AsyncWebServer server(80);
+unsigned long lastRequestTime = 0;
+const long requestInterval = 3000; // Intervalo de 3 segundos entre peticiones
 
 void connectToWiFi();
 void startAPMode();
+void checkServer();
 
 void setup() {
     Serial.begin(115200);
-    servo.attach(servoPin);
-    servo.write(0); // Asegura que el servo estÃ© en 0 grados al inicio (cerrado)
+    delay(1000); // Pequeña pausa al inicio para estabilizar la alimentación
+
+    Serial.println("\n--- Iniciando Dispositivo Vecopo ---");
+
+    // Adjuntar y configurar servos
+    servoPin2.attach(2);
+    servoPin2.write(0);
+    servoLocalStates[2] = "CERRADO";
+
+    servoPin4.attach(4);
+    servoPin4.write(0);
+    servoLocalStates[4] = "CERRADO";
+
+    servoPin16.attach(16);
+    servoPin16.write(0);
+    servoLocalStates[16] = "CERRADO";
+
+    // Revisar credenciales guardadas y decidir el modo de operación
     preferences.begin("wifi-creds", false);
     String STA_ssid = preferences.getString("ssid", "");
-    String STA_password = preferences.getString("pass", "");
     if (STA_ssid.length() > 0) {
-        isStaMode = true;
         connectToWiFi();
     } else {
-        isStaMode = false;
         startAPMode();
     }
 }
 
 void loop() {
-    if (isStaMode && WiFi.status() == WL_CONNECTED) {
-        HTTPClient http;
-        String mac = WiFi.macAddress();
-
-        // --- CORRECCIÃ“N CLAVE ---
-        mac.replace(":", ""); 
-        mac.toLowerCase();
-        // --------------------
-
-        String fullUrl = serverUrl + mac;
-
-        http.begin(fullUrl);
-        int httpCode = http.GET();
-
-        if (httpCode == 200) {
-            String payload = http.getString();
-            payload.trim();
-            Serial.print("Payload recibido: '");
-            Serial.print(payload);
-            Serial.println("'");
-
-            // --- PARSEAR JSON ---
-            // Se recomienda un tamaÃ±o de Documento JSON un poco mÃ¡s grande de lo necesario
-            // para evitar fallos si el JSON crece un poco.
-            // DynamicJsonDocument doc(256); // Usa esto si necesitas mÃ¡s flexibilidad en RAM (no recomendado para ESP32)
-            StaticJsonDocument<128> doc; // Usa esto para uso fijo y mÃ¡s eficiente en memoria
-
-            DeserializationError error = deserializeJson(doc, payload); //Esta lÃ­nea es la que hace la magia. 
-            //Toma el payload (la cadena JSON que recibiste) y lo convierte en una estructura de datos accesible dentro del objeto
-
-            if (error) {
-                Serial.print(F("Error al parsear JSON: "));
-                Serial.println(error.f_str());
-            } else {
-                // Extraer el estado del JSON
-                const char* estadoRecibido = doc["estado"]; // Una vez parseado, podemos 
-                //acceder al valor asociado con la clave "estado" (en este caso, "ABIERTO" o "CERRADO") de una manera sencilla y directa.
-
-                if (estadoRecibido) { // AsegÃºrate de que la clave "estado" existe
-                    String estadoStr = String(estadoRecibido); // Convertir a String para facilitar la comparaciÃ³n
-                    Serial.print("Estado extraÃ­do: ");
-                    Serial.println(estadoStr);
-
-                    if (estadoStr == "ABIERTO" && servoState != "ABIERTO") {
-                        servo.write(180);
-                        servoState = "ABIERTO";
-                        Serial.println("Servo movido a ABIERTO");
-                    } else if (estadoStr == "CERRADO" && servoState != "CERRADO") {
-                        servo.write(0);
-                        servoState = "CERRADO";
-                        Serial.println("Servo movido a CERRADO");
-                    } else {
-                        Serial.print("Estado recibido '");
-                        Serial.print(estadoStr);
-                        Serial.println("' es igual al estado actual del servo. No hay movimiento.");
-                    }
-                } else {
-                    Serial.println("La clave 'estado' no se encontrÃ³ en el JSON.");
-                }
-            }
-            // --- FIN PARSEO JSON ---
-        } else {
-            Serial.print("Error en la peticiÃ³n HTTP: ");
-            Serial.println(http.errorToString(httpCode).c_str());
+    // Si estamos en modo Estación (conectados a un WiFi)
+    if (WiFi.status() == WL_CONNECTED) {
+        // Comprobar si es hora de hacer una nueva petición al servidor
+        if (millis() - lastRequestTime > requestInterval) {
+            checkServer();
+            lastRequestTime = millis(); // Actualizar el tiempo de la última petición
         }
-        http.end();
-        delay(3000);
-    } else if (isStaMode) {
-        Serial.println("Wi-Fi desconectado, intentando reconectar...");
-        connectToWiFi();
-        delay(5000);
-    } else {
-        // Si no estÃ¡ en modo STA y no estÃ¡ conectado, sigue en modo AP
-        // Puedes aÃ±adir algÃºn delay o lÃ³gica aquÃ­ si es necesario para el modo AP
-        delay(100); 
+    } 
+    // Si perdimos la conexión, intentar reconectar
+    else if (WiFi.getMode() == WIFI_STA) { 
+        Serial.println("Wi-Fi desconectado. Intentando reconectar...");
+        // La función connectToWiFi() ya maneja la lógica de reintento y reinicio
+        connectToWiFi(); 
     }
+    // Si estamos en modo AP, el servidor asíncrono se maneja solo. No se necesita nada aquí.
 }
+
+void checkServer() {
+    HTTPClient http;
+    String mac = WiFi.macAddress();
+    mac.replace(":", "");
+    mac.toLowerCase();
+
+    String fullUrl = "https://" + String(serverHost) + String(serverPath) + mac;
+    
+    Serial.print("Peticion a: ");
+    Serial.println(fullUrl);
+
+    // Para HTTPS, es más seguro agregar el certificado raíz, pero por ahora lo omitimos
+    // http.begin(fullUrl, ca_cert); 
+    http.begin(fullUrl);
+    int httpCode = http.GET();
+
+    if (httpCode == 200) {
+        String payload = http.getString();
+        payload.trim();
+        Serial.print("Respuesta recibida: ");
+        Serial.println(payload);
+
+        StaticJsonDocument<512> doc;
+        DeserializationError error = deserializeJson(doc, payload);
+
+        if (error) {
+            Serial.print(F("Error al parsear JSON: "));
+            Serial.println(error.f_str());
+        } else {
+            JsonArray servosArray = doc["servos"].as<JsonArray>();
+            if (servosArray) {
+                for (JsonObject servoObj : servosArray) {
+                    int pin = servoObj["pin"];
+                    String estado = servoObj["estado"].as<String>();
+                    estado.toUpperCase();
+
+                    Serial.print("Procesando servo en pin "); Serial.print(pin);
+                    Serial.print(" | Estado deseado: "); Serial.println(estado);
+
+                    Servo* currentServo = getServoObject(pin);
+                    if (currentServo != nullptr) {
+                        if (servoLocalStates[pin] != estado) { // Mover solo si el estado es diferente
+                            if (estado == "ABIERTO") {
+                                currentServo->write(180);
+                                servoLocalStates[pin] = "ABIERTO";
+                                Serial.println("-> Movido a ABIERTO");
+                            } else if (estado == "CERRADO") {
+                                currentServo->write(0);
+                                servoLocalStates[pin] = "CERRADO";
+                                Serial.println("-> Movido a CERRADO");
+                            }
+                        } else {
+                            Serial.println("-> No se requiere movimiento.");
+                        }
+                    }
+                }
+            } else {
+                Serial.println("Error: El JSON no contiene el array 'servos'.");
+            }
+        }
+    } else {
+        Serial.print("Error en la petición HTTP: ");
+        Serial.println(httpCode);
+    }
+    http.end();
+}
+
+
+// Las funciones connectToWiFi() y startAPMode() son las mismas,
+// pero las incluyo para que el código esté completo.
 
 void connectToWiFi() {
     String STA_ssid = preferences.getString("ssid", "");
     String STA_password = preferences.getString("pass", "");
     WiFi.mode(WIFI_STA);
-    Serial.print("Conectando a: ");
+    Serial.print("Conectando a red: ");
     Serial.println(STA_ssid);
     WiFi.begin(STA_ssid.c_str(), STA_password.c_str());
+
     long startTime = millis();
+    // Esperar un máximo de 20 segundos para conectar
     while (WiFi.status() != WL_CONNECTED && millis() - startTime < 20000) {
         delay(500);
         Serial.print(".");
     }
+
     if (WiFi.status() == WL_CONNECTED) {
-        Serial.println("\nÂ¡Conectado a la red Wi-Fi!");
-        Serial.print("DirecciÃ³n IP: "); Serial.println(WiFi.localIP());
+        Serial.println("\n¡Conectado a la red Wi-Fi!");
+        Serial.print("Dirección IP: "); Serial.println(WiFi.localIP());
     } else {
-        Serial.println("\nFallo la conexiÃ³n. Borrando credenciales y reiniciando en modo AP...");
+        Serial.println("\nFallo la conexión. Credenciales incorrectas o red fuera de alcance.");
+        Serial.println("Borrando credenciales y reiniciando en modo de configuración (AP)...");
         preferences.clear();
         delay(1000);
         ESP.restart();
@@ -144,26 +190,27 @@ void connectToWiFi() {
 void startAPMode() {
     IPAddress AP_GATEWAY(192, 168, 4, 1);
     IPAddress AP_SUBNET(255, 255, 255, 0);
-    Serial.println("Iniciando modo de configuraciÃ³n (AP)...");
+    Serial.println("Iniciando modo de configuración (AP)...");
     WiFi.softAP(AP_SSID, AP_PASSWORD);
     delay(500);
     WiFi.softAPConfig(AP_LOCAL_IP, AP_GATEWAY, AP_SUBNET);
-    Serial.print("AP iniciado. ConÃ©ctate a '"); Serial.print(AP_SSID);
+    Serial.print("AP iniciado. Conéctate a '"); Serial.print(AP_SSID);
     Serial.print("' y ve a http://"); Serial.println(WiFi.softAPIP());
 
     server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
-        String html = "<html><head><meta name='viewport' content='width=device-width, initial-scale=1'><style>body{font-family: Arial; text-align: center;} select, input{width: 80%; padding: 10px; margin: 10px 0;}</style></head><body><h1>Configurar Wi-Fi</h1><form action='/save' method='get'><select name='ssid'>";
+        String html = "<html><head><meta name='viewport' content='width=device-width, initial-scale=1'><style>body{font-family: Arial; text-align: center; background: #f0f0f0; margin: 20px;} h1{color: #333;} form{background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);} select, input{width: 90%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px;} input[type='submit']{background: #007bff; color: white; border: none; cursor: pointer; font-size: 16px;}</style></head><body><h1>Configurar Wi-Fi de Vecopo</h1><form action='/save' method='get'><p>Selecciona tu red:</p><select name='ssid'>";
         int n = WiFi.scanNetworks();
         for (int i = 0; i < n; ++i) { html += "<option value='" + WiFi.SSID(i) + "'>" + WiFi.SSID(i) + "</option>"; }
-        html += "</select><br><input name='pass' type='password' placeholder='ContraseÃ±a'><br><br><input type='submit' value='Guardar y Conectar'></form></body></html>";
-
+        html += "</select><br><input name='pass' type='password' placeholder='Contraseña'><br><br><input type='submit' value='Guardar y Conectar'></form></body></html>";
+    
         request->send(200, "text/html", html);
     });
+
     server.on("/save", HTTP_GET, [](AsyncWebServerRequest *request){
         preferences.putString("ssid", request->getParam("ssid")->value());
         preferences.putString("pass", request->getParam("pass")->value());
-        request->send(200, "text/plain", "Guardado. Reiniciando...");
-        delay(1000);
+        request->send(200, "text/html", "<h1>¡Guardado!</h1><p>El dispositivo se reiniciará para conectarse a tu red. Esto puede tomar unos segundos.</p>");
+        delay(3000);
         ESP.restart();
     });
     server.begin();

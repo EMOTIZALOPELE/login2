@@ -26,7 +26,7 @@
             --menu-bg-color: rgba(10, 25, 47, 0.97); 
             --menu-border-color: rgba(0, 224, 255, 0.08); 
         }
-        /* ... (El resto de tus estilos CSS se mantienen igual) ... */
+        
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; }
         .mobile-menu-panel, .mobile-menu-panel a, .mobile-menu-panel i { font-family: 'Poppins', sans-serif; }
         body { background: var(--dark-bg); color: var(--text-primary); min-height: 100vh; overflow-x: hidden; }
@@ -117,15 +117,15 @@
                 <nav>
                     <ul>
                         <li><a href="<?= base_url('/inicio') ?>" id="selected">Inicio</a></li>
-                        <li><a href="#" onclick="abrirModal()">A�adir Tarjeta</a></li>
-                        <li><a href="<?= base_url('pele') ?>">Dise�o</a></li>
+                        <li><a href="#" onclick="abrirModal()">Añadir Tarjeta</a></li>
+                        <li><a href="<?= base_url('pele') ?>">Diseño</a></li>
                         <li><a href="<?= base_url('logout') ?>">Salir</a></li>
-                        <li><a href="#" onclick="abrirServoModal()">SERVO</a></li> 
+                        <li><a href="#" data-toggle="modal" data-target="#servoModal"><i class="fas fa-gamepad"></i> Manual</a></li>
                     </ul>
                 </nav>
             </div>
 
-            <div class="menu-toggle" id="menu-toggle" role="button" aria-label="Abrir men� de navegaci�n" aria-expanded="false">
+            <div class="menu-toggle" id="menu-toggle" role="button" aria-label="Abrir menú de navegación" aria-expanded="false">
                 <div></div>
                 <div></div>
                 <div></div>
@@ -135,10 +135,11 @@
         <nav class="mobile-menu-panel" id="navigationMenu">
             <ul>
                 <li><a href="<?= base_url('/inicio') ?>" id="selected-mobile"><i class="fas fa-home"></i> Inicio</a></li>
-                <li><a href="#" onclick="abrirModalYCerrarMenu()"><i class="fas fa-plus-square"></i> A�adir Tarjeta</a></li>
-                <li><a href="<?= base_url('pele') ?>"><i class="fas fa-palette"></i> Dise�o</a></li>
+                <li><a href="#" onclick="abrirModalYCerrarMenu()"><i class="fas fa-plus-square"></i> Añadir Tarjeta</a></li>
+                <li><a href="<?= base_url('pele') ?>"><i class="fas fa-palette"></i> Diseño</a></li>
                 <li><a href="<?= base_url('logout') ?>"><i class="fas fa-sign-out-alt"></i> Salir</a></li>
-                <li><a href="#" onclick="abrirServoModal()">SERVO</a></li>
+                <li><a href="#" data-toggle="modal" data-target="#servoModal">Manual</a></li>
+
             </ul>
         </nav>
     </header>
@@ -161,7 +162,7 @@
                         <p><strong>Postigón Cierre:</strong> <?= esc($horario['postigon_cierre']); ?></p>
 
                         <div class="button-container">
-                            <form action="<?= site_url('configurar/' . esc($horario['idhorario'])) ?>" method="POST" style="flex: 1;">
+                            <form action="<?= base_url('configuracion/' . esc($horario['idhorario'])) ?>" method="GET" style="flex: 1;">
                                 <button type="submit" class="config-button">Configurar</button>
                             </form>
                             
@@ -209,7 +210,7 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="successModalLabel">�xito</h5>
+                    <h5 class="modal-title" id="successModalLabel">Éxito</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -224,9 +225,9 @@
 
     <div id="codigoModal" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(10, 25, 47, 0.95); justify-content:center; align-items:center;">
         <div>
-            <h3>A�adir Nuevo Dispositivo</h3>
+            <h3>Añadir Nuevo Dispositivo</h3>
             <form id="reclamarForm"> 
-                <input type="text" id="macInput" name="mac_address" placeholder="Ingrese la Direcci�n MAC del Dispositivo" required style="text-transform:uppercase;">
+                <input type="text" id="macInput" name="mac_address" placeholder="Ingrese la Dirección MAC del Dispositivo" required style="text-transform:uppercase;">
                 <div id="macError" style="color:var(--danger-color); display:none; margin-top:10px; font-size: 0.9rem;"></div>
                 <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 1rem;">
                     <button type="submit">Reclamar Dispositivo</button>
@@ -236,19 +237,29 @@
         </div>
     </div>
 
-    <div id="servoModal" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(10, 25, 47, 0.95); justify-content:center; align-items:center;">
-        <div>
-            <h3>�Qu� servo deseas mover?</h3>
-            <form id="selectServoForm"> 
-                <input type="text" id="tarjetaInput" name="nombre_tarjeta" placeholder="Escribe el nombre de la tarjeta" required>
-                <div id="servoError" style="color:var(--danger-color); display:none; margin-top:10px; font-size: 0.9rem;"></div>
-                <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 1rem;">
-                    <button type="submit">Continuar</button>
-                    <button type="button" onclick="cerrarServoModal()" style="background: rgb(250, 6, 6);">Cancelar</button>
+    <div class="modal fade" id="servoModal" tabindex="-1" role="dialog" aria-labelledby="servoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <form id="selectServoForm">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="servoModalLabel">Control Manual</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true" style="color: var(--primary-color);">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-3" style="color: var(--text-secondary);">Escribe el nombre de la tarjeta que deseas controlar manualmente.</p>
+                    <input type="text" id="tarjetaInput" name="nombre_tarjeta" class="form-control" placeholder="Nombre de la tarjeta" required>
+                    <div id="servoError" style="color:var(--danger-color); display:none; margin-top:15px; font-size: 0.9rem;"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Continuar</button>
                 </div>
             </form>
         </div>
     </div>
+</div>
 
     <script>
         // Script para Hamburguesa
@@ -422,12 +433,6 @@
         const servoModal = document.getElementById('servoModal');
         const selectServoForm = document.getElementById('selectServoForm');
 
-        function abrirServoModal() {
-            if (servoModal) servoModal.style.display = 'flex';
-        }
-        function cerrarServoModal() {
-        if (servoModal) servoModal.style.display = 'none';
-        }
 
        
 

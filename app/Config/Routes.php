@@ -80,6 +80,56 @@ $routes->post('/dispositivos/reclamar', 'HorariosController::reclamarDispositivo
 $routes->post('/servos/seleccionar', 'HorariosController::seleccionarDispositivoPorNombre');
 $routes->post('horarios/guardar', 'HorariosController::guardar');
 
+$routes->get('api/weather/current', 'WeatherController::getCurrentWeather');
+$routes->get('api/weather/forecast', 'WeatherController::getForecastWeather');
+
+
+// Rutas para la ESP32 para obtener/establecer configuraciones
+// Estas rutas son las que tu ESP32 consultaría
+$routes->get('api/esp32/settings', function() {
+    // Aquí debes cargar las configuraciones guardadas para la ESP32 (horarios, condicionantes)
+    // Carga desde una base de datos (modelo), un archivo, o un array de ejemplo.
+    // Ejemplo simple (idealmente desde un modelo/DB):
+    $settings = [
+        'open_hour_ventana' => '08:00',
+        'close_hour_ventana' => '18:00',
+        'open_hour_cortina' => '07:00',
+        'close_hour_cortina' => '20:00',
+        'open_hour_postigon' => '07:30',
+        'close_hour_postigon' => '19:30',
+        'city' => 'Rio Tercero,AR', // La ciudad que la ESP32 usaría para su propia lógica o referencia
+        'min_temp_global' => 10.0,
+        'max_temp_global' => 30.0,
+        'max_wind_speed_global' => 20.0,
+        'allow_rain_global' => false,
+        // ... otras configuraciones que la ESP32 necesita
+    ];
+    return $this->response->setJSON($settings);
+});
+
+$routes->post('api/esp32/settings', function() {
+    $request = \Config\Services::request();
+    $newSettings = $request->getJSON(true); // Obtener el JSON del body como array
+
+    // Aquí debes guardar las configuraciones recibidas del frontend o de la ESP32
+    // en tu base de datos o sistema de persistencia de CodeIgniter.
+    // Ejemplo de log (idealmente a DB):
+    log_message('info', 'Configuraciones recibidas: ' . json_encode($newSettings));
+
+    return $this->response->setJSON(['message' => 'Configuraciones guardadas con éxito']);
+});
+
+// Opcional: Ruta para que la ESP32 envíe su estado actual
+$routes->post('api/esp32/status', function() {
+    $request = \Config\Services::request();
+    $status = $request->getJSON(true); // Obtener el JSON del body como array
+
+    // Aquí puedes guardar el estado (temperatura interna, estado de las ventanas, etc.)
+    // en tu base de datos o sistema de persistencia.
+    log_message('info', 'Estado de la ESP32 recibido: ' . json_encode($status));
+
+    return $this->response->setJSON(['message' => 'Estado recibido con éxito']);
+});
 
 
 

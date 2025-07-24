@@ -19,6 +19,8 @@ class ServoModel extends Model
         'pin_gpio',
         'tipo_elemento',
         'nombre_servo',
+        'Temperatura',
+        'Humedad',
         'horario_apertura',
         'horario_cierre',
         'estado_actual',

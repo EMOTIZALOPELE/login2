@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 12-06-2025 a las 15:01:13
+-- Tiempo de generación: 12-06-2025 a las 20:19:31
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -79,6 +79,7 @@ CREATE TABLE `dispositivos` (
   `codigo` varchar(100) NOT NULL,
   `Nombre_tarjeta` varchar(30) NOT NULL,
   `usuario_id` int(11) DEFAULT NULL,
+  `estado` varchar(25) NOT NULL DEFAULT 'CERRADO',
   `created_at` datetime DEFAULT current_timestamp(),
   `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `esta_usado` tinyint(1) DEFAULT 0
@@ -88,28 +89,8 @@ CREATE TABLE `dispositivos` (
 -- Volcado de datos para la tabla `dispositivos`
 --
 
-INSERT INTO `dispositivos` (`id`, `codigo`, `Nombre_tarjeta`, `usuario_id`, `created_at`, `updated_at`, `esta_usado`) VALUES
-(3, '9C:B6:D0:8E:5A:E1', '', 15, '2025-06-12 09:01:03', '2025-06-12 12:05:28', 1);
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `funcional`
---
-
-CREATE TABLE `funcional` (
-  `id` int(11) NOT NULL,
-  `Estado` varchar(25) NOT NULL,
-  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
-  `updated_at` datetime NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `funcional`
---
-
-INSERT INTO `funcional` (`id`, `Estado`, `created_at`, `updated_at`) VALUES
-(1, 'CERRADO', '2025-06-12 12:51:22', '2025-06-12 12:51:22');
+INSERT INTO `dispositivos` (`id`, `codigo`, `Nombre_tarjeta`, `usuario_id`, `estado`, `created_at`, `updated_at`, `esta_usado`) VALUES
+(3, '9C:B6:D0:8E:5A:E1', '', 15, 'CERRADO', '2025-06-12 09:01:03', '2025-06-12 12:05:28', 1);
 
 -- --------------------------------------------------------
 
@@ -242,12 +223,6 @@ ALTER TABLE `dispositivos`
   ADD UNIQUE KEY `codigo` (`codigo`);
 
 --
--- Indices de la tabla `funcional`
---
-ALTER TABLE `funcional`
-  ADD PRIMARY KEY (`id`);
-
---
 -- Indices de la tabla `horarios`
 --
 ALTER TABLE `horarios`
@@ -284,12 +259,6 @@ ALTER TABLE `disenos`
 --
 ALTER TABLE `dispositivos`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-
---
--- AUTO_INCREMENT de la tabla `funcional`
---
-ALTER TABLE `funcional`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `horarios`

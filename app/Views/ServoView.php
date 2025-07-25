@@ -130,6 +130,11 @@
                 <?php endif; ?>
             </div>
         </div>
+        <div style="margin-top: 1rem;">
+            <button class="btn-control btn-config" onclick="history.back()">
+                <i class="fas fa-arrow-left"></i> Volver
+            </button>
+        </div>
     </main>
 
     <script>

@@ -12,6 +12,7 @@ class UserModel extends Model
         'apellido', 
         'email', 
         'password', 
+        'ciudad',
         'reset_token',
         'reset_expires',
         'Nombreventana',

@@ -29,11 +29,13 @@
             display: grid;
             grid-template-columns: repeat(4, 1fr); /* 4 columnas de igual ancho */
             gap: 1.5rem; /* Espacio entre los elementos del grid */
+            
+            /* MODIFICACIÓN AQUÍ: Se eliminó el bloque de Condicionantes Generales */
             grid-template-areas:
                 "header header header header"
                 "description description description description"
-                "pronostico pronostico pronostico condicionantes" /* Pronóstico ocupa 3 columnas, Condicionantes 1 */
-                "ventana cortina postigon clima_actual" /* Horarios y Clima Actual en la siguiente fila */
+                "ventana cortina postigon clima_actual" /* Horarios y Clima Actual en una fila */
+                "pronostico pronostico pronostico pronostico" /* Pronóstico en una fila completa */
                 "buttons buttons buttons buttons";
         }
         .config-card h1 {
@@ -66,9 +68,7 @@
         .content-block h3 { font-size: 1.3rem; }
 
         /* Asignación de áreas de Grid */
-        /* RE-ORDENADAS SEGÚN EL NUEVO LAYOUT */
         #hourly_forecast_block { grid-area: pronostico; }
-        #condicionantes_block { grid-area: condicionantes; }
         #ventana_block { grid-area: ventana; }
         #cortina_block { grid-area: cortina; }
         #postigon_block { grid-area: postigon; }
@@ -145,10 +145,9 @@
                 grid-template-areas:
                     "header header"
                     "description description"
-                    "pronostico pronostico" /* Pronóstico ocupa 2 columnas */
-                    "condicionantes condicionantes" /* Condicionantes debajo en 2 columnas */
                     "ventana cortina"
-                    "postigon clima_actual" /* Postigón y Clima Actual en otra fila */
+                    "postigon clima_actual"
+                    "pronostico pronostico"
                     "buttons buttons";
             }
         }
@@ -161,12 +160,11 @@
                 grid-template-areas:
                     "header"
                     "description"
-                    "pronostico"
-                    "condicionantes"
                     "ventana"
                     "cortina"
                     "postigon"
                     "clima_actual"
+                    "pronostico"
                     "buttons";
             }
             .config-card h1 { font-size: 1.8rem; }
@@ -198,41 +196,6 @@
             <input type="hidden" name="idhorario" value="">
             <input type="hidden" name="diseno_id" value="">
             
-            <div class="content-block" id="hourly_forecast_block">
-                <h2>Pronóstico (Próx. 12h)</h2>
-                <div class="forecast-items" id="hourly_forecast_container">
-                    <div class="forecast-item">
-                        <div class="hour">--:--</div>
-                        <div class="temp">--°C</div>
-                        <div class="desc">Cargando...</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="content-block" id="condicionantes_block">
-                <h3>Condicionantes Generales</h3>
-                <div class="form-group">
-                    <label for="city_setting">Ciudad del Clima:</label>
-                    <input type="text" id="city_setting" name="city" class="form-control-input" value="Rio Tercero,AR">
-                </div>
-                <div class="form-group">
-                    <label for="min_temp_general">Temp. Mínima Global (°C):</label>
-                    <input type="number" id="min_temp_general" name="min_temp_global" class="form-control-input" step="0.1" value="10.0">
-                </div>
-                <div class="form-group">
-                    <label for="max_temp_general">Temp. Máxima Global (°C):</label>
-                    <input type="number" id="max_temp_general" name="max_temp_global" class="form-control-input" step="0.1" value="30.0">
-                </div>
-                   <div class="form-group">
-                    <label for="max_wind_speed_general">Viento Máx. Global (m/s):</label>
-                    <input type="number" id="max_wind_speed_general" name="max_wind_speed_global" class="form-control-input" step="0.1" value="20.0">
-                </div>
-                <div class="form-group checkbox-group">
-                    <input type="checkbox" id="allow_rain_general" name="allow_rain_global" value="1">
-                    <label for="allow_rain_general">Permitir con Lluvia (Global)</label>
-                </div>
-            </div>
-            
             <div class="content-block" id="ventana_block">
                 <h2>Horarios de Ventana</h2>
                 <div class="form-group">
@@ -242,6 +205,24 @@
                 <div class="form-group">
                     <label for="ventana_cierre">Cierre:</label>
                     <input type="time" id="ventana_cierre" name="close_hour_ventana" class="form-control-time" value="18:00">
+                </div>
+                
+                <h3>Condicionantes</h3>
+                <div class="form-group">
+                    <label for="min_temp_ventana">Temp. Mínima (°C):</label>
+                    <input type="number" id="min_temp_ventana" name="min_temp_ventana" class="form-control-input" step="0.1" value="10.0">
+                </div>
+                <div class="form-group">
+                    <label for="max_temp_ventana">Temp. Máxima (°C):</label>
+                    <input type="number" id="max_temp_ventana" name="max_temp_ventana" class="form-control-input" step="0.1" value="30.0">
+                </div>
+                <div class="form-group">
+                    <label for="max_wind_speed_ventana">Viento Máx. (m/s):</label>
+                    <input type="number" id="max_wind_speed_ventana" name="max_wind_speed_ventana" class="form-control-input" step="0.1" value="20.0">
+                </div>
+                <div class="form-group checkbox-group">
+                    <input type="checkbox" id="allow_rain_ventana" name="allow_rain_ventana" value="1">
+                    <label for="allow_rain_ventana">Permitir con Lluvia</label>
                 </div>
             </div>
 
@@ -255,6 +236,24 @@
                     <label for="cortina_cierre">Cierre:</label>
                     <input type="time" id="cortina_cierre" name="close_hour_cortina" class="form-control-time" value="20:00">
                 </div>
+                
+                <h3>Condicionantes</h3>
+                <div class="form-group">
+                    <label for="min_temp_cortina">Temp. Mínima (°C):</label>
+                    <input type="number" id="min_temp_cortina" name="min_temp_cortina" class="form-control-input" step="0.1" value="10.0">
+                </div>
+                <div class="form-group">
+                    <label for="max_temp_cortina">Temp. Máxima (°C):</label>
+                    <input type="number" id="max_temp_cortina" name="max_temp_cortina" class="form-control-input" step="0.1" value="30.0">
+                </div>
+                <div class="form-group">
+                    <label for="max_wind_speed_cortina">Viento Máx. (m/s):</label>
+                    <input type="number" id="max_wind_speed_cortina" name="max_wind_speed_cortina" class="form-control-input" step="0.1" value="20.0">
+                </div>
+                <div class="form-group checkbox-group">
+                    <input type="checkbox" id="allow_rain_cortina" name="allow_rain_cortina" value="1">
+                    <label for="allow_rain_cortina">Permitir con Lluvia</label>
+                </div>
             </div>
 
             <div class="content-block" id="postigon_block">
@@ -267,16 +266,49 @@
                     <label for="postigon_cierre">Cierre:</label>
                     <input type="time" id="postigon_cierre" name="close_hour_postigon" class="form-control-time" value="19:30">
                 </div>
+                
+                <h3>Condicionantes</h3>
+                <div class="form-group">
+                    <label for="min_temp_postigon">Temp. Mínima (°C):</label>
+                    <input type="number" id="min_temp_postigon" name="min_temp_postigon" class="form-control-input" step="0.1" value="10.0">
+                </div>
+                <div class="form-group">
+                    <label for="max_temp_postigon">Temp. Máxima (°C):</label>
+                    <input type="number" id="max_temp_postigon" name="max_temp_postigon" class="form-control-input" step="0.1" value="30.0">
+                </div>
+                <div class="form-group">
+                    <label for="max_wind_speed_postigon">Viento Máx. (m/s):</label>
+                    <input type="number" id="max_wind_speed_postigon" name="max_wind_speed_postigon" class="form-control-input" step="0.1" value="20.0">
+                </div>
+                <div class="form-group checkbox-group">
+                    <input type="checkbox" id="allow_rain_postigon" name="allow_rain_postigon" value="1">
+                    <label for="allow_rain_postigon">Permitir con Lluvia</label>
+                </div>
             </div>
 
             <div class="content-block" id="current_weather_block">
                 <h2>Clima Actual</h2>
+                <div class="form-group">
+                    <label for="city_setting">Ciudad del Clima:</label>
+                    <input type="text" id="city_setting" name="city" class="form-control-input" value="Rio Tercero,AR">
+                </div>
                 <div class="weather-detail"><i class="fas fa-thermometer-half weather-icon"></i> <strong>Temp:</strong> <span id="current_temp">--</span>°C</div>
                 <div class="weather-detail"><i class="fas fa-wind weather-icon"></i> <strong>Viento:</strong> <span id="current_wind">--</span> m/s</div>
                 <div class="weather-detail"><i class="fas fa-tint weather-icon"></i> <strong>Humedad:</strong> <span id="current_humidity">--</span>%</div>
                 <div class="weather-detail"><i class="fas fa-cloud-sun weather-icon"></i> <strong>Clima:</strong> <span id="current_weather_desc">--</span></div>
                 <div class="weather-detail"><i class="fas fa-clock weather-icon"></i> <strong>Últ. Actualización:</strong> <span id="last_update">-- min.</span></div>
                 <div class="weather-detail"><i class="fas fa-city weather-icon"></i> <strong>Ciudad:</strong> <span id="current_city">--</span></div>
+            </div>
+
+            <div class="content-block" id="hourly_forecast_block">
+                <h2>Pronóstico (Próx. 12h)</h2>
+                <div class="forecast-items" id="hourly_forecast_container">
+                    <div class="forecast-item">
+                        <div class="hour">--:--</div>
+                        <div class="temp">--°C</div>
+                        <div class="desc">Cargando...</div>
+                    </div>
+                </div>
             </div>
             
             <div class="button-row">
@@ -309,11 +341,21 @@
                 // Actualizar input de ciudad con el valor actual
                 document.getElementById('city_setting').value = data.city || 'Rio Tercero,AR';
 
-                // Actualizar Condicionantes Globales
-                document.getElementById('min_temp_general').value = data.min_temp_global !== undefined ? data.min_temp_global.toFixed(1) : '10.0';
-                document.getElementById('max_temp_general').value = data.max_temp_global !== undefined ? data.max_temp_global.toFixed(1) : '30.0';
-                document.getElementById('max_wind_speed_general').value = data.max_wind_speed_global !== undefined ? data.max_wind_speed_global.toFixed(1) : '20.0';
-                document.getElementById('allow_rain_general').checked = data.allow_rain_global || false;
+                // Actualizar condicionantes para cada dispositivo
+                document.getElementById('min_temp_ventana').value = data.min_temp_ventana !== undefined ? data.min_temp_ventana.toFixed(1) : '10.0';
+                document.getElementById('max_temp_ventana').value = data.max_temp_ventana !== undefined ? data.max_temp_ventana.toFixed(1) : '30.0';
+                document.getElementById('max_wind_speed_ventana').value = data.max_wind_speed_ventana !== undefined ? data.max_wind_speed_ventana.toFixed(1) : '20.0';
+                document.getElementById('allow_rain_ventana').checked = data.allow_rain_ventana || false;
+                
+                document.getElementById('min_temp_cortina').value = data.min_temp_cortina !== undefined ? data.min_temp_cortina.toFixed(1) : '10.0';
+                document.getElementById('max_temp_cortina').value = data.max_temp_cortina !== undefined ? data.max_temp_cortina.toFixed(1) : '30.0';
+                document.getElementById('max_wind_speed_cortina').value = data.max_wind_speed_cortina !== undefined ? data.max_wind_speed_cortina.toFixed(1) : '20.0';
+                document.getElementById('allow_rain_cortina').checked = data.allow_rain_cortina || false;
+                
+                document.getElementById('min_temp_postigon').value = data.min_temp_postigon !== undefined ? data.min_temp_postigon.toFixed(1) : '10.0';
+                document.getElementById('max_temp_postigon').value = data.max_temp_postigon !== undefined ? data.max_temp_postigon.toFixed(1) : '30.0';
+                document.getElementById('max_wind_speed_postigon').value = data.max_wind_speed_postigon !== undefined ? data.max_wind_speed_postigon.toFixed(1) : '20.0';
+                document.getElementById('allow_rain_postigon').checked = data.allow_rain_postigon || false;
 
                 // Actualizar Horarios de Ventana, Cortina, Postigón
                 document.getElementById('ventana_apertura').value = data.open_hour_ventana || '08:00';
@@ -322,7 +364,6 @@
                 document.getElementById('cortina_cierre').value = data.close_hour_cortina || '20:00';
                 document.getElementById('postigon_apertura').value = data.open_hour_postigon || '07:30';
                 document.getElementById('postigon_cierre').value = data.close_hour_postigon || '19:30';
-
 
                 // Actualizar Pronóstico por Horas
                 const forecastContainer = document.getElementById('hourly_forecast_container');
@@ -363,4 +404,4 @@
         setInterval(updateWeatherAndForecast, 60000); 
     </script>
 </body>
-</html> 
+</html>

@@ -21,7 +21,7 @@
             --danger-color: #ff4d4d;
             --success-color: #00ff9d;
             --input-border: rgba(100, 255, 218, 0.2);
-            /* Colores del men� de referencia */
+            /* Colores del men de referencia */
             --menu-icon-color: #00e0ff; 
             --menu-bg-color: rgba(10, 25, 47, 0.97); 
             --menu-border-color: rgba(0, 224, 255, 0.08); 
@@ -86,6 +86,34 @@
         .delete-button { background: var(--danger-color); color: white; border: none; border-radius: 50px; font-weight: 500; cursor: pointer; transition: all 0.3s ease; width: 100%; margin-top: 0.8rem; }
         .card-scrollable-content form:last-child { margin-top: 0.8rem; }
         .delete-button:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(255, 77, 77, 0.3); }
+        .weather-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-family: 'Roboto', sans-serif;
+            margin-left: 1rem;
+        }
+        
+        .weather-icon {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+        
+        .weather-temp {
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+        
+        .weather-desc {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        
+        @media (max-width: 767.98px) {
+            .weather-header {
+                display: none; /* Ocultar en mviles para ahorrar espacio */
+            }
+        }
         @media (max-width: 992px) { .horario-card { width: 300px; height: 460px; } .horarios-container { gap: 1.5rem; justify-content: center; } }
         @media (max-width: 767.98px) { .container__menu { display: flex; justify-content: space-between; align-items: center; padding: 0.8rem 1rem; } .menu-toggle { display: flex; } .logo { font-size: 1.8rem; } .desktop-menu { display: none !important; } .container__card { padding: 1rem; margin-top: 1rem; } .horarios-container { flex-direction: column; align-items: center; overflow-x: hidden; overflow-y: auto; padding: 1rem 0.5rem; gap: 1.5rem; min-height: auto; } .horarios-container::-webkit-scrollbar { display: none; } .horario-card { width: 90%; max-width: 450px; height: auto; min-height: 400px; flex-shrink: 1; margin-bottom: 1.5rem; } .horario-card h3 { font-size: 1.3rem; } .horario-card p, .horario-card p strong { font-size: 0.88rem; } .config-button, .delete-button { font-size: 0.85rem; } }
         @media (max-width: 480px) { .logo { font-size: 1.6rem; } .container__menu { padding: 0.6rem 0.8rem; } .menu-toggle div { width: 22px; height: 2.5px; } .menu-toggle.active div:nth-child(1) { transform: translateY(7.5px) rotate(45deg); } .menu-toggle.active div:nth-child(3) { transform: translateY(-7.5px) rotate(-45deg); } .mobile-menu-panel.active { top: 0; padding-top: 4rem; width: 60vw; max-width: 280px; } .mobile-menu-panel.active ul li a { font-size: 0.9rem; padding: 10px 15px; } .mobile-menu-panel.active ul li a i { font-size: 1rem; margin-right: 10px; } .container__card { padding: 0.8rem 0.3rem; } .horarios-container { gap: 1rem; } .horario-card { width: 95%; min-height: 380px; padding: 1rem; } .horario-card h3 { font-size: 1.2rem; } .horario-card p, .horario-card p strong { font-size: 0.82rem; } .config-button, .delete-button { font-size: 0.8rem; padding: 0.5rem 0.8rem; } }
@@ -111,8 +139,11 @@
 <body>
     <header>
         <div class="container__menu">
-            <div class="logo">VECOPO</div>
-            
+            <div class="logo">
+                <span id="greetingText">Hola <?php echo htmlspecialchars($_SESSION['nombre']); ?></span>
+                <span id="weatherText" style="font-size: 1rem; font-family: 'Roboto', sans-serif; font-weight: 400; color: #8892b0;"></span>
+            </div>
+
             <div class="desktop-menu">
                 <nav>
                     <ul>
@@ -125,7 +156,7 @@
                 </nav>
             </div>
 
-            <div class="menu-toggle" id="menu-toggle" role="button" aria-label="Abrir menú de navegación" aria-expanded="false">
+            <div class="menu-toggle" id="menu-toggle" role="button" aria-label="Abrir men de navegacin" aria-expanded="false">
                 <div></div>
                 <div></div>
                 <div></div>
@@ -176,7 +207,7 @@
                             </button>
                         </div>
                         
-                        <form action="<?= site_url('borrar_tarjeta/' . esc($horario['idhorario'])) ?>" method="POST" onsubmit="return confirm('�Seguro que quieres eliminar esta tarjeta?');">
+                        <form action="<?= site_url('borrar_tarjeta/' . esc($horario['idhorario'])) ?>" method="POST" onsubmit="return confirm('Seguro que quieres eliminar esta tarjeta?');">
                             <button type="submit" class="delete-button">Eliminar</button>
                         </form>
                     </div>
@@ -210,7 +241,7 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="successModalLabel">Éxito</h5>
+                    <h5 class="modal-title" id="successModalLabel">xito</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -225,9 +256,9 @@
 
     <div id="codigoModal" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(10, 25, 47, 0.95); justify-content:center; align-items:center;">
         <div>
-            <h3>Añadir Nuevo Dispositivo</h3>
+            <h3>Aadir Nuevo Dispositivo</h3>
             <form id="reclamarForm"> 
-                <input type="text" id="macInput" name="mac_address" placeholder="Ingrese la Dirección MAC del Dispositivo" required style="text-transform:uppercase;">
+                <input type="text" id="macInput" name="mac_address" placeholder="Ingrese la Direccin MAC del Dispositivo" required style="text-transform:uppercase;">
                 <div id="macError" style="color:var(--danger-color); display:none; margin-top:10px; font-size: 0.9rem;"></div>
                 <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 1rem;">
                     <button type="submit">Reclamar Dispositivo</button>
@@ -360,16 +391,16 @@
                 })
                 .then(({ status, body }) => {
                     if (body.success) { 
-                        alert(body.message || '�Dispositivo a�adido con �xito!'); 
+                        alert(body.message || 'Dispositivo aadido con xito!'); 
                         window.location.reload(); 
                     } else {
-                        macError.textContent = body.messages.error || 'Ocurri� un error inesperado.';
+                        macError.textContent = body.messages.error || 'Ocurri un error inesperado.';
                         macError.style.display = 'block';
                     }
                 })
                 .catch(error => {
                     console.error('Error en fetch:', error);
-                    macError.textContent = 'Error de conexi�n con el servidor. Intente nuevamente.';
+                    macError.textContent = 'Error de conexin con el servidor. Intente nuevamente.';
                     macError.style.display = 'block';
                 })
                 .finally(() => {
@@ -393,7 +424,7 @@
                 const cardId = $('#cardIdToChange').val();
                 const newName = $('#newCardName').val();
                 if (!newName.trim()) {
-                    alert('El nombre de la tarjeta no puede estar vac�o.');
+                    alert('El nombre de la tarjeta no puede estar vaco.');
                     return;
                 }
                 $.ajax({
@@ -408,7 +439,7 @@
                     success: function(response) {
                         if (response.success) {
                             $('#changeNameModal').modal('hide');
-                            $('#successModalBody').text(response.message || 'Nombre actualizado con �xito.');
+                            $('#successModalBody').text(response.message || 'Nombre actualizado con xito.');
                             $('#successModal').modal('show');
                             $(`.horario-card h3[data-idhorario="${cardId}"] .card-title`).text(newName);
                             $(`button[data-idhorario="${cardId}"][data-target="#changeNameModal"]`).data('current-name', newName);
@@ -420,7 +451,7 @@
                     error: function(xhr, status, error) {
                         console.error('Error AJAX:', status, error, xhr.responseText);
                         $('#changeNameModal').modal('hide');
-                        alert('Ocurri� un error al comunicarse con el servidor. Detalles: ' + xhr.responseText);
+                        alert('Ocurri un error al comunicarse con el servidor. Detalles: ' + xhr.responseText);
                     }
                 });
             });
@@ -428,7 +459,7 @@
             $('#successModal').on('hidden.bs.modal', function () { /* location.reload(); */ });
         });
 
-        // --- L�GICA PARA EL NUEVO MODAL DE SELECCI�N DE SERVO ---
+        // --- LGICA PARA EL NUEVO MODAL DE SELECCIN DE SERVO ---
 
         const servoModal = document.getElementById('servoModal');
         const selectServoForm = document.getElementById('selectServoForm');
@@ -463,7 +494,7 @@
             })
             .then(data => {
                 if (data.success) {
-                    // --- CORRECCIÓN CLAVE ---
+                    // --- CORRECCIN CLAVE ---
                     // Redirigimos a la URL correcta, pasando el ID del dispositivo.
                     window.location.href = `<?= base_url('/masivo') ?>/${data.dispositivo_id}`;
                 } else {
@@ -481,6 +512,81 @@
             });
         });
     }
+
+    // Utiliza la misma API Key que ya tienes configurada
+        const APIKey = '0d132a7baaa02ea9cfc60077249f0254';
+        const city = 'Rio Tercero,AR';
+        
+        // Iconos para diferentes condiciones climticas
+        const weatherIcons = {
+            '01d': 'fa-sun',           // clear sky (day)
+            '01n': 'fa-moon',          // clear sky (night)
+            '02d': 'fa-cloud-sun',    // few clouds (day)
+            '02n': 'fa-cloud-moon',    // few clouds (night)
+            '03d': 'fa-cloud',        // scattered clouds
+            '03n': 'fa-cloud',
+            '04d': 'fa-cloud',        // broken clouds
+            '04n': 'fa-cloud',
+            '09d': 'fa-cloud-rain',    // shower rain
+            '09n': 'fa-cloud-rain',
+            '10d': 'fa-cloud-sun-rain',// rain (day)
+            '10n': 'fa-cloud-moon-rain',// rain (night)
+            '11d': 'fa-bolt',         // thunderstorm
+            '11n': 'fa-bolt',
+            '13d': 'fa-snowflake',     // snow
+            '13n': 'fa-snowflake',
+            '50d': 'fa-smog',          // mist
+            '50n': 'fa-smog'
+        };
+        
+        // Descripciones personalizadas en español
+        const weatherDescriptions = {
+            'clear': 'soleado',
+            'clouds': 'nublado',
+            'rain': 'lluvioso',
+            'thunderstorm': 'con tormentas',
+            'snow': 'nevado',
+            'mist': 'con neblina',
+            'haze': 'con neblina',
+            'fog': 'con niebla',
+            'drizzle': 'con llovizna'
+        };
+        
+        function updateHeaderWeather() {
+            fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${APIKey}&lang=es`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.cod === 200) {
+                        const temp = Math.round(data.main.temp);
+                        const weatherId = data.weather[0].icon;
+                        const mainCondition = data.weather[0].main.toLowerCase();
+                        
+                        // Obtener descripcin en espaol o usar la predeterminada
+                        const description = weatherDescriptions[mainCondition] || 
+                                           data.weather[0].description.toLowerCase();
+                        
+                        // Generar el texto combinado
+                        const combinedText = `Hola, hoy es un día ${description} y la temperatura es de ${temp}°C.`;
+
+                        // Actualizar el DOM
+                        const greetingElement = document.querySelector('.logo');
+                        if (greetingElement) {
+                             greetingElement.textContent = `Hola <?php echo htmlspecialchars($_SESSION['nombre']); ?>, hoy es un día ${description} y la temperatura es de ${temp}°C.`;
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Error al obtener datos del clima:', error);
+                    const greetingElement = document.querySelector('.logo');
+                    if (greetingElement) {
+                         greetingElement.textContent = `Hola <?php echo htmlspecialchars($_SESSION['nombre']); ?>, Error al cargar el clima.`;
+                    }
+                });
+        }
+        
+        // Llamar a la funcin al cargar la pgina y cada 30 minutos
+        window.addEventListener('load', updateHeaderWeather);
+        setInterval(updateHeaderWeather, 1800000); // 30 minutos
     </script>
 </body>
 </html>

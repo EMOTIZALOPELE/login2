@@ -24,18 +24,14 @@
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
             width: 100%; max-width: 1280px;
             animation: fadeIn 0.8s ease-out; text-align: center;
-
-            /* Usamos Grid para la estructura principal del card */
             display: grid;
-            grid-template-columns: repeat(4, 1fr); /* 4 columnas de igual ancho */
-            gap: 1.5rem; /* Espacio entre los elementos del grid */
-            
-            /* MODIFICACIÓN AQUÍ: Se eliminó el bloque de Condicionantes Generales */
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
             grid-template-areas:
                 "header header header header"
                 "description description description description"
-                "ventana cortina postigon clima_actual" /* Horarios y Clima Actual en una fila */
-                "pronostico pronostico pronostico pronostico" /* Pronóstico en una fila completa */
+                "ventana cortina postigon clima_actual"
+                "pronostico pronostico pronostico pronostico"
                 "buttons buttons buttons buttons";
         }
         .config-card h1 {
@@ -50,7 +46,6 @@
             color: var(--text-secondary);
         }
 
-        /* Estilo general para todos los bloques de contenido */
         .content-block {
             background-color: rgba(0, 0, 0, 0.2);
             padding: 1.5rem;
@@ -67,7 +62,6 @@
         }
         .content-block h3 { font-size: 1.3rem; }
 
-        /* Asignación de áreas de Grid */
         #hourly_forecast_block { grid-area: pronostico; }
         #ventana_block { grid-area: ventana; }
         #cortina_block { grid-area: cortina; }
@@ -75,7 +69,6 @@
         #current_weather_block { grid-area: clima_actual; }
         .button-row { grid-area: buttons; }
 
-        /* Estilos de elementos internos */
         .form-group { margin-bottom: 1.5rem; text-align: left; }
         .form-group label { display: block; margin-bottom: 0.5rem; color: var(--text-secondary); font-weight: 500; font-size: 0.95rem; }
         .form-control-time, .form-control-input {
@@ -92,11 +85,48 @@
         .checkbox-group { display: flex; align-items: center; margin-top: 5px; }
         .checkbox-group label { margin-bottom: 0; margin-left: 5px; }
 
-        .weather-detail { margin-bottom: 0.5rem; font-size: 0.95rem; }
-        .weather-detail strong { color: var(--accent-color); }
-        .weather-icon { font-size: 2rem; margin-right: 10px; vertical-align: middle; }
+        /* Estilos para el bloque de clima actual (sin imágenes) */
+        .weather-info {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            margin-bottom: 0.8rem;
+            gap: 1rem;
+        }
+        .weather-info i {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            width: 30px;
+            text-align: center;
+        }
+        .weather-info p {
+            font-size: 1rem;
+            color: var(--text-primary);
+            margin: 0;
+            display: flex;
+            align-items: baseline;
+            flex-grow: 1;
+        }
+        .weather-info p span {
+            font-weight: 600;
+            color: var(--accent-color);
+            margin-left: 5px;
+        }
+        #current_weather_block h2 { margin-bottom: 0.5rem; }
+        #weather_city_name { margin-bottom: 1rem; background: rgba(255,255,255,0.05); padding: 0.5rem; border-radius: 8px; border: 1px solid var(--input-border); text-align: center; color: var(--text-primary); }
 
-        .forecast-items { display: flex; overflow-x: auto; padding-bottom: 10px; gap: 1rem; }
+        /* Estilos del nuevo bloque de pronóstico */
+        .forecast-items {
+            display: flex;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            gap: 1rem;
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+        .forecast-items::-webkit-scrollbar {
+            display: none; /* Chrome, Safari and Opera */
+        }
         .forecast-item {
             flex: 0 0 auto;
             background: rgba(255, 255, 255, 0.05); border: 1px solid var(--input-border);
@@ -108,7 +138,6 @@
         .forecast-item .temp { font-size: 1.1rem; color: var(--text-primary); }
         .forecast-item .desc { font-size: 0.8rem; color: var(--text-secondary); }
 
-        /* Botones de acción */
         .button-row {
             margin-top: 0;
             width: 100%; text-align: center;
@@ -126,20 +155,9 @@
         .btn-back { background: rgba(255, 255, 255, 0.1); color: var(--text-primary); border: 1px solid var(--input-border); }
         .btn-back:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1); }
         
-        /* Mensajes de Alerta/Éxito */
-        .alert, .success {
-            background: rgba(255, 77, 77, 0.2); border: 1px solid var(--danger-color); color: var(--danger-color);
-            padding: 1rem; border-radius: 10px; margin-bottom: 1.5rem;
-            grid-column: 1 / -1;
-            width: auto;
-        }
-        .success { background: rgba(0, 255, 157, 0.2); border: 1px solid var(--success-color); color: var(--success-color); }
-        
-        /* Animación */
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Media Queries para Responsividad */
-        @media (max-width: 1200px) { /* Para pantallas más pequeñas, apilar en 2 columnas */
+        @media (max-width: 1200px) {
             .config-card {
                 grid-template-columns: repeat(2, 1fr);
                 grid-template-areas:
@@ -156,7 +174,7 @@
             body { padding: 1rem; }
             .config-card {
                 padding: 1.5rem; max-width: 95%;
-                grid-template-columns: 1fr; /* Una sola columna para todo */
+                grid-template-columns: 1fr;
                 grid-template-areas:
                     "header"
                     "description"
@@ -179,18 +197,6 @@
     <div class="config-card">
         <h1>Configurar Dispositivos Inteligentes</h1>
         <p>Control y configuración de los horarios y condicionantes para los dispositivos.</p>
-
-        <?php /*
-        if (isset($error)): ?>
-            <div class="alert">
-                <?= $error ?>
-            </div>
-        <?php endif; ?>
-        <?php if (isset($mensaje)): ?>
-            <div class="success">
-                <?= $mensaje ?>
-            </div>
-        <?php endif; */?>
 
         <form action="/savesettings" method="POST" style="display: contents;">
             <input type="hidden" name="idhorario" value="">
@@ -288,25 +294,35 @@
 
             <div class="content-block" id="current_weather_block">
                 <h2>Clima Actual</h2>
-                <div class="form-group">
-                    <label for="city_setting">Ciudad del Clima:</label>
-                    <input type="text" id="city_setting" name="city" class="form-control-input" value="Rio Tercero,AR">
-                </div>
-                <div class="weather-detail"><i class="fas fa-thermometer-half weather-icon"></i> <strong>Temp:</strong> <span id="current_temp">--</span>°C</div>
-                <div class="weather-detail"><i class="fas fa-wind weather-icon"></i> <strong>Viento:</strong> <span id="current_wind">--</span> m/s</div>
-                <div class="weather-detail"><i class="fas fa-tint weather-icon"></i> <strong>Humedad:</strong> <span id="current_humidity">--</span>%</div>
-                <div class="weather-detail"><i class="fas fa-cloud-sun weather-icon"></i> <strong>Clima:</strong> <span id="current_weather_desc">--</span></div>
-                <div class="weather-detail"><i class="fas fa-clock weather-icon"></i> <strong>Últ. Actualización:</strong> <span id="last_update">-- min.</span></div>
-                <div class="weather-detail"><i class="fas fa-city weather-icon"></i> <strong>Ciudad:</strong> <span id="current_city">--</span></div>
-            </div>
+                <p id="weather_city_name">Río Tercero,AR</p>
 
+                <div class="weather-info">
+                    <i class="fa-solid fa-temperature-three-quarters"></i>
+                    <p>Temp: <span id="current_temp">--</span>°C</p>
+                </div>
+                <div class="weather-info">
+                    <i class="fa-solid fa-wind"></i>
+                    <p>Viento: <span id="current_wind">--</span> Km/h</p>
+                </div>
+                <div class="weather-info">
+                    <i class="fa-solid fa-droplet"></i>
+                    <p>Humedad: <span id="current_humidity">--</span>%</p>
+                </div>
+                <div class="weather-info">
+                    <i class="fa-solid fa-cloud-showers-heavy"></i>
+                    <p>Prob. Lluvia: <span id="pop">--</span>%</p>
+                </div>
+                <div class="weather-info">
+                    <i class="fa-solid fa-cloud-sun"></i>
+                    <p>Clima: <span id="current_weather_desc">--</span></p>
+                </div>
+            </div>
+            
             <div class="content-block" id="hourly_forecast_block">
                 <h2>Pronóstico (Próx. 12h)</h2>
                 <div class="forecast-items" id="hourly_forecast_container">
-                    <div class="forecast-item">
-                        <div class="hour">--:--</div>
-                        <div class="temp">--°C</div>
-                        <div class="desc">Cargando...</div>
+                    <div class="forecast-item loading-item">
+                        <div class="desc">Cargando pronóstico...</div>
                     </div>
                 </div>
             </div>
@@ -319,89 +335,95 @@
     </div>
 
     <script>
-        // Función para obtener y mostrar los datos del clima y el pronóstico
-        async function updateWeatherAndForecast() {
+        // ¡IMPORTANTE! Reemplaza 'TU_API_KEY_AQUI' con tu clave de OpenWeatherMap
+        const APIKey = '0d132a7baaa02ea9cfc60077249f0254'; 
+        const city = 'Rio Tercero,AR';
+
+        const currentTemp = document.getElementById('current_temp');
+        const currentHumidity = document.getElementById('current_humidity');
+        const currentWind = document.getElementById('current_wind');
+        const currentPoP = document.getElementById('pop');
+        const currentWeatherDesc = document.getElementById('current_weather_desc');
+        const forecastContainer = document.getElementById('hourly_forecast_container');
+
+        function showLoadingState() {
+            currentTemp.textContent = '--';
+            currentHumidity.textContent = '--';
+            currentWind.textContent = '--';
+            currentPoP.textContent = '--';
+            currentWeatherDesc.textContent = 'Cargando...';
+            forecastContainer.innerHTML = '<div class="forecast-item loading-item"><div class="desc">Cargando pronóstico...</div></div>';
+        }
+
+        function showErrorState(message = 'Error') {
+            currentTemp.textContent = '--';
+            currentHumidity.textContent = '--';
+            currentWind.textContent = '--';
+            currentPoP.textContent = '--';
+            currentWeatherDesc.textContent = message;
+            forecastContainer.innerHTML = '<div class="forecast-item error-item"><div class="desc">No se pudo cargar el pronóstico.</div></div>';
+        }
+
+        async function updateWeather() {
+            showLoadingState();
+
+            if (APIKey === 'TU_API_KEY_AQUI' || APIKey.length < 32) {
+                showErrorState('API Key no configurada.');
+                return;
+            }
+
             try {
-                const response = await fetch('/get_weather_data'); // Endpoint que tu ESP32 debe servir
-                const data = await response.json();
+                // Obtener datos del clima actual
+                const weatherResponse = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${APIKey}&lang=es`);
+                const weatherData = await weatherResponse.json();
+
+                // Obtener datos de pronóstico (para probabilidad de lluvia y pronóstico por horas)
+                const forecastResponse = await fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=metric&appid=${APIKey}&lang=es`);
+                const forecastData = await forecastResponse.json();
+
+                if (weatherData.cod !== 200 || forecastData.cod !== '200') {
+                    showErrorState('Ubicación no encontrada o error en la API.');
+                    return;
+                }
 
                 // Actualizar Clima Actual
-                document.getElementById('current_temp').textContent = data.currentTemperature ? data.currentTemperature.toFixed(1) : '--';
-                document.getElementById('current_wind').textContent = data.currentWindSpeed ? data.currentWindSpeed.toFixed(1) : '--';
-                document.getElementById('current_humidity').textContent = data.currentHumidity ? data.currentHumidity.toFixed(0) : '--';
-                document.getElementById('current_weather_desc').textContent = data.currentWeatherDescription || '--';
-                document.getElementById('current_city').textContent = data.city || '--';
-                if (data.lastWeatherCheck) {
-                    const lastUpdateMinutes = Math.floor((Date.now() - data.lastWeatherCheck) / (1000 * 60));
-                    document.getElementById('last_update').textContent = `${lastUpdateMinutes} min.`;
-                } else {
-                    document.getElementById('last_update').textContent = '-- min.';
-                }
-                
-                // Actualizar input de ciudad con el valor actual
-                document.getElementById('city_setting').value = data.city || 'Rio Tercero,AR';
-
-                // Actualizar condicionantes para cada dispositivo
-                document.getElementById('min_temp_ventana').value = data.min_temp_ventana !== undefined ? data.min_temp_ventana.toFixed(1) : '10.0';
-                document.getElementById('max_temp_ventana').value = data.max_temp_ventana !== undefined ? data.max_temp_ventana.toFixed(1) : '30.0';
-                document.getElementById('max_wind_speed_ventana').value = data.max_wind_speed_ventana !== undefined ? data.max_wind_speed_ventana.toFixed(1) : '20.0';
-                document.getElementById('allow_rain_ventana').checked = data.allow_rain_ventana || false;
-                
-                document.getElementById('min_temp_cortina').value = data.min_temp_cortina !== undefined ? data.min_temp_cortina.toFixed(1) : '10.0';
-                document.getElementById('max_temp_cortina').value = data.max_temp_cortina !== undefined ? data.max_temp_cortina.toFixed(1) : '30.0';
-                document.getElementById('max_wind_speed_cortina').value = data.max_wind_speed_cortina !== undefined ? data.max_wind_speed_cortina.toFixed(1) : '20.0';
-                document.getElementById('allow_rain_cortina').checked = data.allow_rain_cortina || false;
-                
-                document.getElementById('min_temp_postigon').value = data.min_temp_postigon !== undefined ? data.min_temp_postigon.toFixed(1) : '10.0';
-                document.getElementById('max_temp_postigon').value = data.max_temp_postigon !== undefined ? data.max_temp_postigon.toFixed(1) : '30.0';
-                document.getElementById('max_wind_speed_postigon').value = data.max_wind_speed_postigon !== undefined ? data.max_wind_speed_postigon.toFixed(1) : '20.0';
-                document.getElementById('allow_rain_postigon').checked = data.allow_rain_postigon || false;
-
-                // Actualizar Horarios de Ventana, Cortina, Postigón
-                document.getElementById('ventana_apertura').value = data.open_hour_ventana || '08:00';
-                document.getElementById('ventana_cierre').value = data.close_hour_ventana || '18:00';
-                document.getElementById('cortina_apertura').value = data.open_hour_cortina || '07:00';
-                document.getElementById('cortina_cierre').value = data.close_hour_cortina || '20:00';
-                document.getElementById('postigon_apertura').value = data.open_hour_postigon || '07:30';
-                document.getElementById('postigon_cierre').value = data.close_hour_postigon || '19:30';
+                currentTemp.textContent = `${Math.round(weatherData.main.temp)}`;
+                currentHumidity.textContent = `${weatherData.main.humidity}`;
+                // Conversión de m/s a km/h
+                currentWind.textContent = `${Math.round(weatherData.wind.speed * 3.6)}`; 
+                currentWeatherDesc.textContent = weatherData.weather[0].description;
+                // La probabilidad de lluvia (pop) viene del primer elemento del pronóstico
+                currentPoP.textContent = `${Math.round(forecastData.list[0].pop * 100)}`; 
 
                 // Actualizar Pronóstico por Horas
-                const forecastContainer = document.getElementById('hourly_forecast_container');
-                forecastContainer.innerHTML = ''; // Limpiar pronósticos anteriores
-                if (data.hourly_forecast && data.hourly_forecast.length > 0) {
-                    const maxForecastItems = 12; // Mostrar hasta 12 ítems del pronóstico
-                    for (let i = 0; i < Math.min(data.hourly_forecast.length, maxForecastItems); i++) {
-                        const item = data.hourly_forecast[i];
-                        const forecastItemDiv = document.createElement('div');
-                        forecastItemDiv.classList.add('forecast-item');
-                        forecastItemDiv.innerHTML = `
-                            <div class="hour">${item.time}</div>
-                            <div class="temp">${item.temp}°C</div>
-                            <div class="desc">${item.desc}</div>
-                        `;
-                        forecastContainer.appendChild(forecastItemDiv);
-                    }
-                } else {
-                    forecastContainer.innerHTML = '<div class="forecast-item"><div class="desc">No hay pronóstico disponible.</div></div>';
+                forecastContainer.innerHTML = '';
+                const maxForecastItems = 4; // Cambiar a 4 para pronóstico de 12 horas (3 horas * 4)
+                for (let i = 0; i < Math.min(forecastData.list.length, maxForecastItems); i++) {
+                    const item = forecastData.list[i];
+                    const date = new Date(item.dt * 1000);
+                    const hour = date.getHours().toString().padStart(2, '0');
+                    const temp = Math.round(item.main.temp);
+                    const desc = item.weather[0].description;
+                    const pop = Math.round(item.pop * 100);
+
+                    const forecastItemDiv = document.createElement('div');
+                    forecastItemDiv.classList.add('forecast-item');
+                    forecastItemDiv.innerHTML = `
+                        <div class="hour">${hour}:00</div>
+                        <div class="temp">${temp}°C</div>
+                        <div class="desc">Prob: ${pop}%</div>
+                    `;
+                    forecastContainer.appendChild(forecastItemDiv);
                 }
 
             } catch (error) {
                 console.error('Error al obtener datos del clima y pronóstico:', error);
-                // Mostrar un mensaje de error en la UI si es necesario
-                document.getElementById('hourly_forecast_container').innerHTML = '<div class="forecast-item"><div class="desc">Error cargando pronóstico.</div></div>';
-                document.getElementById('current_temp').textContent = '--';
-                document.getElementById('current_wind').textContent = '--';
-                document.getElementById('current_humidity').textContent = '--';
-                document.getElementById('current_weather_desc').textContent = 'Error';
-                document.getElementById('current_city').textContent = '--';
-                document.getElementById('last_update').textContent = '-- min.';
+                showErrorState('Error de conexión o API.');
             }
         }
 
-        // Cargar los datos al cargar la página
-        window.addEventListener('load', updateWeatherAndForecast);
-        // Actualizar cada 60 segundos (puedes ajustar el intervalo)
-        setInterval(updateWeatherAndForecast, 60000); 
+        window.addEventListener('load', updateWeather);
+        setInterval(updateWeather, 600000); // Actualizar cada 10 minutos
     </script>
 </body>
 </html>

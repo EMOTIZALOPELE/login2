@@ -131,5 +131,5 @@ $routes->post('api/esp32/status', function() {
     return $this->response->setJSON(['message' => 'Estado recibido con éxito']);
 });
 
-
+$routes->get('/config', 'Config::porfaanda');
 

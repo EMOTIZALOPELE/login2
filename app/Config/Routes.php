@@ -79,9 +79,12 @@ $routes->get('horarios/configuracion/(:num)', 'HorariosController::configuracion
 $routes->post('/dispositivos/reclamar', 'HorariosController::reclamarDispositivoPorMac');
 $routes->post('/servos/seleccionar', 'HorariosController::seleccionarDispositivoPorNombre');
 $routes->post('horarios/guardar', 'HorariosController::guardar');
-
 $routes->get('api/weather/current', 'WeatherController::getCurrentWeather');
 $routes->get('api/weather/forecast', 'WeatherController::getForecastWeather');
+
+// Rutas para el controlador de clima
+
+$routes->get('/config', 'HorariosController::apiclima');
 
 
 // Rutas para la ESP32 para obtener/establecer configuraciones
@@ -131,5 +134,4 @@ $routes->post('api/esp32/status', function() {
     return $this->response->setJSON(['message' => 'Estado recibido con éxito']);
 });
 
-$routes->get('/config', 'Config::porfaanda');
 

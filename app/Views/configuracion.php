@@ -85,7 +85,7 @@
         .checkbox-group { display: flex; align-items: center; margin-top: 5px; }
         .checkbox-group label { margin-bottom: 0; margin-left: 5px; }
 
-        /* Estilos para el bloque de clima actual (sin imágenes) */
+        /* Estilos para el bloque de clima actual */
         .weather-info {
             display: flex;
             align-items: center;
@@ -115,28 +115,124 @@
         #current_weather_block h2 { margin-bottom: 0.5rem; }
         #weather_city_name { margin-bottom: 1rem; background: rgba(255,255,255,0.05); padding: 0.5rem; border-radius: 8px; border: 1px solid var(--input-border); text-align: center; color: var(--text-primary); }
 
-        /* Estilos del nuevo bloque de pronóstico */
-        .forecast-items {
-            display: flex;
+        /* ESTILOS PARA EL PRONÓSTICO HORARIO */
+        #hourly_forecast_block {
+            background: transparent;
+            color: #ffffff;
+            padding: 1.5rem;
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+        }
+        
+        #hourly_forecast_block h2 { display: none; }
+
+        #weather_summary_container {
+            text-align: left;
+            margin-bottom: 1.5rem;
+            padding: 0;
+            background: none;
+            border: none;
+        }
+        
+        #weather_summary_container{
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #ffffff;
+            margin: 0;
+            background: none;
+            text-align: left;
+            padding: 0;
+            border: none;
+        }
+
+        .hourly-forecast-container {
+            width: 100%;
             overflow-x: auto;
-            padding-bottom: 10px;
-            gap: 1rem;
-            -ms-overflow-style: none;  /* IE and Edge */
-            scrollbar-width: none;  /* Firefox */
+            padding-bottom: 15px;
+            margin-top: 10px;
         }
-        .forecast-items::-webkit-scrollbar {
-            display: none; /* Chrome, Safari and Opera */
+
+        .hourly-forecast-grid {
+            display: flex;
+            align-items: flex-end;
+            gap: 15px;
+            padding-bottom: 15px;
+            position: relative;
+            justify-content: center;
         }
-        .forecast-item {
-            flex: 0 0 auto;
-            background: rgba(255, 255, 255, 0.05); border: 1px solid var(--input-border);
-            border-radius: 10px; padding: 10px 15px; text-align: center;
-            min-width: 100px;
+        
+        .hourly-forecast-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            min-width: 65px;
+            text-align: center;
+            color: #ffffff;
+            font-size: 1rem;
         }
-        .forecast-item div { font-size: 0.9rem; margin-bottom: 3px; }
-        .forecast-item .hour { font-weight: bold; color: var(--accent-color); }
-        .forecast-item .temp { font-size: 1.1rem; color: var(--text-primary); }
-        .forecast-item .desc { font-size: 0.8rem; color: var(--text-secondary); }
+
+        .hourly-time {
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-bottom: 10px;
+            color: #ffffff;
+        }
+
+        .hourly-icon i {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+        }
+
+        .hourly-temp {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .hourly-pop {
+            display: flex;
+            align-items: center;
+            font-size: 0.8rem;
+            margin-top: 10px;
+            color: #64b5f6;
+        }
+        .hourly-pop i {
+            font-size: 0.9rem;
+            margin-right: 3px;
+        }
+
+        .temperature-line {
+            position: absolute;
+            bottom: 60px;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: transparent;
+        }
+
+        /* Colores específicos para los íconos del clima */
+        .icon-sun { color: #f39c12; }
+        .icon-cloud-sun { color: #f1c40f; }
+        .icon-cloud { color: #bdc3c7; }
+        .icon-rain { color: #3498db; }
+        .icon-storm { color: #95a5a6; }
+        .icon-snow { color: #ffffff; }
+        .icon-fog { color: #ecf0f1; }
+        
+        /* Ocultar scrollbar pero mantener funcionalidad */
+        .hourly-forecast-container::-webkit-scrollbar {
+            height: 5px;
+        }
+        .hourly-forecast-container::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+        }
+        .hourly-forecast-container::-webkit-scrollbar-thumb {
+            background-color: #ffffff;
+            border-radius: 5px;
+        }
 
         .button-row {
             margin-top: 0;
@@ -190,6 +286,8 @@
             .content-block h2, .content-block h3 { font-size: 1.3rem; }
             .content-block { padding: 1rem; }
             .button-row { flex-direction: column; gap: 0.5rem; }
+            
+            .hourly-forecast-item { min-width: 60px; }
         }
     </style>
 </head>
@@ -319,11 +417,12 @@
             </div>
             
             <div class="content-block" id="hourly_forecast_block">
-                <h2>Pronóstico (Próx. 12h)</h2>
-                <div class="forecast-items" id="hourly_forecast_container">
-                    <div class="forecast-item loading-item">
-                        <div class="desc">Cargando pronóstico...</div>
-                    </div>
+                <div id="weather_summary_container">
+                    <p id="weather_summary"></p>
+                </div>
+                <div class="hourly-forecast-container">
+                    <div class="hourly-forecast-grid" id="hourly_forecast_grid">
+                        </div>
                 </div>
             </div>
             
@@ -335,7 +434,6 @@
     </div>
 
     <script>
-        // ¡IMPORTANTE! Reemplaza 'TU_API_KEY_AQUI' con tu clave de OpenWeatherMap
         const APIKey = '0d132a7baaa02ea9cfc60077249f0254'; 
         const city = 'Rio Tercero,AR';
 
@@ -344,7 +442,41 @@
         const currentWind = document.getElementById('current_wind');
         const currentPoP = document.getElementById('pop');
         const currentWeatherDesc = document.getElementById('current_weather_desc');
-        const forecastContainer = document.getElementById('hourly_forecast_container');
+        const weatherSummary = document.getElementById('weather_summary');
+        const forecastGrid = document.getElementById('hourly_forecast_grid');
+        const cityNameElement = document.getElementById('weather_city_name');
+
+        function getWeatherIcon(weatherCode) {
+            const dayNightCode = weatherCode.slice(0, 2);
+            switch (dayNightCode) {
+                case '01': return 'fa-solid fa-sun'; // Cielo claro
+                case '02': return 'fa-solid fa-cloud-sun'; // Pocas nubes
+                case '03': return 'fa-solid fa-cloud'; // Nubes dispersas
+                case '04': return 'fa-solid fa-cloud'; // Nubes rotas
+                case '09': return 'fa-solid fa-cloud-showers-heavy'; // Lluvia
+                case '10': return 'fa-solid fa-cloud-sun-rain'; // Lluvia
+                case '11': return 'fa-solid fa-bolt'; // Tormenta
+                case '13': return 'fa-solid fa-snowflake'; // Nieve
+                case '50': return 'fa-solid fa-smog'; // Niebla
+                default: return 'fa-solid fa-cloud';
+            }
+        }
+        
+        function getWeatherIconColor(weatherCode) {
+            const dayNightCode = weatherCode.slice(0, 2);
+            switch (dayNightCode) {
+                case '01': return 'icon-sun';
+                case '02': return 'icon-cloud-sun';
+                case '03': return 'icon-cloud';
+                case '04': return 'icon-cloud';
+                case '09': return 'icon-rain';
+                case '10': return 'icon-rain';
+                case '11': return 'icon-storm';
+                case '13': return 'icon-snow';
+                case '50': return 'icon-fog';
+                default: return 'icon-cloud';
+            }
+        }
 
         function showLoadingState() {
             currentTemp.textContent = '--';
@@ -352,7 +484,8 @@
             currentWind.textContent = '--';
             currentPoP.textContent = '--';
             currentWeatherDesc.textContent = 'Cargando...';
-            forecastContainer.innerHTML = '<div class="forecast-item loading-item"><div class="desc">Cargando pronóstico...</div></div>';
+            weatherSummary.textContent = '';
+            forecastGrid.innerHTML = '';
         }
 
         function showErrorState(message = 'Error') {
@@ -361,7 +494,18 @@
             currentWind.textContent = '--';
             currentPoP.textContent = '--';
             currentWeatherDesc.textContent = message;
-            forecastContainer.innerHTML = '<div class="forecast-item error-item"><div class="desc">No se pudo cargar el pronóstico.</div></div>';
+            weatherSummary.textContent = 'Error al cargar los datos meteorológicos';
+            forecastGrid.innerHTML = '';
+        }
+
+        function formatHour(hour) {
+            return (hour < 10 ? "0" + hour : hour) + ":00";
+        }
+
+        function normalizeTemperature(temp, min, max) {
+            const range = max - min;
+            const normalized = range === 0 ? 0.5 : (temp - min) / range;
+            return (1 - normalized) * 100;
         }
 
         async function updateWeather() {
@@ -373,49 +517,124 @@
             }
 
             try {
-                // Obtener datos del clima actual
-                const weatherResponse = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${APIKey}&lang=es`);
+                // Obtenemos coordenadas de la ciudad
+                const geoResponse = await fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=1&appid=${APIKey}`);
+                const geoData = await geoResponse.json();
+                
+                if (!geoData || geoData.length === 0) {
+                    showErrorState('Ubicación no encontrada.');
+                    return;
+                }
+                
+                const { lat, lon } = geoData[0];
+                cityNameElement.textContent = `${geoData[0].name},${geoData[0].country}`;
+                
+                // Obtenemos datos actuales
+                const weatherResponse = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${APIKey}&lang=es`);
                 const weatherData = await weatherResponse.json();
 
-                // Obtener datos de pronóstico (para probabilidad de lluvia y pronóstico por horas)
-                const forecastResponse = await fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=metric&appid=${APIKey}&lang=es`);
-                const forecastData = await forecastResponse.json();
+                // Obtenemos pronóstico horario con One Call API 3.0
+                const oneCallResponse = await fetch(`https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&exclude=minutely,daily,alerts&units=metric&appid=${APIKey}&lang=es`);
+                const oneCallData = await oneCallResponse.json();
 
-                if (weatherData.cod !== 200 || forecastData.cod !== '200') {
-                    showErrorState('Ubicación no encontrada o error en la API.');
+                if (weatherData.cod !== 200 || oneCallData.cod === '400') {
+                    showErrorState('Error en la API.');
                     return;
                 }
 
-                // Actualizar Clima Actual
+                // Actualizamos datos actuales
                 currentTemp.textContent = `${Math.round(weatherData.main.temp)}`;
                 currentHumidity.textContent = `${weatherData.main.humidity}`;
-                // Conversión de m/s a km/h
                 currentWind.textContent = `${Math.round(weatherData.wind.speed * 3.6)}`; 
                 currentWeatherDesc.textContent = weatherData.weather[0].description;
-                // La probabilidad de lluvia (pop) viene del primer elemento del pronóstico
-                currentPoP.textContent = `${Math.round(forecastData.list[0].pop * 100)}`; 
+                
+                // Probabilidad de precipitación actual
+                const currentPop = oneCallData.hourly && oneCallData.hourly[0] ? Math.round(oneCallData.hourly[0].pop * 100) : 0;
+                currentPoP.textContent = `${currentPop}`;
+                
+                const maxTemp = Math.round(weatherData.main.temp_max);
+                const minTemp = Math.round(weatherData.main.temp_min);
+                // weatherSummary.textContent = `${weatherData.weather[0].description}. Máximas entre ${maxTemp}°C y mínimas entre ${minTemp}°C.`;
 
-                // Actualizar Pronóstico por Horas
-                forecastContainer.innerHTML = '';
-                const maxForecastItems = 4; // Cambiar a 4 para pronóstico de 12 horas (3 horas * 4)
-                for (let i = 0; i < Math.min(forecastData.list.length, maxForecastItems); i++) {
-                    const item = forecastData.list[i];
-                    const date = new Date(item.dt * 1000);
-                    const hour = date.getHours().toString().padStart(2, '0');
-                    const temp = Math.round(item.main.temp);
-                    const desc = item.weather[0].description;
-                    const pop = Math.round(item.pop * 100);
+                // Generamos pronóstico horario
+                forecastGrid.innerHTML = '';
+                
+                if (oneCallData.hourly && oneCallData.hourly.length > 0) {
+                    const now = new Date();
+                    const currentHour = now.getHours();
+                    const temperatures = [];
+                    
+                    // Mostramos las próximas 12 horas
+                    for (let i = 0; i < 12; i++) {
+                        const hourData = oneCallData.hourly[i];
+                        if (!hourData) break;
+                        
+                        const date = new Date(hourData.dt * 1000);
+                        const hour = date.getHours();
+                        const formattedHour = formatHour(hour);
+                        const temp = Math.round(hourData.temp);
+                        const pop = Math.round(hourData.pop * 100);
+                        const weatherIcon = getWeatherIcon(hourData.weather[0].icon);
+                        const weatherIconColor = getWeatherIconColor(hourData.weather[0].icon);
+                        
+                        temperatures.push(temp);
+                        
+                        const forecastItem = document.createElement('div');
+                        forecastItem.className = 'hourly-forecast-item';
+                        forecastItem.innerHTML = `
+                            <div class="hourly-time">${formattedHour}</div>
+                            <div class="hourly-icon">
+                                <i class="${weatherIcon} ${weatherIconColor}"></i>
+                            </div>
+                            <div class="hourly-temp">${temp}°</div>
+                            <div class="hourly-pop">
+                                <i class="fa-solid fa-droplet"></i>${pop}%
+                            </div>
+                        `;
+                        forecastGrid.appendChild(forecastItem);
+                    }
+                    
+                    // Creamos línea de temperatura
+                    const lineContainer = document.createElement('div');
+                    lineContainer.className = 'temperature-line';
+                    forecastGrid.appendChild(lineContainer);
+                    
+                    if (temperatures.length > 1) {
+                        const minTempOverall = Math.min(...temperatures);
+                        const maxTempOverall = Math.max(...temperatures);
+                        
+                        let pathData = '';
+                        const segmentWidth = 100 / (temperatures.length - 1);
+                        
+                        for (let i = 0; i < temperatures.length; i++) {
+                            const temp = temperatures[i];
+                            const normalizedY = normalizeTemperature(temp, minTempOverall, maxTempOverall);
+                            const xPos = i * segmentWidth;
+                            
+                            if (i === 0) {
+                                pathData += `M${xPos}% ${normalizedY}%`;
+                            } else {
+                                pathData += ` L${xPos}% ${normalizedY}%`;
+                            }
+                        }
+                        
+                        const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                        svg.setAttribute("width", "100%");
+                        svg.setAttribute("height", "100%");
+                        svg.setAttribute("preserveAspectRatio", "none");
+                        svg.style.position = 'absolute';
+                        svg.style.top = '0';
+                        svg.style.left = '0';
 
-                    const forecastItemDiv = document.createElement('div');
-                    forecastItemDiv.classList.add('forecast-item');
-                    forecastItemDiv.innerHTML = `
-                        <div class="hour">${hour}:00</div>
-                        <div class="temp">${temp}°C</div>
-                        <div class="desc">Prob: ${pop}%</div>
-                    `;
-                    forecastContainer.appendChild(forecastItemDiv);
+                        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                        path.setAttribute("d", pathData);
+                        path.setAttribute("stroke", "#fff");
+                        path.setAttribute("stroke-width", "2");
+                        path.setAttribute("fill", "none");
+                        svg.appendChild(path);
+                        lineContainer.appendChild(svg);
+                    }
                 }
-
             } catch (error) {
                 console.error('Error al obtener datos del clima y pronóstico:', error);
                 showErrorState('Error de conexión o API.');
@@ -423,7 +642,7 @@
         }
 
         window.addEventListener('load', updateWeather);
-        setInterval(updateWeather, 600000); // Actualizar cada 10 minutos
+        setInterval(updateWeather, 600000); // Actualiza cada 10 minutos
     </script>
 </body>
 </html>

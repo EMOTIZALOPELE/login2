@@ -285,12 +285,6 @@ class HorariosController extends BaseController
 
     }
 
-    public function apiclima()
-    {
-        return view('configuracion');
-
-    }
-
     public function savehorario()
     {
         $session = \Config\Services::session();

@@ -21,7 +21,7 @@
             --danger-color: #ff4d4d;
             --success-color: #00ff9d;
             --input-border: rgba(100, 255, 218, 0.2);
-            /* Colores del men de referencia */
+            /* Colores del menu de referencia */
             --menu-icon-color: #00e0ff; 
             --menu-bg-color: rgba(10, 25, 47, 0.97); 
             --menu-border-color: rgba(0, 224, 255, 0.08); 
@@ -31,8 +31,16 @@
         .mobile-menu-panel, .mobile-menu-panel a, .mobile-menu-panel i { font-family: 'Poppins', sans-serif; }
         body { background: var(--dark-bg); color: var(--text-primary); min-height: 100vh; overflow-x: hidden; }
         header { background: rgba(10, 25, 47, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid rgb(255, 251, 0); width: 100%; z-index: 1000; transition: all 0.3s ease; position: sticky; top: 0; }
-        .container__menu { max-width: 1800px; margin: auto; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; transition: padding 0.3s ease; }
-        .logo { font-family: 'Orbitron', sans-serif; font-size: 2rem; font-weight: 700; background: linear-gradient(45deg, var(--primary-color), var(--secondary-color)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0 0 20px rgba(0, 242, 254, 0.3); transition: font-size 0.3s ease; z-index: 1; }
+        .container__menu { max-width: 1800px; margin: auto; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; transition: padding 0.3s ease; position: relative; }
+        .logo { 
+            font-family: 'Orbitron', sans-serif; 
+            font-size: 2rem; 
+            font-weight: 700; 
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color)); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            text-shadow: 0 0 20px rgba(0, 242, 254, 0.3); 
+            transition: font-size 0.3s ease; z-index: 1; }
         .menu-toggle { display: none; flex-direction: column; justify-content: space-around; width: 30px; height: 24px; background: transparent; border: none; cursor: pointer; padding: 0; z-index: 1011; position: relative; }
         .menu-toggle div { width: 25px; height: 3px; background: #00e0ff; border-radius: 3px; transition: all 0.3s ease-in-out; }
         .menu-toggle.active div:nth-child(1) { transform: translateY(8px) rotate(45deg); }
@@ -86,36 +94,90 @@
         .delete-button { background: var(--danger-color); color: white; border: none; border-radius: 50px; font-weight: 500; cursor: pointer; transition: all 0.3s ease; width: 100%; margin-top: 0.8rem; }
         .card-scrollable-content form:last-child { margin-top: 0.8rem; }
         .delete-button:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(255, 77, 77, 0.3); }
-        .weather-header {
+       
+        /* Estilos del Panel de Clima */
+
+        .weather-toggle-button {
+            background: transparent;
+            border: 1px solid rgba(100, 255, 218, 0.2);
+            color: var(--primary-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
             display: flex;
             align-items: center;
-            gap: 1rem;
-            font-family: 'Roboto', sans-serif;
-            margin-left: 1rem;
+            justify-content: center;
+            margin-left: 42rem; /* Espacio a la izquierda */
         }
-        
-        .weather-icon {
-            font-size: 1.5rem;
+
+        .weather-toggle-button:hover {
+            background: rgba(100, 255, 218, 0.1);
+            box-shadow: 0 0 15px rgba(100, 255, 218, 0.3);
+            transform: translateY(-2px);
+        }
+        .weather-panel {
+            position: absolute;
+            top: calc(100% + 10px);
+            right: 20px;
+            background: var(--card-bg);
+            border: 1px solid rgba(100, 255, 218, 0.2);
+            border-radius: 10px;
+            padding: 1rem 1.5rem;
+            width: 100%;
+            max-width: 380px;
+            z-index: 999;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.25);
+            
+            /* Lógica de visibilidad y animación */
+            transition: transform 0.4s ease, opacity 0.4s ease, visibility 0s 0.4s;
+            transform: translateY(-20px);
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .weather-panel.visible {
+            transform: translateY(0);
+            opacity: 1;
+            visibility: visible;
+            transition: transform 0.4s ease, opacity 0.4s ease, visibility 0s 0s;
+        }
+
+        .weather-panel.collapsed {
+            transform: translateY(-100%);
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .weather-panel-content { 
+            font-family: 'Roboto', sans-serif; 
+            font-size: 0.95rem; 
+            color: var(--text-primary); 
+            text-align: center; 
+        }
+
+        .weather-panel-toggle {
+            position: absolute;
+            left: -25px;
+            top: 0;
+            background: var(--card-bg);
+            border: 1px solid rgba(100, 255, 218, 0.2);
+            border-right: none;
+            border-radius: 10px 0 0 10px;
             color: var(--primary-color);
+            cursor: pointer;
+            width: 25px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
         }
         
-        .weather-temp {
-            font-weight: 500;
-            color: var(--text-primary);
-        }
-        
-        .weather-desc {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-        }
-        
-        @media (max-width: 767.98px) {
-            .weather-header {
-                display: none; /* Ocultar en mviles para ahorrar espacio */
-            }
-        }
         @media (max-width: 992px) { .horario-card { width: 300px; height: 460px; } .horarios-container { gap: 1.5rem; justify-content: center; } }
-        @media (max-width: 767.98px) { .container__menu { display: flex; justify-content: space-between; align-items: center; padding: 0.8rem 1rem; } .menu-toggle { display: flex; } .logo { font-size: 1.8rem; } .desktop-menu { display: none !important; } .container__card { padding: 1rem; margin-top: 1rem; } .horarios-container { flex-direction: column; align-items: center; overflow-x: hidden; overflow-y: auto; padding: 1rem 0.5rem; gap: 1.5rem; min-height: auto; } .horarios-container::-webkit-scrollbar { display: none; } .horario-card { width: 90%; max-width: 450px; height: auto; min-height: 400px; flex-shrink: 1; margin-bottom: 1.5rem; } .horario-card h3 { font-size: 1.3rem; } .horario-card p, .horario-card p strong { font-size: 0.88rem; } .config-button, .delete-button { font-size: 0.85rem; } }
+        @media (max-width: 767.98px) { .container__menu { display: flex; justify-content: space-between; align-items: center; padding: 0.8rem 1rem; } .menu-toggle { display: flex; } .logo { font-size: 1.8rem; } .desktop-menu { display: none !important; } .container__card { padding: 1rem; margin-top: 1rem; } .horarios-container { flex-direction: column; align-items: center; overflow-x: hidden; overflow-y: auto; padding: 1rem 0.5rem; gap: 1.5rem; min-height: auto; } .horarios-container::-webkit-scrollbar { display: none; } .horario-card { width: 90%; max-width: 450px; height: auto; min-height: 400px; flex-shrink: 1; margin-bottom: 1.5rem; } .horario-card h3 { font-size: 1.3rem; } .horario-card p, .horario-card p strong { font-size: 0.88rem; } .config-button, .delete-button { font-size: 0.85rem; } .weather-panel { right: 10px; max-width: 80%; } .weather-panel-content { font-size: 0.85rem; } }
         @media (max-width: 480px) { .logo { font-size: 1.6rem; } .container__menu { padding: 0.6rem 0.8rem; } .menu-toggle div { width: 22px; height: 2.5px; } .menu-toggle.active div:nth-child(1) { transform: translateY(7.5px) rotate(45deg); } .menu-toggle.active div:nth-child(3) { transform: translateY(-7.5px) rotate(-45deg); } .mobile-menu-panel.active { top: 0; padding-top: 4rem; width: 60vw; max-width: 280px; } .mobile-menu-panel.active ul li a { font-size: 0.9rem; padding: 10px 15px; } .mobile-menu-panel.active ul li a i { font-size: 1rem; margin-right: 10px; } .container__card { padding: 0.8rem 0.3rem; } .horarios-container { gap: 1rem; } .horario-card { width: 95%; min-height: 380px; padding: 1rem; } .horario-card h3 { font-size: 1.2rem; } .horario-card p, .horario-card p strong { font-size: 0.82rem; } .config-button, .delete-button { font-size: 0.8rem; padding: 0.5rem 0.8rem; } }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         .horario-card { animation: fadeIn 0.5s ease-out forwards; }
@@ -140,9 +202,21 @@
     <header>
         <div class="container__menu">
             <div class="logo">
-                <span id="greetingText">Hola <?php echo htmlspecialchars($_SESSION['nombre']); ?></span>
-                <span id="weatherText" style="font-size: 1rem; font-family: 'Roboto', sans-serif; font-weight: 400; color: #8892b0;"></span>
+                <span>Hola <?php echo htmlspecialchars($_SESSION['nombre']); ?></span>
             </div>
+
+            <div class="weather-panel" id="weatherPanel">
+                <div class="weather-panel-content" id="weatherPanelContent">
+                    Cargando información del clima...
+                </div>
+                <li>
+                    <a href="#" id="mobileWeatherToggleButton"><i class="fas fa-cloud-sun"></i>Cerrar</a>
+                </li>
+            </div>
+
+            <button class="weather-toggle-button" id="weatherToggleButton" aria-label="Mostrar/ocultar panel del clima">
+                <i class="fas fa-cloud-sun"></i>
+            </button>
 
             <div class="desktop-menu">
                 <nav>
@@ -170,7 +244,6 @@
                 <li><a href="<?= base_url('pele') ?>"><i class="fas fa-palette"></i> Diseño</a></li>
                 <li><a href="<?= base_url('logout') ?>"><i class="fas fa-sign-out-alt"></i> Salir</a></li>
                 <li><a href="#" data-toggle="modal" data-target="#servoModal">Manual</a></li>
-
             </ul>
         </nav>
     </header>
@@ -293,12 +366,10 @@
 </div>
 
     <script>
-        // Script para Hamburguesa
-        // CORREGIDO: Unificado el nombre de la variable a hamburgerButton
+        // --- INICIO SCRIPT HAMBURGUESA ---
         const hamburgerButton = document.getElementById('menu-toggle');
         const navigationMenu = document.getElementById('navigationMenu');   
         
-        // CORREGIDO: El if ahora usa los nombres de variable correctos
         if (hamburgerButton && navigationMenu) {
             const navLinksInMenu = navigationMenu.querySelectorAll('a'); 
 
@@ -331,17 +402,18 @@
                 }
             });
         }
+        // --- FIN SCRIPT HAMBURGUESA ---
 
-        function abrirModal() { // Renombrado de abrirModalOriginal para claridad
+        // --- INICIO MODAL AÑADIR TARJETA ---
+        function abrirModal() {
             const modal = document.getElementById('codigoModal');
             if (modal) modal.style.display = 'flex';
         }
 
-        // CORREGIDO: Ahora las funciones para CERRAR el modal principal se llaman igual
         function cerrarModal() {
             const modal = document.getElementById('codigoModal');
-            const errorDiv = document.getElementById('macError'); // Apuntar al error correcto
-            const input = document.getElementById('macInput'); // Apuntar al input correcto
+            const errorDiv = document.getElementById('macError');
+            const input = document.getElementById('macInput');
             if (modal) modal.style.display = 'none';
             if (errorDiv) errorDiv.style.display = 'none';
             if (input) input.value = '';
@@ -358,7 +430,6 @@
             abrirModal(); 
         }
 
-        // Reemplaza tu script existente para el modal con este
         const reclamarForm = document.getElementById('reclamarForm');
         if (reclamarForm) {
             reclamarForm.addEventListener('submit', function(e) {
@@ -374,7 +445,6 @@
 
                 const formData = new FormData();
                 formData.append('mac_address', macAddress);
-                // formData.append('<?= csrf_token() ?>', '<?= csrf_hash() ?>');
 
                 fetch('<?= base_url('/dispositivos/reclamar') ?>', {
                     method: 'POST',
@@ -383,24 +453,19 @@
                     },
                     body: formData
                 })
-                .then(response => {
-                    return response.json().then(data => ({ 
-                        status: response.status, 
-                        body: data 
-                    }));
-                })
+                .then(response => response.json().then(data => ({ status: response.status, body: data })))
                 .then(({ status, body }) => {
                     if (body.success) { 
-                        alert(body.message || 'Dispositivo aadido con xito!'); 
+                        alert(body.message || 'Dispositivo añadido con éxito!'); 
                         window.location.reload(); 
                     } else {
-                        macError.textContent = body.messages.error || 'Ocurri un error inesperado.';
+                        macError.textContent = body.messages.error || 'Ocurrió un error inesperado.';
                         macError.style.display = 'block';
                     }
                 })
                 .catch(error => {
                     console.error('Error en fetch:', error);
-                    macError.textContent = 'Error de conexin con el servidor. Intente nuevamente.';
+                    macError.textContent = 'Error de conexión con el servidor. Intente nuevamente.';
                     macError.style.display = 'block';
                 })
                 .finally(() => {
@@ -409,7 +474,9 @@
                 });
             });
         }
+        // --- FIN MODAL AÑADIR TARJETA ---
         
+        // --- INICIO MODAL CAMBIAR NOMBRE ---
         $(document).ready(function() {
             $('#changeNameModal').on('show.bs.modal', function (event) {
                 const button = $(event.relatedTarget);
@@ -424,7 +491,7 @@
                 const cardId = $('#cardIdToChange').val();
                 const newName = $('#newCardName').val();
                 if (!newName.trim()) {
-                    alert('El nombre de la tarjeta no puede estar vaco.');
+                    alert('El nombre de la tarjeta no puede estar vacío.');
                     return;
                 }
                 $.ajax({
@@ -439,7 +506,7 @@
                     success: function(response) {
                         if (response.success) {
                             $('#changeNameModal').modal('hide');
-                            $('#successModalBody').text(response.message || 'Nombre actualizado con xito.');
+                            $('#successModalBody').text(response.message || 'Nombre actualizado con éxito.');
                             $('#successModal').modal('show');
                             $(`.horario-card h3[data-idhorario="${cardId}"] .card-title`).text(newName);
                             $(`button[data-idhorario="${cardId}"][data-target="#changeNameModal"]`).data('current-name', newName);
@@ -451,142 +518,160 @@
                     error: function(xhr, status, error) {
                         console.error('Error AJAX:', status, error, xhr.responseText);
                         $('#changeNameModal').modal('hide');
-                        alert('Ocurri un error al comunicarse con el servidor. Detalles: ' + xhr.responseText);
+                        alert('Ocurrió un error al comunicarse con el servidor. Detalles: ' + xhr.responseText);
                     }
                 });
             });
 
             $('#successModal').on('hidden.bs.modal', function () { /* location.reload(); */ });
         });
+        // --- FIN MODAL CAMBIAR NOMBRE ---
 
-        // --- LGICA PARA EL NUEVO MODAL DE SELECCIN DE SERVO ---
-
+        // --- INICIO MODAL CONTROL MANUAL ---
         const servoModal = document.getElementById('servoModal');
         const selectServoForm = document.getElementById('selectServoForm');
 
+        if (selectServoForm) {
+            selectServoForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const tarjetaInput = document.getElementById('tarjetaInput');
+                const servoError = document.getElementById('servoError');
+                const submitButton = selectServoForm.querySelector('button[type="submit"]');
 
-       
+                submitButton.disabled = true;
+                submitButton.textContent = 'Buscando...';
+                servoError.style.display = 'none';
 
-    if (selectServoForm) {
-        selectServoForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const tarjetaInput = document.getElementById('tarjetaInput');
-            const servoError = document.getElementById('servoError');
-            const submitButton = selectServoForm.querySelector('button[type="submit"]');
+                const formData = new FormData();
+                formData.append('nombre_tarjeta', tarjetaInput.value);
 
-            submitButton.disabled = true;
-            submitButton.textContent = 'Buscando...';
-            servoError.style.display = 'none';
-
-            const formData = new FormData();
-            formData.append('nombre_tarjeta', tarjetaInput.value);
-
-            fetch('<?= base_url('/servos/seleccionar') ?>', {
-                method: 'POST',
-                headers: { 'X-Requested-With': 'XMLHttpRequest', 'X-CSRF-TOKEN': '<?= csrf_hash() ?>' },
-                body: formData
-            })
-            .then(response => {
-                if (!response.ok) {
-                    return response.json().then(err => { throw new Error(err.messages.error || 'Error del servidor'); });
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data.success) {
-                    // --- CORRECCIN CLAVE ---
-                    // Redirigimos a la URL correcta, pasando el ID del dispositivo.
-                    window.location.href = `<?= base_url('/masivo') ?>/${data.dispositivo_id}`;
-                } else {
-                    servoError.textContent = data.messages.error || 'Error desconocido.';
+                fetch('<?= base_url('/servos/seleccionar') ?>', {
+                    method: 'POST',
+                    headers: { 'X-Requested-With': 'XMLHttpRequest', 'X-CSRF-TOKEN': '<?= csrf_hash() ?>' },
+                    body: formData
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(err => { throw new Error(err.messages.error || 'Error del servidor'); });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        window.location.href = `<?= base_url('/masivo') ?>/${data.dispositivo_id}`;
+                    } else {
+                        servoError.textContent = data.messages.error || 'Error desconocido.';
+                        servoError.style.display = 'block';
+                    }
+                })
+                .catch(error => {
+                    servoError.textContent = error.message;
                     servoError.style.display = 'block';
-                }
-            })
-            .catch(error => {
-                servoError.textContent = error.message;
-                servoError.style.display = 'block';
-            })
-            .finally(() => {
-                submitButton.disabled = false;
-                submitButton.textContent = 'Continuar';
+                })
+                .finally(() => {
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'Continuar';
+                });
             });
-        });
-    }
+        }
+        // --- FIN MODAL CONTROL MANUAL ---
 
-    // Utiliza la misma API Key que ya tienes configurada
+        // =================================================================
+       // --- LÓGICA DEL PANEL DEL CLIMA ---
         const APIKey = '0d132a7baaa02ea9cfc60077249f0254';
         const city = 'Rio Tercero,AR';
-        
-        // Iconos para diferentes condiciones climticas
-        const weatherIcons = {
-            '01d': 'fa-sun',           // clear sky (day)
-            '01n': 'fa-moon',          // clear sky (night)
-            '02d': 'fa-cloud-sun',    // few clouds (day)
-            '02n': 'fa-cloud-moon',    // few clouds (night)
-            '03d': 'fa-cloud',        // scattered clouds
-            '03n': 'fa-cloud',
-            '04d': 'fa-cloud',        // broken clouds
-            '04n': 'fa-cloud',
-            '09d': 'fa-cloud-rain',    // shower rain
-            '09n': 'fa-cloud-rain',
-            '10d': 'fa-cloud-sun-rain',// rain (day)
-            '10n': 'fa-cloud-moon-rain',// rain (night)
-            '11d': 'fa-bolt',         // thunderstorm
-            '11n': 'fa-bolt',
-            '13d': 'fa-snowflake',     // snow
-            '13n': 'fa-snowflake',
-            '50d': 'fa-smog',          // mist
-            '50n': 'fa-smog'
-        };
-        
-        // Descripciones personalizadas en español
+
+        const weatherPanel = document.getElementById('weatherPanel');
+        const weatherPanelContent = document.getElementById('weatherPanelContent');
+        const weatherToggleButton = document.getElementById('weatherToggleButton');
+        const mobileWeatherToggleButton = document.getElementById('mobileWeatherToggleButton');
+
         const weatherDescriptions = {
-            'clear': 'soleado',
-            'clouds': 'nublado',
-            'rain': 'lluvioso',
-            'thunderstorm': 'con tormentas',
-            'snow': 'nevado',
-            'mist': 'con neblina',
-            'haze': 'con neblina',
-            'fog': 'con niebla',
-            'drizzle': 'con llovizna'
+            'clear': 'soleado', 'clouds': 'nublado', 'rain': 'lluvioso',
+            'thunderstorm': 'con tormentas', 'snow': 'nevado', 'mist': 'con neblina',
+            'haze': 'con neblina', 'fog': 'con niebla', 'drizzle': 'con llovizna'
         };
+
+        document.addEventListener('DOMContentLoaded', function() {
         
-        function updateHeaderWeather() {
+        // --- LÓGICA DEL PANEL DEL CLIMA ---
+        const APIKey = '0d132a7baaa02ea9cfc60077249f0254';
+        const city = 'Rio Tercero,AR';
+
+        const weatherPanel = document.getElementById('weatherPanel');
+        const weatherPanelContent = document.getElementById('weatherPanelContent');
+        const weatherToggleButton = document.getElementById('weatherToggleButton');
+        const mobileWeatherToggleButton = document.getElementById('mobileWeatherToggleButton');
+
+        const weatherDescriptions = {
+            'clear': 'soleado', 'clouds': 'nublado', 'rain': 'lluvioso',
+            'thunderstorm': 'con tormentas', 'snow': 'nevado', 'mist': 'con neblina',
+            'haze': 'con neblina', 'fog': 'con niebla', 'drizzle': 'con llovizna'
+        };
+
+        function updateWeatherPanel() {
             fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${APIKey}&lang=es`)
                 .then(response => response.json())
                 .then(data => {
-                    if (data.cod === 200) {
+                    if (data.cod === 200 && weatherPanelContent) {
                         const temp = Math.round(data.main.temp);
-                        const weatherId = data.weather[0].icon;
                         const mainCondition = data.weather[0].main.toLowerCase();
-                        
-                        // Obtener descripcin en espaol o usar la predeterminada
-                        const description = weatherDescriptions[mainCondition] || 
-                                           data.weather[0].description.toLowerCase();
-                        
-                        // Generar el texto combinado
-                        const combinedText = `Hola, hoy es un día ${description} y la temperatura es de ${temp}°C.`;
-
-                        // Actualizar el DOM
-                        const greetingElement = document.querySelector('.logo');
-                        if (greetingElement) {
-                             greetingElement.textContent = `Hola <?php echo htmlspecialchars($_SESSION['nombre']); ?>, hoy es un día ${description} y la temperatura es de ${temp}°C.`;
-                        }
+                        const description = weatherDescriptions[mainCondition] || data.weather[0].description.toLowerCase();
+                        const weatherText = `Hola <?php echo htmlspecialchars($_SESSION['nombre'] ?? 'Usuario'); ?>, hoy es un día ${description} y la temperatura es de ${temp}°C.`;
+                        weatherPanelContent.textContent = weatherText;
                     }
                 })
                 .catch(error => {
                     console.error('Error al obtener datos del clima:', error);
-                    const greetingElement = document.querySelector('.logo');
-                    if (greetingElement) {
-                         greetingElement.textContent = `Hola <?php echo htmlspecialchars($_SESSION['nombre']); ?>, Error al cargar el clima.`;
-                    }
                 });
         }
-        
-        // Llamar a la funcin al cargar la pgina y cada 30 minutos
-        window.addEventListener('load', updateHeaderWeather);
-        setInterval(updateHeaderWeather, 1800000); // 30 minutos
+
+        function toggleWeatherPanel(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            if (weatherPanel) {
+                weatherPanel.classList.toggle('visible');
+            }
+        }
+
+        if (weatherToggleButton) {
+            weatherToggleButton.addEventListener('click', toggleWeatherPanel);
+        }
+        if (mobileWeatherToggleButton) {
+            mobileWeatherToggleButton.addEventListener('click', toggleWeatherPanel);
+        }
+
+        document.addEventListener('click', function(event) {
+            const isClickInsidePanel = weatherPanel ? weatherPanel.contains(event.target) : false;
+            const isClickOnToggleButton = weatherToggleButton ? weatherToggleButton.contains(event.target) : false;
+            const isClickOnMobileToggleButton = mobileWeatherToggleButton ? mobileWeatherToggleButton.contains(event.target) : false;
+            
+            if (weatherPanel && weatherPanel.classList.contains('visible') && !isClickInsidePanel && !isClickOnToggleButton && !isClickOnMobileToggleButton) {
+                weatherPanel.classList.remove('visible');
+            }
+        });
+
+        // --- CAMBIO PARA MOSTRAR AL INICIO ---
+        // Espera a que la animación de la transición pueda ejecutarse
+        setTimeout(() => {
+            if (weatherPanel) {
+                weatherPanel.classList.add('visible');
+            }
+            // Y lo cierra automáticamente después de 7 segundos
+            setTimeout(() => {
+                if (weatherPanel) {
+                    weatherPanel.classList.remove('visible');
+                }
+            }, 5000); // 7000 milisegundos = 7 segundos
+        }, 500); // 500ms de espera antes de mostrarlo
+
+
+        // Carga inicial de datos
+        updateWeatherPanel();
+        setInterval(updateWeatherPanel, 1800000);
+    }); // Actualiza cada 30 minutos
+        // --- FIN LÓGICA DEL PANEL DEL CLIMA ---
+
     </script>
 </body>
 </html>

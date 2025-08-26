@@ -9,6 +9,7 @@ use CodeIgniter\Router\RouteCollection;
 // LOGIN Y REGISTER
 $routes->get('/', 'Home::iniciar2'); 
 $routes->post('login', 'Home::login');
+$routes->get('login', 'Home::iralogin');
 $routes->get('/logout', 'Home::logout');  
 $routes->post('/register/store', 'registerController::store'); 
 
@@ -46,7 +47,8 @@ $routes->get('irainicio', 'ConfiguracionController::inicio');
 $routes->get('/masivo/(:num)', 'ServoController::estado/$1'); // Para cargar la vista
 $routes->get('/funcional/actualizarEstado/(:num)/(:any)', 'ServoController::actualizarEstado/$1/$2'); // Para enviar comandos
 $routes->get('/dispositivos/estado/(:segment)', 'ServoController::obtenerEstadoDispositivo/$1'); // Para pedir el estado
-
+$routes->post('/servos/cancelar-horario', 'ServoController::cancelarHorario');
+$routes->post('servos/cancelar-horario', 'ServoController::cancelarHorario');
 
 
 // INICIO 2

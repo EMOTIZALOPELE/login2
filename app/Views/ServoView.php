@@ -4,8 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Control de Servo - VECOPO</title>
+
+    <meta name="csrf-token" content="<?= csrf_hash() ?>">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
     <script src="https://kit.fontawesome.com/6f93a4b68f.js" crossorigin="anonymous"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+      
     <style>
         :root {
             --primary-color: #00f2fe; --secondary-color: #4facfe; --dark-bg: #0a192f;
@@ -115,13 +120,28 @@
                             </div>
 
                             <div class="controls-wrapper">
-                                <button class="btn-control btn-open" onclick="controlarServo(<?= esc($servo['id']); ?>, 'abierto')">
+                                <button type="button" class="btn-control btn-open"
+                                    data-toggle="modal"
+                                    data-target="#confirmacionHorarioModal"
+                                    data-servo-id="<?= esc($servo['id']); ?>"
+                                    data-elemento-tipo="<?= esc(strtolower($servo['tipo_elemento'])); ?>"
+                                    data-accion="abrir"
+                                    data-horario-a-cancelar="apertura" 
+                                    data-comando-url="<?= site_url('funcional/actualizarEstado/' . esc($servo['id']) . '/abierto'); ?>">
                                     <i class="fas fa-door-open"></i> Abrir
                                 </button>
-                                <button class="btn-control btn-close" onclick="controlarServo(<?= esc($servo['id']); ?>, 'cerrado')">
+
+                                <!-- Botón Cerrar -->
+                                <button type="button" class="btn-control btn-close"
+                                    data-toggle="modal"
+                                    data-target="#confirmacionHorarioModal"
+                                    data-servo-id="<?= esc($servo['id']); ?>"
+                                    data-elemento-tipo="<?= esc(strtolower($servo['tipo_elemento'])); ?>"
+                                    data-accion="cerrar"
+                                    data-horario-a-cancelar="cierre"   
+                                    data-comando-url="<?= site_url('funcional/actualizarEstado/' . esc($servo['id']) . '/cerrado'); ?>">
                                     <i class="fas fa-door-closed"></i> Cerrar
                                 </button>
-                                
                             </div>
                         </div>
                     <?php endforeach; ?>
@@ -137,18 +157,45 @@
         </div>
     </main>
 
+    <div class="modal fade" id="confirmacionHorarioModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content" style="background: var(--card-bg); border: 1px solid var(--input-border);">
+                <div class="modal-header" style="border-color: var(--input-border);">
+                    <h5 class="modal-title" id="modalLabel" style="font-family: 'Orbitron', sans-serif; color: var(--primary-color);">Confirmar Acción</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: white; opacity: 0.8;">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p id="modalConfirmacionTexto" style="color: var(--text-secondary);"></p>
+                </div>
+                <div class="modal-footer" style="border-color: var(--input-border);">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="btnConfirmarCancelacion">Aceptar y Continuar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
     <script>
-        const dispositivoId = <?= $dispositivo['id'] ?? 'null' ?>;
-        const dispositivoMac = `<?= esc($dispositivo['codigo'] ?? '') ?>`; 
-        const URL_BASE_CI = '<?= base_url() ?>';
+        // Configuración global para que TODAS las peticiones AJAX de jQuery incluyan el token CSRF
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
 
-        // Objeto para almacenar los elementos de la UI de cada servo
-        const servoElements = {};
+        // --- SCRIPT PRINCIPAL DE LA PÁGINA ---
+        $(document).ready(function() {
+            const dispositivoMac = `<?= esc($dispositivo['codigo'] ?? '') ?>`; 
+            const URL_BASE_CI = '<?= base_url() ?>';
+            let confirmacionData = {};
 
-        if (!dispositivoId || dispositivoMac === "") {
-            alert("Error: No se ha seleccionado o configurado ningún dispositivo válido.");
-            window.location.href = `${URL_BASE_CI}/irainicio`;
-        } else {
+            // Almacenar referencias a elementos de la UI
+            const servoElements = {};
             document.querySelectorAll('.servo-item').forEach(item => {
                 const servoId = item.dataset.servoId;
                 servoElements[servoId] = {
@@ -157,88 +204,101 @@
                     modeElement: document.getElementById(`modo-${servoId}`)
                 };
             });
-        }
 
-        function controlarServo(servoId, comando) {
-            console.log(`Enviando comando ${comando} al servo ${servoId}`);
-            const url = `${URL_BASE_CI}/funcional/actualizarEstado/${servoId}/${comando}`;
-            console.log('URL de la petición:', url);
-            
-            fetch(url)
-                .then(response => {
-                    console.log('Status de la respuesta:', response.status);
-                    if (!response.ok) {
-                        return response.json().then(err => { 
-                            console.error('Error en la respuesta:', err);
-                            throw new Error(err.message || 'Error del servidor'); 
+            // Lógica del modal
+            $('#confirmacionHorarioModal').on('show.bs.modal', function (event) {
+                const button = $(event.relatedTarget);
+                const elementoTipo = button.data('elemento-tipo');
+                const accion = button.data('accion');
+                const horarioACancelar = button.data('horario-a-cancelar');
+                const mensaje = `Al ${accion} el/la ${elementoTipo}, se cancelará permanentemente el horario de ${horarioACancelar}. ¿Deseas continuar?`;
+                
+                $(this).find('#modalConfirmacionTexto').text(mensaje);
+
+                confirmacionData = {
+                    servoId: button.data('servo-id'),
+                    horarioACancelar: horarioACancelar,
+                    comandoUrl: button.data('comando-url')
+                };
+            });
+
+            // Lógica al confirmar la acción en el modal
+            $('#btnConfirmarCancelacion').on('click', function() {
+                const btn = $(this);
+                btn.prop('disabled', true).text('Procesando...');
+
+                $.ajax({
+                    url: '<?= site_url('/servos/cancelar-horario') ?>',
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: {
+                        servo_id: confirmacionData.servoId,
+                        tipo_horario: confirmacionData.horarioACancelar
+                    },
+                    dataType: 'json'
+                }).done(function(response) {
+                    if (response.success) {
+                        console.log('Horario cancelado con éxito.');
+                        // Mover el servo
+                        $.ajax({
+                            url: confirmacionData.comandoUrl,
+                            method: 'GET'
+                        }).done(function() {
+                            alert('Acción completada.');
+                            location.reload(); 
+                        }).fail(function() {
+                            alert('Error al mover el servo.');
                         });
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log('Respuesta completa del servidor:', data);
-                    if (data.status === 'ok') {
-                        console.log(`Orden "${data.estado}" enviada al servo ${data.servo_id}. Modo: ${data.modo}`);
-                        actualizarUI(data.servo_id, data.estado, data.modo);
                     } else {
-                        throw new Error(data.message || 'El servidor no pudo procesar la orden para el servo.');
+                        alert('Error al cancelar el horario: ' + (response.message || 'Error desconocido.'));
                     }
-                })
-                .catch(error => {
-                    console.error('Error al controlar servo:', error);
-                    alert('Error: ' + error.message);
+                }).fail(function(jqXHR) {
+                    console.error("AJAX Error:", jqXHR.status, jqXHR.responseText);
+                    alert('La petición falló. Revisa la consola (F12) para más detalles.');
+                }).always(function() {
+                    btn.prop('disabled', false).text('Aceptar y Continuar');
+                    $('#confirmacionHorarioModal').modal('hide');
                 });
-        }
+            });
 
-        function actualizarEstadoDesdeServidor() {
-            if (!dispositivoMac) return; 
-
-            fetch(`${URL_BASE_CI}/dispositivos/estado/${dispositivoMac}`)
-                .then(res => res.json())
-                .then(data => {
-                    if (data && data.servos && Array.isArray(data.servos)) {
-                        data.servos.forEach(servoData => {
-                            if (servoElements[servoData.id]) { 
-                                actualizarUI(servoData.id, servoData.estado, servoData.modo); 
-                            }
-                        });
-                    } else {
-                        console.warn('Respuesta del servidor no contiene un array de servos o está vacía:', data);
-                    }
-                })
-                .catch(error => console.error('Error al obtener estado de servos:', error));
-        }
-
-        function actualizarUI(servoId, estado, modoOperacion) {
-            console.log('Actualizando UI para servo:', servoId, 'Estado:', estado, 'Modo:', modoOperacion);
-            const elements = servoElements[servoId];
-            if (!elements) {
-                console.error('No se encontraron elementos UI para el servo:', servoId);
-                return;
+            // Funciones para actualizar la UI
+            function actualizarEstadoDesdeServidor() {
+                if (!dispositivoMac) return; 
+                fetch(`${URL_BASE_CI}/dispositivos/estado/${dispositivoMac}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data && data.servos && Array.isArray(data.servos)) {
+                            data.servos.forEach(servoData => {
+                                if (servoElements[servoData.id]) { 
+                                    actualizarUI(servoData.id, servoData.estado, servoData.modo); 
+                                }
+                            });
+                        }
+                    })
+                    .catch(error => console.error('Error al obtener estado de servos:', error));
             }
 
-            const estadoLimpio = estado.toLowerCase().trim();
-            elements.statusElement.textContent = estado.toUpperCase();
-            elements.statusElement.className = `status-indicator status-${estadoLimpio}`;
-
-            if (estadoLimpio === 'abierto') {
-                elements.iconElement.className = `fas fa-door-open servo-icon-display`;
-            } else if (estadoLimpio === 'cerrado') {
-                elements.iconElement.className = `fas fa-door-closed servo-icon-display`;
-            } else {
-                elements.iconElement.className = `fas fa-question-circle servo-icon-display`;
+            function actualizarUI(servoId, estado, modoOperacion) {
+                const elements = servoElements[servoId];
+                if (!elements) return;
+                const estadoLimpio = (estado || '').toLowerCase().trim();
+                elements.statusElement.textContent = estado ? estado.toUpperCase() : 'N/A';
+                elements.statusElement.className = `status-indicator status-${estadoLimpio || 'desconocido'}`;
+                if (estadoLimpio === 'abierto') {
+                    elements.iconElement.className = `fas fa-door-open servo-icon-display`;
+                } else if (estadoLimpio === 'cerrado') {
+                    elements.iconElement.className = `fas fa-door-closed servo-icon-display`;
+                }
+                if (elements.modeElement && modoOperacion) {
+                    elements.modeElement.textContent = modoOperacion.toUpperCase();
+                }
             }
-
-            if (elements.modeElement && modoOperacion) {
-                elements.modeElement.textContent = modoOperacion.toUpperCase();
-            }
-        }
-
-        // Actualizar estado cada 10 segundos en lugar de 3
-        setInterval(actualizarEstadoDesdeServidor, 10000);
-
-        // Cargar estado inicial al cargar la página
-        document.addEventListener('DOMContentLoaded', actualizarEstadoDesdeServidor);
+            
+            setInterval(actualizarEstadoDesdeServidor, 10000);
+            actualizarEstadoDesdeServidor(); // Llamada inicial
+        });
     </script>
 
 </body>

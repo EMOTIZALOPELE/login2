@@ -27,7 +27,8 @@ class ServoModel extends Model
         'temp_min_cierre',
         'temp_max_apertura',
         'viento_max_cierre',
-        'permitir_lluvia'
+        'permitir_lluvia',
+        'manual_override_expires'
     ];
 
     protected bool $allowEmptyInserts = false;

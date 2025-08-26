@@ -6,6 +6,7 @@ use App\Controllers\BaseController;
 use App\Models\CondicionanteModel;
 use App\Models\ServoModel;
 use App\Models\DispositivoModel;
+use CodeIgniter\Database\RawSql; 
 
 class ConfiguracionController extends BaseController
 {
@@ -94,22 +95,33 @@ class ConfiguracionController extends BaseController
             foreach ($elementos as $elemento) {
                 $tipoElementoDB = strtoupper($elemento);
 
-                // Recolectar todos los datos del formulario para este elemento
-                $datosParaActualizar = [
+                // --- INICIO DE LA LÓGICA FINAL ---
+                
+                // 1. Recolectar todos los datos del formulario
+                $postData = [
                     'horario_apertura'   => $this->request->getPost('open_hour_' . $elemento),
                     'horario_cierre'     => $this->request->getPost('close_hour_' . $elemento),
-                    'temp_min_cierre'    => $this->request->getPost('min_temp_' . $elemento) ?: null, // Guarda NULL si está vacío
-                    'temp_max_apertura'  => $this->request->getPost('max_temp_' . $elemento) ?: null, // Guarda NULL si está vacío
-                    'viento_max_cierre'  => $this->request->getPost('max_wind_speed_' . $elemento) ?: null, // Guarda NULL si está vacío
+                    'temp_min_cierre'    => $this->request->getPost('min_temp_' . $elemento),
+                    'temp_max_apertura'  => $this->request->getPost('max_temp_' . $elemento),
+                    'viento_max_cierre'  => $this->request->getPost('max_wind_speed_' . $elemento),
                     'permitir_lluvia'    => $this->request->getPost('allow_rain_' . $elemento) ? 1 : 0,
                 ];
+                
+                // 2. Limpiar el array: convertir strings 'NULL' o vacíos a un null real de PHP
+                foreach ($postData as $key => $value) {
+                    if ($value === 'NULL' || $value === '') {
+                        $postData[$key] = null;
+                    }
+                }
 
-                // Actualizar la base de datos en la tabla `servos`
+                // 3. Usar el método update() del modelo, que maneja mejor los tipos de datos
+                // CodeIgniter es lo suficientemente inteligente para construir la consulta correcta
+                // incluso en modo estricto cuando se le pasa un array limpio.
                 $this->servoModel
-                     ->where('dispositivo_id', $dispositivoId)
-                     ->where('tipo_elemento', $tipoElementoDB)
-                     ->set($datosParaActualizar)
-                     ->update();
+                    ->where('dispositivo_id', $dispositivoId)
+                    ->where('tipo_elemento', $tipoElementoDB)
+                    ->set($postData) // Usamos el array limpio
+                    ->update();
             }
 
             return redirect()->to('/configuracion')->with('success', '¡Configuración guardada correctamente!');

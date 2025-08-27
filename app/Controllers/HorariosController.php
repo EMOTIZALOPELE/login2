@@ -63,41 +63,56 @@ class HorariosController extends BaseController
      * Recibe el idhorario.
      */
     public function configuracion($idhorario = null)
-    {
-        $session = \Config\Services::session();
-
-        if (!$session->has('id')) {
-            return redirect()->to(base_url('login'));
-        }
-
-        if (empty($idhorario)) {
-            return redirect()->to(base_url('irainicio'))->with('error', 'No se especificó un ID de horario para configurar.');
-        }
-
-        // Obtener el horario específico por ID
-        $horarios = $this->horariosModel->find($idhorario); // $horarios contendrá un solo registro de horario
-
-        if (!$horarios) {
-            log_message('error', 'HorariosController::configuracion - Horario no encontrado con ID: ' . $idhorario);
-            return redirect()->to(base_url('irainicio'))->with('error', 'Horario no encontrado.');
-        }
-
-        // Verificar que el horario pertenece al usuario actual
-        if ($horarios['usuario_id'] != $session->get('id')) {
-            log_message('warning', 'HorariosController::configuracion - Usuario ' . $session->get('id') . ' intentó acceder al horario ' . $idhorario . ' que pertenece a ' . $horarios['usuario_id']);
-            return redirect()->to(base_url('irainicio'))->with('error', 'No tienes permiso para acceder a este horario.');
-        }
-
-        $diseno = null; // Inicializa a null
-        if (!empty($horarios['diseno_id'])) {
-            $diseno = $this->disenoModel->find($horarios['diseno_id']);
-        }
-
-        return view('configuracion', [
-            'horarios' => $horarios,
-            'diseno' => $diseno // Asegurarse de pasar el objeto $diseno
-        ]);
+{
+    $session = \Config\Services::session();
+    if (!$session->has('id')) {
+        return redirect()->to(base_url('login'));
     }
+
+    if (empty($idhorario)) {
+        return redirect()->to(base_url('irainicio'))->with('error', 'No se especificó un ID de horario.');
+    }
+
+    // Obtener el horario específico por ID (esto ya lo tenías bien)
+    $horarios = $this->horariosModel->find($idhorario);
+
+    if (!$horarios || $horarios['usuario_id'] != $session->get('id')) {
+        return redirect()->to(base_url('irainicio'))->with('error', 'Horario no encontrado o sin permisos.');
+    }
+
+    // --- LÓGICA MODIFICADA PARA OBTENER CONDICIONANTES ---
+
+    // 1. Encontrar el dispositivo_id asociado a este horario
+    $dispositivoId = $horarios['dispositivo_id'];
+    $condicionantes = []; // Inicializamos el array que usará la vista
+
+    if ($dispositivoId) {
+        // 2. Buscar todos los servos de ese dispositivo
+        $servos = $this->servoModel->where('dispositivo_id', $dispositivoId)->findAll();
+        
+        // 3. Construir el array $condicionantes con el formato que la vista espera
+        foreach ($servos as $servo) {
+            $tipo = strtolower($servo['tipo_elemento']); // 'VENTANA' -> 'ventana'
+            
+            $condicionantes[$tipo] = [
+                'temp_min'              => $servo['temp_min_cierre'],
+                'temp_max'              => $servo['temp_max_apertura'],
+                'velocidad_viento_max'  => $servo['viento_max_cierre'],
+                'permitir_lluvia'       => $servo['permitir_lluvia']
+            ];
+        }
+    }
+    
+    // --- FIN DE LA LÓGICA MODIFICADA ---
+
+    $diseno = !empty($horarios['diseno_id']) ? $this->disenoModel->find($horarios['diseno_id']) : null;
+
+    return view('configuracion', [
+        'horarios'       => $horarios,
+        'diseno'         => $diseno,
+        'condicionantes' => $condicionantes // Pasamos el array recién creado a la vista
+    ]);
+}
 
     /**
      * Procesa el formulario de configuración de horarios y guarda los datos en la base de datos.
@@ -106,7 +121,6 @@ class HorariosController extends BaseController
     public function guardar()
     {
         $session = \Config\Services::session();
-
         if (!$session->has('id')) {
             return redirect()->to(base_url('login'));
         }
@@ -114,117 +128,70 @@ class HorariosController extends BaseController
         $idhorario = $this->request->getPost('idhorario');
         $usuarioId = $session->get('id');
 
-        $horarioExistente = null;
-        if (!empty($idhorario)) {
-            $horarioExistente = $this->horariosModel->where('idhorario', $idhorario)
-                                                    ->where('usuario_id', $usuarioId)
-                                                    ->first();
-            if (!$horarioExistente) {
-                return redirect()->back()->withInput()->with('error', 'Horario no encontrado o no tienes permiso para modificarlo.');
-            }
-        } else {
-            return redirect()->back()->withInput()->with('error', 'ID de horario no proporcionado para guardar.');
+        // 1. Validar que el horario pertenece al usuario
+        $horarioExistente = $this->horariosModel->find($idhorario);
+        if (!$horarioExistente || $horarioExistente['usuario_id'] != $usuarioId) {
+            return redirect()->back()->with('error', 'Horario no encontrado o no tienes permiso.');
         }
 
-        $datos = [
-            'ventana_apertura'  => $this->request->getPost('ventana_apertura'),
-            'ventana_cierre'    => $this->request->getPost('ventana_cierre'),
-            'cortina_apertura'  => $this->request->getPost('cortina_apertura'),
-            'cortina_cierre'    => $this->request->getPost('cortina_cierre'),
-            'postigon_apertura' => $this->request->getPost('postigon_apertura'),
-            'postigon_cierre'   => $this->request->getPost('postigon_cierre'),
-        ];
+        // 2. Preparar los datos limpios del formulario
+        $elementos = ['ventana', 'cortina', 'postigon'];
+        $datosLimpiosParaServos = [];
+        $datosParaTablaHorarios = [];
 
-        // Suavizar la validación: establecer a NULL si están vacíos
-        foreach ($datos as $key => $value) {
-            if (empty($value)) {
-                $datos[$key] = null;
-            }
+        foreach ($elementos as $elemento) {
+            // Recolectar datos del POST
+            $openHour = $this->request->getPost('open_hour_' . $elemento);
+            $closeHour = $this->request->getPost('close_hour_' . $elemento);
+            $minTemp = $this->request->getPost('min_temp_' . $elemento);
+            $maxTemp = $this->request->getPost('max_temp_' . $elemento);
+            $maxWind = $this->request->getPost('max_wind_speed_' . $elemento);
+            $allowRain = $this->request->getPost('allow_rain_' . $elemento);
+
+            // Limpiar y convertir a NULL si el campo está vacío
+            $datosLimpiosParaServos[$elemento] = [
+                'horario_apertura'   => ($openHour === '') ? null : $openHour,
+                'horario_cierre'     => ($closeHour === '') ? null : $closeHour,
+                'temp_min_cierre'    => ($minTemp === '') ? null : (float)$minTemp,
+                'temp_max_apertura'  => ($maxTemp === '') ? null : (float)$maxTemp,
+                'viento_max_cierre'  => ($maxWind === '') ? null : (float)$maxWind,
+                'permitir_lluvia'    => $allowRain ? 1 : 0,
+            ];
+
+            // Preparar datos específicos para la tabla 'horarios'
+            $datosParaTablaHorarios[$elemento . '_apertura'] = $datosLimpiosParaServos[$elemento]['horario_apertura'];
+            $datosParaTablaHorarios[$elemento . '_cierre'] = $datosLimpiosParaServos[$elemento]['horario_cierre'];
         }
 
         try {
-            if ($this->horariosModel->update($horarioExistente['idhorario'], $datos)) {
-                log_message('info', 'HorariosController::guardar - Horario ID ' . $horarioExistente['idhorario'] . ' actualizado correctamente en tabla horarios.');
+            // 3. Actualizar la tabla 'horarios'
+            $this->horariosModel->update($idhorario, $datosParaTablaHorarios);
+            log_message('info', "Tabla 'horarios' actualizada para el idhorario: {$idhorario}.");
 
-                // --- NUEVO: Propagar los cambios a los servos asociados ---
-                // 1. Encontrar los dispositivos vinculados al usuario
-                $dispositivosDelUsuario = $this->dispositivoModel->where('usuario_id', $usuarioId)->findAll();
-                $dispositivoIds = array_column($dispositivosDelUsuario, 'id');
+            // 4. Actualizar la tabla 'servos'
+            $dispositivoId = $horarioExistente['dispositivo_id'];
+            if ($dispositivoId) {
+                foreach ($elementos as $elemento) {
+                    $tipoElementoDB = strtoupper($elemento);
+                    $datosParaActualizarServo = $datosLimpiosParaServos[$elemento];
 
-                // 2. Encontrar todos los servos que pertenecen a estos dispositivos
-                if (!empty($dispositivoIds)) {
-                    $servosDelUsuario = $this->servoModel->whereIn('dispositivo_id', $dispositivoIds)->findAll();
-                } else {
-                    $servosDelUsuario = [];
+                    $this->servoModel
+                        ->where('dispositivo_id', $dispositivoId)
+                        ->where('tipo_elemento', $tipoElementoDB)
+                        ->set($datosParaActualizarServo)
+                        ->update();
+                    
+                    log_message('info', "Tabla 'servos' actualizada para el dispositivo {$dispositivoId} y tipo {$tipoElementoDB}.");
                 }
-                
-
-                // 3. Iterar sobre los servos y actualizar sus horarios según el tipo_elemento
-                foreach ($servosDelUsuario as $servo) {
-                    $servoDataToUpdate = [];
-                    $updateNeeded = false;
-
-                    $currentHorarioApertura = $servo['horario_apertura'];
-                    $currentHorarioCierre = $servo['horario_cierre'];
-
-                    switch (strtoupper($servo['tipo_elemento'])) {
-                        case 'VENTANA':
-                            if ($currentHorarioApertura !== $datos['ventana_apertura']) {
-                                $servoDataToUpdate['horario_apertura'] = $datos['ventana_apertura'];
-                                $updateNeeded = true;
-                            }
-                            if ($currentHorarioCierre !== $datos['ventana_cierre']) {
-                                $servoDataToUpdate['horario_cierre'] = $datos['ventana_cierre'];
-                                $updateNeeded = true;
-                            }
-                            break;
-                        case 'CORTINA':
-                            if ($currentHorarioApertura !== $datos['cortina_apertura']) {
-                                $servoDataToUpdate['horario_apertura'] = $datos['cortina_apertura'];
-                                $updateNeeded = true;
-                            }
-                            if ($currentHorarioCierre !== $datos['cortina_cierre']) {
-                                $servoDataToUpdate['horario_cierre'] = $datos['cortina_cierre'];
-                                $updateNeeded = true;
-                            }
-                            break;
-                        case 'POSTIGON':
-                            if ($currentHorarioApertura !== $datos['postigon_apertura']) {
-                                $servoDataToUpdate['horario_apertura'] = $datos['postigon_apertura'];
-                                $updateNeeded = true;
-                            }
-                            if ($currentHorarioCierre !== $datos['postigon_cierre']) {
-                                $servoDataToUpdate['horario_cierre'] = $datos['postigon_cierre'];
-                                $updateNeeded = true;
-                            }
-                            break;
-                        // 'OTRO' o tipos no mapeados no se actualizan por horario
-                    }
-
-                    if ($updateNeeded) {
-                        try {
-                            $this->servoModel->update($servo['id'], $servoDataToUpdate);
-                            log_message('info', 'HorariosController::guardar - Servo ID ' . $servo['id'] . ' actualizado con nuevos horarios de ' . strtoupper($servo['tipo_elemento']) . '.');
-                        } catch (\Exception $e) {
-                            log_message('error', 'HorariosController::guardar - Error al actualizar horarios para Servo ID ' . $servo['id'] . ': ' . $e->getMessage());
-                        }
-                    }
-                }
-                // --- FIN NUEVO: Propagar cambios ---
-
-                return redirect()->to(base_url('irainicio'))->with('mensaje', 'Horarios guardados correctamente');
-
-            } else {
-                log_message('error', 'HorariosController::guardar - Fallo al actualizar el horario ID ' . $horarioExistente['idhorario'] . ' en la tabla horarios. Errores: ' . json_encode($this->horariosModel->errors()));
-                return redirect()->back()->withInput()->with('error', 'Error al guardar los horarios: La base de datos no pudo actualizar.');
             }
 
+            return redirect()->to('configuracion/' . $idhorario)->with('success', '¡Configuración guardada correctamente!');
+
         } catch (\Exception $e) {
-            log_message('error', 'HorariosController::guardar - Error al guardar horarios: ' . $e->getMessage());
-            return redirect()->back()->withInput()->with('error', 'Error al guardar los horarios: ' . $e->getMessage());
+            log_message('error', 'Error al guardar configuración: ' . $e->getMessage());
+            return redirect()->back()->withInput()->with('error', 'Error al guardar la configuración: ' . $e->getMessage());
         }
     }
-
     public function getEstadoVentana()
     {
         $disenoId = $this->request->getGet('diseno_id');
@@ -509,4 +476,7 @@ class HorariosController extends BaseController
         session()->set('selected_device_id', $horario['dispositivo_id']);
         return $this->respond(['success' => true, 'dispositivo_id' => $horario['dispositivo_id']]);
     }
+    
+    
+
 }

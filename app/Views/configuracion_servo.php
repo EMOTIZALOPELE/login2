@@ -75,7 +75,8 @@
 
                 <div class="btn-container">
                     <button type="submit" class="btn btn-primary">Guardar Configuración</button>
-                    <a href="<?= site_url('servo/estado/' . esc($servo['dispositivo_id'])) ?>" class="btn btn-secondary">Volver</a>
+                    <a href="<?= site_url('servo/estado/' . esc($servo['dispositivo_id'])) ?>" class="btn btn-secondary"></a>
+                    <button type="submit" class="btn btn-secondary">Guardar Configuración</button>
                 </div>
             </form>
         </div>

@@ -14,7 +14,7 @@ class ServoModel extends Model
     protected $returnType     = 'array';
     protected $useSoftDeletes = false; // Cambia a true si usas soft deletes
 
-    protected $allowedFields = [
+    protected $allowedFields    = [
         'dispositivo_id',
         'pin_gpio',
         'tipo_elemento',
@@ -22,7 +22,13 @@ class ServoModel extends Model
         'horario_apertura',
         'horario_cierre',
         'estado_actual',
-        'modo_operacion'
+        'modo_operacion',
+        'updated_at',
+        'temp_min_cierre',
+        'temp_max_apertura',
+        'viento_max_cierre',
+        'permitir_lluvia',
+        'manual_override_expires'
     ];
 
     protected bool $allowEmptyInserts = false;

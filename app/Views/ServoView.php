@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Control de Servo - VECOPO</title>
 
     <meta name="csrf-token" content="<?= csrf_hash() ?>">
@@ -24,31 +24,16 @@
         .control-card { background: var(--card-bg); padding: 2.5rem; border-radius: 20px; border: 1px solid rgba(100, 255, 218, 0.1); backdrop-filter: blur(10px); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37); width: 100%; max-width: 800px; animation: fadeIn 0.8s ease-out; text-align: center; margin-bottom: 20px;}
         .control-card h1 { font-family: 'Orbitron', sans-serif; color: var(--primary-color); font-size: 2rem; margin-bottom: 1.5rem; text-shadow: 0 0 10px rgba(0, 242, 254, 0.3); }
         .device-info { color: var(--text-secondary); margin-bottom: 2rem; }
-
-        /* Estilos para cada servo individual */
-        .servo-item {
-            background: rgba(16, 32, 61, 0.6); /* Un poco más claro que el fondo de la tarjeta */
-            border: 1px solid var(--input-border);
-            border-radius: 15px;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
+        .servo-item { background: rgba(16, 32, 61, 0.6); border: 1px solid var(--input-border); border-radius: 15px; padding: 1.5rem; margin-bottom: 1.5rem; display: flex; flex-direction: column; align-items: center; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); }
         .servo-item:last-child { margin-bottom: 0; }
-
         .servo-header { display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; width: 100%; }
         .servo-icon-display { font-size: 3rem; color: var(--primary-color); text-shadow: 0 0 10px var(--primary-color); margin-right: 1rem; }
         .servo-name { font-family: 'Orbitron', sans-serif; font-size: 1.6rem; color: var(--primary-color); margin-bottom: 0.5rem;}
         .servo-details { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1rem; }
-
         .status-indicator { font-family: 'Orbitron', sans-serif; font-size: 1.1rem; padding: 0.4rem 1.2rem; border-radius: 50px; margin: 1rem 0; display: inline-block; font-weight: 500; transition: all 0.3s ease; min-width: 120px; }
         .status-abierto { background-color: var(--success-color); color: var(--dark-bg); box-shadow: 0 0 10px rgba(0, 255, 157, 0.4); }
         .status-cerrado { background-color: var(--danger-color); color: var(--text-primary); box-shadow: 0 0 10px rgba(255, 77, 77, 0.4); }
         .status-desconocido { background-color: var(--text-secondary); color: var(--dark-bg); }
-
         .controls-wrapper { margin-top: 1.5rem; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; width: 100%; }
         .btn-control { padding: 0.8rem 1.5rem; font-size: 1rem; font-weight: 500; border-radius: 50px; min-width: 150px; display: inline-flex; align-items: center; justify-content: center; gap: 10px; border: none; cursor: pointer; transition: all 0.3s ease; }
         .btn-control:hover { transform: translateY(-3px); }
@@ -56,18 +41,9 @@
         .btn-open:hover { box-shadow: 0 8px 20px rgba(100, 255, 218, 0.3); }
         .btn-close { background: linear-gradient(45deg, #ff7b7b, var(--danger-color)); color: var(--text-primary); box-shadow: 0 5px 15px rgba(255, 77, 77, 0.2); }
         .btn-close:hover { box-shadow: 0 8px 20px rgba(255, 77, 77, 0.3); }
-        .btn-config {
-            background: linear-gradient(45deg, var(--accent-color), var(--primary-color));
-            color: var(--dark-bg);
-            box-shadow: 0 5px 15px rgba(100, 255, 218, 0.2);
-        }
-        .btn-config:hover {
-            box-shadow: 0 8px 20px rgba(100, 255, 218, 0.3);
-        }
-
+        .btn-config { background: linear-gradient(45deg, var(--accent-color), var(--primary-color)); color: var(--dark-bg); box-shadow: 0 5px 15px rgba(100, 255, 218, 0.2); }
+        .btn-config:hover { box-shadow: 0 8px 20px rgba(100, 255, 218, 0.3); }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* Responsive adjustments */
         @media (max-width: 768px) {
             .control-card { padding: 1.5rem; max-width: 95%; }
             .control-card h1 { font-size: 1.8rem; }
@@ -111,14 +87,10 @@
                                     <p class="servo-details">Modo: <span id="modo-<?= esc($servo['id']); ?>"><?= esc(strtoupper($servo['modo_operacion'] ?? 'N/A')); ?></span></p>
                                 </div>
                             </div>
-
                             <div class="status-container">
                                 <p>Estado Actual:</p>
-                                <span id="estado-<?= esc($servo['id']); ?>" class="status-indicator status-desconocido">
-                                    CARGANDO...
-                                </span>
+                                <span id="estado-<?= esc($servo['id']); ?>" class="status-indicator status-desconocido">CARGANDO...</span>
                             </div>
-
                             <div class="controls-wrapper">
                                 <button type="button" class="btn-control btn-open"
                                     data-servo-id="<?= esc($servo['id']); ?>"
@@ -142,7 +114,7 @@
                         </div>
                     <?php endforeach; ?>
                 <?php else: ?>
-                    <p style="color: var(--text-secondary);">No hay servos configurados para este dispositivo. Por favor, añada servos desde la configuración.</p>
+                    <p style="color: var(--text-secondary);">No hay servos configurados para este dispositivo.</p>
                 <?php endif; ?>
             </div>
         </div>
@@ -264,28 +236,25 @@
                 .catch(error => console.error('Error al obtener estado de servos:', error));
         }
 
-        function actualizarUI(servoId, estado, modoOperacion) {
-            const elements = servoElements[servoId];
-            if (!elements) return;
-            const estadoLimpio = (estado || '').toLowerCase().trim();
-            elements.statusElement.textContent = estado ? estado.toUpperCase() : 'N/A';
-            elements.statusElement.className = `status-indicator status-${estadoLimpio || 'desconocido'}`;
-            if (estadoLimpio === 'abierto') {
-                elements.iconElement.className = `fas fa-door-open servo-icon-display`;
-            } else if (estadoLimpio === 'cerrado') {
-                elements.iconElement.className = `fas fa-door-closed servo-icon-display`;
+            function actualizarUI(servoId, estado, modoOperacion) {
+                const elements = servoElements[servoId];
+                if (!elements) return;
+                const estadoLimpio = (estado || '').toLowerCase().trim();
+                elements.statusElement.textContent = estado ? estado.toUpperCase() : 'N/A';
+                elements.statusElement.className = `status-indicator status-${estadoLimpio || 'desconocido'}`;
+                if (estadoLimpio === 'abierto') {
+                    elements.iconElement.className = `fas fa-door-open servo-icon-display`;
+                } else if (estadoLimpio === 'cerrado') {
+                    elements.iconElement.className = `fas fa-door-closed servo-icon-display`;
+                }
+                if (elements.modeElement && modoOperacion) {
+                    elements.modeElement.textContent = modoOperacion.toUpperCase();
+                }
             }
-            if (elements.modeElement && modoOperacion) {
-                elements.modeElement.textContent = modoOperacion.toUpperCase();
-            }
-        }
-        
-        // Polling para mantener la UI actualizada automáticamente cada 10 segundos.
-        setInterval(actualizarEstadoDesdeServidor, 10000);
-        // Llamada inicial para cargar el estado en cuanto la página esté lista.
-        actualizarEstadoDesdeServidor();
-    });
-</script>
-
+            
+            setInterval(actualizarEstadoDesdeServidor, 10000);
+            actualizarEstadoDesdeServidor(); // Llamada inicial
+        });
+    </script>
 </body>
 </html>

@@ -1,4 +1,5 @@
 #include <WiFi.h>
+#include <WiFiClientSecure.h>
 #include <HTTPClient.h>
 #include <ESP32Servo.h>
 #include <Preferences.h>
@@ -6,23 +7,28 @@
 #include <ESPAsyncWebServer.h>
 #include <ArduinoJson.h>
 #include <map>
+#include "time.h"
 
 // --- CONFIGURACIÓN ---
-// ¡Asegúrate de que esta sea la dirección pública de tu servidor!
-const char* serverHost = "vecopo.ddns.net"; 
+const char* serverHost = "vecopo.ddns.net";
 const char* serverPath = "/vecopo/public/dispositivos/estado/";
-const int serverPort = 443; // Puerto HTTPS
+const char* serverSetModePath = "/vecopo/public/servos/set-mode/";
+const char* serverReportStatePath = "/vecopo/public/servos/report-state/";
+const int serverPort = 443;
 const char* AP_SSID = "ESP32_Config_Servo";
 const char* AP_PASSWORD = "password";
 IPAddress AP_LOCAL_IP(192, 168, 4, 1);
 
-// --- MULTIPLES SERVOS ---
+const char* ntpServer = "pool.ntp.org";
+const long  gmtOffset_sec = -3 * 3600;
+const int   daylightOffset_sec = 0;
+
+// --- OBJETOS Y ESTRUCTURAS ---
 Servo servoPin2;
 Servo servoPin4;
 Servo servoPin16;
 std::map<int, String> servoLocalStates;
 
-// Función para obtener el objeto Servo según el pin GPIO
 Servo* getServoObject(int pin) {
     switch (pin) {
         case 2: return &servoPin2;
@@ -35,130 +41,263 @@ Servo* getServoObject(int pin) {
 // --- VARIABLES GLOBALES ---
 Preferences preferences;
 AsyncWebServer server(80);
-unsigned long lastRequestTime = 0;
-const long requestInterval = 3000; // Intervalo de 3 segundos entre peticiones
+unsigned long lastServerCheck = 0;
+const long serverInterval = 15000;
 
+// --- PROTOTIPOS DE FUNCIONES ---
 void connectToWiFi();
 void startAPMode();
 void checkServer();
+void switchToAutoMode(int servoId);
+void reportNewState(int servoId, String newState);
 
 void setup() {
     Serial.begin(115200);
-    delay(1000); // Pequeña pausa al inicio para estabilizar la alimentación
+    delay(1000);
+    Serial.println("\n--- Iniciando Dispositivo Vecopo v3.8 (Auto-Corrección de Modo) ---");
 
-    Serial.println("\n--- Iniciando Dispositivo Vecopo ---");
-
-    // Adjuntar y configurar servos
     servoPin2.attach(2);
     servoPin2.write(0);
     servoLocalStates[2] = "CERRADO";
-
     servoPin4.attach(4);
     servoPin4.write(0);
     servoLocalStates[4] = "CERRADO";
-
     servoPin16.attach(16);
     servoPin16.write(0);
     servoLocalStates[16] = "CERRADO";
 
-    // Revisar credenciales guardadas y decidir el modo de operación
     preferences.begin("wifi-creds", false);
     String STA_ssid = preferences.getString("ssid", "");
     if (STA_ssid.length() > 0) {
         connectToWiFi();
+        if(WiFi.status() == WL_CONNECTED) {
+            configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
+        }
     } else {
         startAPMode();
     }
 }
 
 void loop() {
-    // Si estamos en modo Estación (conectados a un WiFi)
     if (WiFi.status() == WL_CONNECTED) {
-        // Comprobar si es hora de hacer una nueva petición al servidor
-        if (millis() - lastRequestTime > requestInterval) {
+        if (millis() - lastServerCheck > serverInterval) {
             checkServer();
-            lastRequestTime = millis(); // Actualizar el tiempo de la última petición
+            lastServerCheck = millis();
         }
-    } 
-    // Si perdimos la conexión, intentar reconectar
-    else if (WiFi.getMode() == WIFI_STA) { 
+    } else if (WiFi.getMode() == WIFI_STA) {
         Serial.println("Wi-Fi desconectado. Intentando reconectar...");
-        // La función connectToWiFi() ya maneja la lógica de reintento y reinicio
-        connectToWiFi(); 
+        connectToWiFi();
     }
-    // Si estamos en modo AP, el servidor asíncrono se maneja solo. No se necesita nada aquí.
+}
+
+void reportNewState(int servoId, String newState) {
+    WiFiClientSecure client;
+    client.setInsecure();
+    HTTPClient http;
+    String url = "https://" + String(serverHost) + String(serverReportStatePath) + String(servoId) + "/" + newState;
+   
+    Serial.print("Reportando nuevo estado al servidor: ");
+    Serial.println(url);
+
+    if (http.begin(client, url)) {
+        int httpCode = http.GET();
+        if (httpCode == 200) {
+            Serial.println("Reporte de estado exitoso.");
+        } else {
+            Serial.printf("Error en el reporte de estado, código: %d (%s)\n", httpCode, http.errorToString(httpCode).c_str());
+        }
+        http.end();
+    } else {
+        Serial.println("No se pudo conectar para reportar estado.");
+    }
+}
+
+void switchToAutoMode(int servoId) {
+    WiFiClientSecure client;
+    client.setInsecure();
+    HTTPClient http;
+    String url = "https://" + String(serverHost) + String(serverSetModePath) + String(servoId) + "/AUTOMATICO";
+   
+    Serial.print("Enviando petición para cambiar a modo AUTO: ");
+    Serial.println(url);
+
+    if (http.begin(client, url)) {
+        int httpCode = http.GET();
+        if (httpCode == 200) {
+            Serial.println("Petición de cambio de modo exitosa.");
+        } else {
+            Serial.printf("Error en la petición de cambio de modo, código: %d (%s)\n", httpCode, http.errorToString(httpCode).c_str());
+        }
+        http.end();
+    } else {
+        Serial.println("No se pudo conectar para cambiar modo.");
+    }
 }
 
 void checkServer() {
+    Serial.println("====================");
+    Serial.println("🔄 Iniciando chequeo del servidor...");
+    WiFiClientSecure client;
+    client.setInsecure();
     HTTPClient http;
+   
     String mac = WiFi.macAddress();
     mac.replace(":", "");
     mac.toLowerCase();
-
     String fullUrl = "https://" + String(serverHost) + String(serverPath) + mac;
-    
-    Serial.print("Peticion a: ");
-    Serial.println(fullUrl);
+   
+    if (http.begin(client, fullUrl)) {
+        int httpCode = http.GET();
 
-    // Para HTTPS, es más seguro agregar el certificado raíz, pero por ahora lo omitimos
-    // http.begin(fullUrl, ca_cert); 
-    http.begin(fullUrl);
-    int httpCode = http.GET();
+        if (httpCode == 200) {
+            String payload = http.getString();
 
-    if (httpCode == 200) {
-        String payload = http.getString();
-        payload.trim();
-        Serial.print("Respuesta recibida: ");
-        Serial.println(payload);
+            Serial.println("📦 JSON recibido del servidor:");
+            Serial.println(payload);
+            Serial.println("-----------------------------");
 
-        StaticJsonDocument<512> doc;
-        DeserializationError error = deserializeJson(doc, payload);
+            StaticJsonDocument<1536> doc;
+            DeserializationError error = deserializeJson(doc, payload);
 
-        if (error) {
-            Serial.print(F("Error al parsear JSON: "));
-            Serial.println(error.f_str());
-        } else {
+            if (error) {
+                Serial.print(F("Error al parsear JSON del servidor: "));
+                Serial.println(error.f_str());
+                http.end();
+                return;
+            }
+
+            JsonObject clima = doc["clima"];
+            float temperaturaActual = clima["temperatura"];
+            bool estaLloviendo = clima["esta_lloviendo"];
+
+            Serial.printf("Clima recibido del servidor: Temp=%.1f°C, Lloviendo=%s\n", temperaturaActual, estaLloviendo ? "Si" : "No");
+
             JsonArray servosArray = doc["servos"].as<JsonArray>();
-            if (servosArray) {
-                for (JsonObject servoObj : servosArray) {
-                    int pin = servoObj["pin"];
-                    String estado = servoObj["estado"].as<String>();
-                    estado.toUpperCase();
+            if (!servosArray) {
+                http.end();
+                return;
+            }
 
-                    Serial.print("Procesando servo en pin "); Serial.print(pin);
-                    Serial.print(" | Estado deseado: "); Serial.println(estado);
+            for (JsonObject servoObj : servosArray) {
+                int pin = servoObj["pin"];
+                int servoId = servoObj["id"];
+                Serial.printf("🔍 Analizando servo ID %d (Pin %d)\n", servoId, pin);
 
-                    Servo* currentServo = getServoObject(pin);
-                    if (currentServo != nullptr) {
-                        if (servoLocalStates[pin] != estado) { // Mover solo si el estado es diferente
-                            if (estado == "ABIERTO") {
-                                currentServo->write(180);
-                                servoLocalStates[pin] = "ABIERTO";
-                                Serial.println("-> Movido a ABIERTO");
-                            } else if (estado == "CERRADO") {
-                                currentServo->write(0);
-                                servoLocalStates[pin] = "CERRADO";
-                                Serial.println("-> Movido a CERRADO");
-                            }
+                Servo* currentServo = getServoObject(pin);
+                if (currentServo == nullptr) continue;
+
+                String modo = servoObj["modo"].as<String>();
+                modo.toUpperCase();
+                String estadoHorario = servoObj["estado_horario"].as<String>();
+                estadoHorario.toUpperCase();
+               
+                Serial.println("-------------------------");
+                Serial.printf("Procesando servo ID %d (Pin %d) | Modo: %s\n", servoId, pin, modo.c_str());
+
+                // --- LÓGICA DE AUTO-CORRECCIÓN DE MODO ---
+                if (modo == "MANUAL" && (estadoHorario == "ABIERTO" || estadoHorario == "CERRADO")) {
+                    Serial.printf("Inconsistencia detectada: Modo MANUAL pero con horario activo. Solicitando cambio a AUTOMATICO para servo ID %d.\n", servoId);
+                    switchToAutoMode(servoId);
+                }
+
+                if (modo == "MANUAL") {
+                    long proximoEventoUTC = servoObj["proximo_evento_utc"];
+                    time_t now;
+                    time(&now);
+                   
+                    if (proximoEventoUTC > 0) {
+                        long diff = proximoEventoUTC - now;
+                        Serial.printf("Próximo evento en %ld segundos.\n", diff);
+                        if (diff > 0 && diff <= 900) {
+                            Serial.println("¡Evento cercano! Cambiando a modo AUTOMATICO.");
+                            switchToAutoMode(servoId);
+                        }
+                    }
+                   
+                    String estadoActualDB = servoObj["estado"].as<String>();
+                    estadoActualDB.toUpperCase();
+                    if (servoLocalStates[pin] != estadoActualDB) {
+                        if (estadoActualDB == "ABIERTO") currentServo->write(180); else currentServo->write(0);
+                        servoLocalStates[pin] = estadoActualDB;
+                        Serial.printf("-> Movido a %s por orden manual.\n", estadoActualDB.c_str());
+                    } else {
+                        Serial.printf("-> No se requiere movimiento. Estado actual: %s\n", servoLocalStates[pin].c_str());
+                    }
+                }
+                else if (modo == "AUTOMATICO") {
+                    if (estadoHorario == "ABIERTO" || estadoHorario == "CERRADO") {
+                        if (servoLocalStates[pin] != estadoHorario) {
+                            if (estadoHorario == "ABIERTO") currentServo->write(180); else currentServo->write(0);
+                            servoLocalStates[pin] = estadoHorario;
+                            Serial.printf("--> Movido a %s por horario.\n", estadoHorario.c_str());
+                            reportNewState(servoId, estadoHorario);
                         } else {
-                            Serial.println("-> No se requiere movimiento.");
+                            Serial.printf("--> No se requiere movimiento. Estado actual por horario: %s\n", servoLocalStates[pin].c_str());
+                        }
+                    }
+                    else {
+                        // ✅ AQUÍ VA EL NUEVO CÓDGO - REEMPLAZA LO QUE HAY DENTRO DE ESTE ELSE
+                        JsonObject condiciones = servoObj["condiciones"];
+                        if (!condiciones || temperaturaActual == -100.0) continue;
+
+                        String accionDeseada = servoLocalStates[pin];
+                        bool ignorarLluvia = condiciones["ignorar_lluvia"];
+
+                        // ✅ MANEJO CORRECTO DE VALORES NULOS
+                        float tempAbrir = -100.0;
+                        float tempCerrar = -100.0;
+
+                        if (condiciones.containsKey("temp_abrir") && !condiciones["temp_abrir"].isNull()) {
+                            tempAbrir = condiciones["temp_abrir"].as<float>();
+                        }
+                        if (condiciones.containsKey("temp_cerrar") && !condiciones["temp_cerrar"].isNull()) {
+                            tempCerrar = condiciones["temp_cerrar"].as<float>();
+                        }
+
+                        bool tieneTempAbrir = tempAbrir != -100.0;
+                        bool tieneTempCerrar = tempCerrar != -100.0;
+
+                        Serial.printf("🌡️ Temperaturas - Abrir: %.1f°C, Cerrar: %.1f°C\n", tempAbrir, tempCerrar);
+                        Serial.printf("📊 Condiciones - TieneAbrir: %d, TieneCerrar: %d\n", tieneTempAbrir, tieneTempCerrar);
+
+                        // --- LÓGICA CLIMÁTICA ---
+                        if (estaLloviendo && !ignorarLluvia) {
+                            accionDeseada = "CERRADO";
+                            Serial.println("--> Cerrando por lluvia");
+                        }
+                        else if (tieneTempAbrir && temperaturaActual >= tempAbrir) {
+                            accionDeseada = "ABIERTO";
+                            Serial.printf("--> Abriendo por calor (%.1f°C >= %.1f°C)\n", temperaturaActual, tempAbrir);
+                        }
+                        else if (tieneTempCerrar && temperaturaActual <= tempCerrar) {
+                            accionDeseada = "CERRADO";
+                            Serial.printf("--> Cerrando por frío (%.1f°C <= %.1f°C)\n", temperaturaActual, tempCerrar);
+                        }
+                        else {
+                            accionDeseada = servoLocalStates[pin];
+                            Serial.println("--> Sin reglas de temperatura activas. Manteniendo estado actual.");
+                        }
+
+                        if (servoLocalStates[pin] != accionDeseada) {
+                            if (accionDeseada == "ABIERTO") currentServo->write(180); else currentServo->write(0);
+                            servoLocalStates[pin] = accionDeseada;
+                            Serial.printf("--> Movido a %s por condición climática.\n", accionDeseada.c_str());
+                            reportNewState(servoId, accionDeseada);
+                        } else {
+                            Serial.printf("--> No se requiere movimiento. Estado actual: %s\n", servoLocalStates[pin].c_str());
                         }
                     }
                 }
-            } else {
-                Serial.println("Error: El JSON no contiene el array 'servos'.");
             }
+            Serial.println("-------------------------");
+        } else {
+            Serial.printf("Error en la petición HTTP al servidor, código: %d (%s)\n", httpCode, http.errorToString(httpCode).c_str());
         }
+        http.end();
     } else {
-        Serial.print("Error en la petición HTTP: ");
-        Serial.println(httpCode);
+        Serial.println("No se pudo iniciar la conexión HTTP.");
     }
-    http.end();
 }
-
-
-// Las funciones connectToWiFi() y startAPMode() son las mismas,
-// pero las incluyo para que el código esté completo.
 
 void connectToWiFi() {
     String STA_ssid = preferences.getString("ssid", "");
@@ -169,7 +308,6 @@ void connectToWiFi() {
     WiFi.begin(STA_ssid.c_str(), STA_password.c_str());
 
     long startTime = millis();
-    // Esperar un máximo de 20 segundos para conectar
     while (WiFi.status() != WL_CONNECTED && millis() - startTime < 20000) {
         delay(500);
         Serial.print(".");
@@ -179,8 +317,7 @@ void connectToWiFi() {
         Serial.println("\n¡Conectado a la red Wi-Fi!");
         Serial.print("Dirección IP: "); Serial.println(WiFi.localIP());
     } else {
-        Serial.println("\nFallo la conexión. Credenciales incorrectas o red fuera de alcance.");
-        Serial.println("Borrando credenciales y reiniciando en modo de configuración (AP)...");
+        Serial.println("\nFallo la conexión.");
         preferences.clear();
         delay(1000);
         ESP.restart();
@@ -202,7 +339,7 @@ void startAPMode() {
         int n = WiFi.scanNetworks();
         for (int i = 0; i < n; ++i) { html += "<option value='" + WiFi.SSID(i) + "'>" + WiFi.SSID(i) + "</option>"; }
         html += "</select><br><input name='pass' type='password' placeholder='Contraseña'><br><br><input type='submit' value='Guardar y Conectar'></form></body></html>";
-    
+   
         request->send(200, "text/html", html);
     });
 

@@ -106,6 +106,7 @@
                             <li><a href="#" onclick="abrirModal()">Añadir Tarjeta</a></li>
                             <li><a href="<?= base_url('pele') ?>">Diseño</a></li>
                             <li><a href="#" data-toggle="modal" data-target="#servoModal"><i class="fas fa-gamepad"></i> Manual</a></li>
+                            <li><a href="<?= base_url('dispositivos') ?>"><i class="fas fa-user-cog"></i> Dispositivos</a></li>
                             <li><a href="<?= base_url('logout') ?>">Salir</a></li>
                         </ul>
                     </nav>
@@ -126,6 +127,7 @@
                 <li><a href="#" onclick="abrirModalYCerrarMenu()"><i class="fas fa-plus-square"></i> Añadir Tarjeta</a></li>
                 <li><a href="<?= base_url('pele') ?>"><i class="fas fa-palette"></i> Diseño</a></li>
                 <li><a href="#" data-toggle="modal" data-target="#servoModal"><i class="fas fa-gamepad"></i> Manual</a></li>
+               <li><a href="<?= base_url('dispositivos') ?>"><i class="fas fa-user-cog"></i> Dispositivos</a></li> 
                 <li><a href="<?= base_url('logout') ?>"><i class="fas fa-sign-out-alt"></i> Salir</a></li>
             </ul>
         </nav>
@@ -253,6 +255,7 @@
     
     <script>
     document.addEventListener('DOMContentLoaded', function() {
+        const username = <?= json_encode(session()->get('nombre')) ?>;
         const hamburgerButton = document.getElementById('menu-toggle');
         const navigationMenu = document.getElementById('navigationMenu');
         if (hamburgerButton && navigationMenu) {
@@ -290,7 +293,8 @@
                     const temp = Math.round(data.main.temp);
                     const description = data.weather[0].description;
                     const capitalizedDescription = description.charAt(0).toUpperCase() + description.slice(1);
-                    const weatherText = `Hola, hoy en ${data.name} el día está ${capitalizedDescription} con ${temp}°C.`;
+                    const greeting = username ? `Hola ${username}` : 'Hola'; // Crea un saludo personalizado
+                    const weatherText = `${greeting}, hoy en ${data.name} el día es ${capitalizedDescription} con ${temp}°C.`;
                     weatherPanelContent.textContent = weatherText;
                 }
             }).catch(error => console.error('Error al obtener datos del clima:', error));

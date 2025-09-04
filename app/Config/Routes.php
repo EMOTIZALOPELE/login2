@@ -77,6 +77,12 @@ $routes->get('api/horario-ventana/estado', 'HorarioVentanaController::getEstadoV
 $routes->get('diseno/crear', 'DisenoController::crear');
 $routes->post('diseno/guardar', 'DisenoController::guardar');
 
+// Rutas para la vista "vistadispositivo" y DispositivoController
+$routes->get('/dispositivos', 'DispositivoController::index');
+$routes->post('/dispositivos/cambiar-nombre-dispositivo', 'DispositivoController::cambiarNombreDispositivo');
+$routes->post('/dispositivos/cambiar-nombre-tarjeta', 'DispositivoController::cambiarNombreTarjeta');
+$routes->post('/dispositivos/eliminar/(:num)', 'DispositivoController::eliminarDispositivo/$1');
+
 // Rutas para horarios
 $routes->get('horarios/configuracion/(:num)', 'HorariosController::configuracion/$1');
 $routes->post('/dispositivos/reclamar', 'HorariosController::reclamarDispositivoPorMac');
@@ -143,5 +149,3 @@ $routes->post('api/esp32/status', function() {
 
     return $this->response->setJSON(['message' => 'Estado recibido con éxito']);
 });
-
-

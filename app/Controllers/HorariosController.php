@@ -4,7 +4,6 @@ namespace App\Controllers;
 
 use App\Models\HorariosModel;
 use App\Models\DispositivoModel;
-use App\Models\DisenoModel;
 use App\Models\ServoModel; // Asegúrate de importar ServoModel
 use CodeIgniter\API\ResponseTrait;
 
@@ -13,14 +12,12 @@ class HorariosController extends BaseController
     use ResponseTrait;
 
     protected $horariosModel;
-    protected $disenoModel;
     protected $dispositivoModel;
     protected $servoModel; // Propiedad para el nuevo ServoModel
 
     public function __construct()
     {
         $this->horariosModel = new HorariosModel();
-        $this->disenoModel = new DisenoModel();
         $this->dispositivoModel = new DispositivoModel();
         $this->servoModel = new ServoModel(); // Inicializar ServoModel
     }

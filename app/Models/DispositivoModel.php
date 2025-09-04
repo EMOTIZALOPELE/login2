@@ -9,7 +9,7 @@ class DispositivoModel extends Model
     protected $primaryKey = 'id';
     protected $allowedFields = [
         'codigo',
-        'Nombre_tarjeta',
+        'nombre_dispositivo',
         'usuario_id', 
         'created_at', 
         'updated_at',

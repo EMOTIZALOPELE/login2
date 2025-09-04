@@ -121,8 +121,6 @@
 
                             <div class="controls-wrapper">
                                 <button type="button" class="btn-control btn-open"
-                                    data-toggle="modal"
-                                    data-target="#confirmacionHorarioModal"
                                     data-servo-id="<?= esc($servo['id']); ?>"
                                     data-elemento-tipo="<?= esc(strtolower($servo['tipo_elemento'])); ?>"
                                     data-accion="abrir"
@@ -133,8 +131,6 @@
 
                                 <!-- Botón Cerrar -->
                                 <button type="button" class="btn-control btn-close"
-                                    data-toggle="modal"
-                                    data-target="#confirmacionHorarioModal"
                                     data-servo-id="<?= esc($servo['id']); ?>"
                                     data-elemento-tipo="<?= esc(strtolower($servo['tipo_elemento'])); ?>"
                                     data-accion="cerrar"
@@ -181,125 +177,115 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     <script>
+    $(document).ready(function() {
+        // --- CONFIGURACIÓN INICIAL ---
+        const dispositivoMac = `<?= esc($dispositivo['codigo'] ?? '') ?>`;
+        const URL_BASE_CI = '<?= base_url() ?>';
+        // Se toma el token CSRF una sola vez para reutilizarlo.
+        const csrfToken = $('meta[name="csrf-token"]').attr('content');
+
         // Configuración global para que TODAS las peticiones AJAX de jQuery incluyan el token CSRF
         $.ajaxSetup({
             headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                'X-CSRF-TOKEN': csrfToken
             }
         });
 
-        // --- SCRIPT PRINCIPAL DE LA PÁGINA ---
-        $(document).ready(function() {
-            const dispositivoMac = `<?= esc($dispositivo['codigo'] ?? '') ?>`; 
-            const URL_BASE_CI = '<?= base_url() ?>';
-            let confirmacionData = {};
+        // Almacenar referencias a elementos de la UI para mayor eficiencia
+        const servoElements = {};
+        document.querySelectorAll('.servo-item').forEach(item => {
+            const servoId = item.dataset.servoId;
+            servoElements[servoId] = {
+                statusElement: document.getElementById(`estado-${servoId}`),
+                iconElement: document.getElementById(`servoIcon-${servoId}`),
+                modeElement: document.getElementById(`modo-${servoId}`)
+            };
+        });
 
-            // Almacenar referencias a elementos de la UI
-            const servoElements = {};
-            document.querySelectorAll('.servo-item').forEach(item => {
-                const servoId = item.dataset.servoId;
-                servoElements[servoId] = {
-                    statusElement: document.getElementById(`estado-${servoId}`),
-                    iconElement: document.getElementById(`servoIcon-${servoId}`),
-                    modeElement: document.getElementById(`modo-${servoId}`)
-                };
-            });
-
-            // Lógica del modal
-            $('#confirmacionHorarioModal').on('show.bs.modal', function (event) {
-                const button = $(event.relatedTarget);
-                const elementoTipo = button.data('elemento-tipo');
-                const accion = button.data('accion');
-                const horarioACancelar = button.data('horario-a-cancelar');
-                const mensaje = `Al ${accion} el/la ${elementoTipo}, se cancelará permanentemente el horario de ${horarioACancelar}. ¿Deseas continuar?`;
-                
-                $(this).find('#modalConfirmacionTexto').text(mensaje);
-
-                confirmacionData = {
-                    servoId: button.data('servo-id'),
-                    horarioACancelar: horarioACancelar,
-                    comandoUrl: button.data('comando-url')
-                };
-            });
-
-            // Lógica al confirmar la acción en el modal
-            $('#btnConfirmarCancelacion').on('click', function() {
-                const btn = $(this);
-                btn.prop('disabled', true).text('Procesando...');
-
-                $.ajax({
-                    url: '<?= site_url('/servos/cancelar-horario') ?>',
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    data: {
-                        servo_id: confirmacionData.servoId,
-                        tipo_horario: confirmacionData.horarioACancelar
-                    },
-                    dataType: 'json'
-                }).done(function(response) {
-                    if (response.success) {
-                        console.log('Horario cancelado con éxito.');
-                        // Mover el servo
-                        $.ajax({
-                            url: confirmacionData.comandoUrl,
-                            method: 'GET'
-                        }).done(function() {
-                            alert('Acción completada.');
-                            location.reload(); 
-                        }).fail(function() {
-                            alert('Error al mover el servo.');
-                        });
-                    } else {
-                        alert('Error al cancelar el horario: ' + (response.message || 'Error desconocido.'));
-                    }
-                }).fail(function(jqXHR) {
-                    console.error("AJAX Error:", jqXHR.status, jqXHR.responseText);
-                    alert('La petición falló. Revisa la consola (F12) para más detalles.');
-                }).always(function() {
-                    btn.prop('disabled', false).text('Aceptar y Continuar');
-                    $('#confirmacionHorarioModal').modal('hide');
-                });
-            });
-
-            // Funciones para actualizar la UI
-            function actualizarEstadoDesdeServidor() {
-                if (!dispositivoMac) return; 
-                fetch(`${URL_BASE_CI}/dispositivos/estado/${dispositivoMac}`)
-                    .then(res => res.json())
-                    .then(data => {
-                        if (data && data.servos && Array.isArray(data.servos)) {
-                            data.servos.forEach(servoData => {
-                                if (servoElements[servoData.id]) { 
-                                    actualizarUI(servoData.id, servoData.estado, servoData.modo); 
-                                }
-                            });
-                        }
-                    })
-                    .catch(error => console.error('Error al obtener estado de servos:', error));
-            }
-
-            function actualizarUI(servoId, estado, modoOperacion) {
-                const elements = servoElements[servoId];
-                if (!elements) return;
-                const estadoLimpio = (estado || '').toLowerCase().trim();
-                elements.statusElement.textContent = estado ? estado.toUpperCase() : 'N/A';
-                elements.statusElement.className = `status-indicator status-${estadoLimpio || 'desconocido'}`;
-                if (estadoLimpio === 'abierto') {
-                    elements.iconElement.className = `fas fa-door-open servo-icon-display`;
-                } else if (estadoLimpio === 'cerrado') {
-                    elements.iconElement.className = `fas fa-door-closed servo-icon-display`;
-                }
-                if (elements.modeElement && modoOperacion) {
-                    elements.modeElement.textContent = modoOperacion.toUpperCase();
-                }
-            }
+        // --- NUEVA LÓGICA DE CONTROL MANUAL (MÁS SIMPLE) ---
+        
+        // Asignar un único evento de clic a todos los botones de control que no sean para volver atrás.
+        $('.controls-wrapper .btn-control').on('click', function(e) {
+            // Evitar cualquier comportamiento por defecto del botón.
+            e.preventDefault();
             
-            setInterval(actualizarEstadoDesdeServidor, 10000);
-            actualizarEstadoDesdeServidor(); // Llamada inicial
+            const button = $(this);
+            // Tomamos la URL para la acción directamente del atributo 'data-comando-url' del botón.
+            const comandoUrl = button.data('comando-url');
+
+            if (!comandoUrl) {
+                console.error('El botón no tiene un atributo data-comando-url.');
+                return;
+            }
+
+            // Deshabilitar el botón para evitar clics múltiples mientras se procesa la petición.
+            button.prop('disabled', true).fadeTo(200, 0.5);
+
+            // Llamada AJAX directa para actualizar el estado.
+            $.ajax({
+                url: comandoUrl, // La URL ya contiene el servo_id y el estado deseado ('abierto' o 'cerrado').
+                method: 'GET',   // El método que espera tu controlador 'actualizarEstado'.
+                dataType: 'json' // Esperamos una respuesta en formato JSON.
+            }).done(function(response) {
+                // Si el servidor responde que todo fue bien...
+                if (response.status === 'ok') {
+                    // Actualizamos la interfaz de usuario inmediatamente para darle feedback al usuario.
+                    actualizarUI(response.servo_id, response.estado, response.modo);
+                    console.log(`Servo ${response.servo_id} puesto en modo MANUAL. Expira en: ${response.expira}`);
+                } else {
+                    // Si el servidor responde con un error, lo mostramos.
+                    alert('Error al ejecutar la acción: ' + (response.message || 'Error desconocido.'));
+                }
+            }).fail(function(jqXHR) {
+                // Si la petición AJAX falla por completo (ej: error de red, error 500 del servidor).
+                console.error("AJAX Error:", jqXHR.status, jqXHR.responseText);
+                alert('La petición falló. Revisa la consola (F12) para más detalles.');
+            }).always(function() {
+                // Se ejecuta siempre, tanto si la petición tuvo éxito como si falló.
+                // Volver a habilitar el botón después de que la petición haya terminado.
+                button.prop('disabled', false).fadeTo(200, 1.0);
+            });
         });
-    </script>
+
+        // --- FUNCIONES PARA ACTUALIZAR LA UI (SIN CAMBIOS) ---
+        function actualizarEstadoDesdeServidor() {
+            if (!dispositivoMac) return;
+            fetch(`${URL_BASE_CI}/dispositivos/estado/${dispositivoMac}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data && data.servos && Array.isArray(data.servos)) {
+                        data.servos.forEach(servoData => {
+                            if (servoElements[servoData.id]) {
+                                actualizarUI(servoData.id, servoData.estado, servoData.modo);
+                            }
+                        });
+                    }
+                })
+                .catch(error => console.error('Error al obtener estado de servos:', error));
+        }
+
+        function actualizarUI(servoId, estado, modoOperacion) {
+            const elements = servoElements[servoId];
+            if (!elements) return;
+            const estadoLimpio = (estado || '').toLowerCase().trim();
+            elements.statusElement.textContent = estado ? estado.toUpperCase() : 'N/A';
+            elements.statusElement.className = `status-indicator status-${estadoLimpio || 'desconocido'}`;
+            if (estadoLimpio === 'abierto') {
+                elements.iconElement.className = `fas fa-door-open servo-icon-display`;
+            } else if (estadoLimpio === 'cerrado') {
+                elements.iconElement.className = `fas fa-door-closed servo-icon-display`;
+            }
+            if (elements.modeElement && modoOperacion) {
+                elements.modeElement.textContent = modoOperacion.toUpperCase();
+            }
+        }
+        
+        // Polling para mantener la UI actualizada automáticamente cada 10 segundos.
+        setInterval(actualizarEstadoDesdeServidor, 10000);
+        // Llamada inicial para cargar el estado en cuanto la página esté lista.
+        actualizarEstadoDesdeServidor();
+    });
+</script>
 
 </body>
 </html>

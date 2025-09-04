@@ -67,6 +67,7 @@ class ServoController extends BaseController
      */
     public function actualizarEstado($servo_id, $estado)
     {
+        // 1. Validaciones básicas (igual que antes)
         $servo = $this->servoModel->find($servo_id);
         if (!$servo) {
             return $this->response->setJSON(['status' => 'error', 'message' => 'Servo no encontrado.'])->setStatusCode(404);
@@ -77,22 +78,63 @@ class ServoController extends BaseController
             return $this->response->setJSON(['status' => 'error', 'message' => 'Acceso denegado.'])->setStatusCode(403);
         }
 
-        $timezone = new \DateTimeZone('America/Argentina/Buenos_Aires');
-        $expires = (new \DateTime('now', $timezone))->modify('+1 minute');
+        // --- INICIO DE LA NUEVA LÓGICA DE CÁLCULO DE TIEMPO ---
 
+        $timezone = new \DateTimeZone('America/Argentina/Buenos_Aires');
+        $now = new \DateTime('now', $timezone);
+        $targetEstado = strtoupper($estado);
+        $expires = null; // Por defecto, no hay expiración
+
+        // 2. Determinar a qué horario programado debemos apuntar
+        $horarioReferencia = null;
+        if ($targetEstado === 'ABIERTO' && !empty($servo['horario_apertura'])) {
+            $horarioReferencia = $servo['horario_apertura'];
+        } elseif ($targetEstado === 'CERRADO' && !empty($servo['horario_cierre'])) {
+            $horarioReferencia = $servo['horario_cierre'];
+        }
+
+        // 3. Calcular la fecha de expiración si tenemos un horario de referencia
+        if ($horarioReferencia) {
+            try {
+                // Creamos un objeto DateTime para el horario de hoy
+                $horarioHoy = \DateTime::createFromFormat('H:i:s', $horarioReferencia, $timezone);
+                // Le asignamos la fecha de hoy
+                $horarioHoy->setDate($now->format('Y'), $now->format('m'), $now->format('d'));
+
+                // Si la hora programada ya pasó hoy, asumimos que se refiere a la de mañana
+                if ($horarioHoy < $now) {
+                    $horarioHoy->modify('+1 day');
+                }
+
+                // El tiempo de expiración es el horario programado más 1 minuto de precaución
+                $expires = (clone $horarioHoy)->modify('+1 minute');
+
+            } catch (\Exception $e) {
+                // Si hay un error en el formato de la hora, usamos un fallback
+                log_message('error', 'Error al parsear horario para override: ' . $e->getMessage());
+                // Fallback: 15 minutos de override manual si el horario es inválido
+                $expires = (clone $now)->modify('+15 minutes');
+            }
+        } else {
+            // Fallback: Si no hay horario configurado para esa acción, damos un override de 15 minutos
+            $expires = (clone $now)->modify('+15 minutes');
+        }
+
+        // 4. Preparar los datos para actualizar la base de datos
         $dataToUpdate = [
-            'estado_actual' => strtoupper($estado),
-            'modo_operacion' => 'MANUAL',
-            'manual_override_expires' => $expires->format('Y-m-d H:i:s')
+            'estado_actual'           => $targetEstado,
+            'modo_operacion'          => 'MANUAL',
+            'manual_override_expires' => $expires->format('Y-m-d H:i:s') // Guardamos el timestamp calculado
         ];
 
         try {
             $this->servoModel->update($servo_id, $dataToUpdate);
             return $this->response->setJSON([
-                'status' => 'ok',
-                'estado' => $dataToUpdate['estado_actual'],
+                'status'   => 'ok',
+                'estado'   => $dataToUpdate['estado_actual'],
                 'servo_id' => $servo_id,
-                'modo' => $dataToUpdate['modo_operacion']
+                'modo'     => $dataToUpdate['modo_operacion'],
+                'expira'   => $dataToUpdate['manual_override_expires'] // Opcional: enviar la expiración a la vista
             ])->setStatusCode(200);
         } catch (\Exception $e) {
             log_message('error', 'Error al actualizar estado manual: ' . $e->getMessage());
@@ -113,9 +155,10 @@ class ServoController extends BaseController
             return $this->failNotFound('Dispositivo no encontrado');
         }
 
-        $timezone = new \DateTimeZone('America/Argentina/Buenos_Aires');
+         $timezone = new \DateTimeZone('America/Argentina/Buenos_Aires');
         $nowFormatted = (new \DateTime('now', $timezone))->format('Y-m-d H:i:s');
 
+        // Busca los servos cuyo tiempo de anulación manual ya ha pasado
         $servosExpirados = $this->servoModel
             ->where('dispositivo_id', $dispositivo['id'])
             ->where('modo_operacion', 'MANUAL')
@@ -123,11 +166,13 @@ class ServoController extends BaseController
             ->where('manual_override_expires <', $nowFormatted)
             ->findAll();
 
+        // Si se encontraron servos expirados...
         if (!empty($servosExpirados)) {
             foreach ($servosExpirados as $servo) {
+                // Actualiza la base de datos para este servo
                 $this->servoModel->update($servo['id'], [
-                    'modo_operacion' => 'AUTOMATICO',
-                    'manual_override_expires' => null
+                    'modo_operacion'          => 'AUTOMATICO',      // 1. Cambia el modo a AUTOMATICO
+                    'manual_override_expires' => null             // 2. Borra (pone en NULL) la fecha de expiración
                 ]);
                 log_message('info', 'Servo ID ' . $servo['id'] . ' revertido a modo AUTOMATICO por expiración.');
             }
@@ -198,7 +243,25 @@ class ServoController extends BaseController
                 if ($estaLloviendo && !$ignorarLluvia) {
                     $decisionFinal = 'CERRADO';
                 }
+
+                // <<<<<<<<<<<<<<<<<<<< INICIO DE LA SOLUCIÓN >>>>>>>>>>>>>>>>>>>>
+                // Si la decisión calculada es diferente al estado guardado en la BD, actualizamos.
+                if ($decisionFinal !== 'MANUAL' && $servo['estado_actual'] !== $decisionFinal) {
+                    try {
+                        $this->servoModel->update($servo['id'], ['estado_actual' => $decisionFinal]);
+                        
+                        // Actualizamos también la variable local para que la respuesta JSON sea consistente.
+                        $servo['estado_actual'] = $decisionFinal; 
+                        
+                        log_message('info', "Servo ID {$servo['id']} actualizado automáticamente a {$decisionFinal} por lógica de horario/clima.");
+
+                    } catch (\Exception $e) {
+                        log_message('error', 'Error al auto-actualizar estado del servo: ' . $e->getMessage());
+                    }
+                }
+                // <<<<<<<<<<<<<<<<<<<< FIN DE LA SOLUCIÓN >>>>>>>>>>>>>>>>>>>>
             }
+            
             // --- FIN DE LA NUEVA LÓGICA DE DECISIÓN ---
 
             $proximoEventoTimestamp = 0;

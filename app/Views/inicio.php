@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>VECOPO - Automatizacion</title>
+    <title>VECOPO - Control Inteligente</title>
     
     <script src="https://kit.fontawesome.com/6f93a4b68f.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -106,7 +106,6 @@
                             <li><a href="#" onclick="abrirModal()">Añadir Tarjeta</a></li>
                             <li><a href="<?= base_url('pele') ?>">Diseño</a></li>
                             <li><a href="#" data-toggle="modal" data-target="#servoModal"><i class="fas fa-gamepad"></i> Manual</a></li>
-                            <li><a href="<?= base_url('dispositivos') ?>"><i class="fas fa-user-cog"></i> Dispositivos</a></li>
                             <li><a href="<?= base_url('logout') ?>">Salir</a></li>
                         </ul>
                     </nav>
@@ -127,61 +126,50 @@
                 <li><a href="#" onclick="abrirModalYCerrarMenu()"><i class="fas fa-plus-square"></i> Añadir Tarjeta</a></li>
                 <li><a href="<?= base_url('pele') ?>"><i class="fas fa-palette"></i> Diseño</a></li>
                 <li><a href="#" data-toggle="modal" data-target="#servoModal"><i class="fas fa-gamepad"></i> Manual</a></li>
-               <li><a href="<?= base_url('dispositivos') ?>"><i class="fas fa-user-cog"></i> Dispositivos</a></li> 
                 <li><a href="<?= base_url('logout') ?>"><i class="fas fa-sign-out-alt"></i> Salir</a></li>
             </ul>
         </nav>
     </header>
 
     <main class="container__card">
-    
-    <?php if (session()->getFlashdata('mensaje') || session()->getFlashdata('success')): ?>
-        <div class="alert alert-success"><?= session()->getFlashdata('mensaje') ?? session()->getFlashdata('success') ?></div>
-    <?php endif; ?>
-    <?php if (session()->getFlashdata('error')): ?>
-        <div class="alert alert-danger"><?= session()->getFlashdata('error') ?></div>
-    <?php endif; ?>
-
-    <div class="horarios-container">
-        
-        <?php foreach ($horarios as $horario): ?>
-            <div class="horario-card">
-                <h3 data-idhorario="<?= esc($horario['idhorario']); ?>">
-                    <span class="card-title">
-                        <?= isset($horario['nombre_tarjeta']) && !empty($horario['nombre_tarjeta'])
-                            ? esc($horario['nombre_tarjeta'])
-                            : 'Tu horario ' . session()->get('nombre'); ?>
-                    </span>
-                </h3>
-                <div class="card-scrollable-content">
-                    <p><strong>Ventana Apertura:</strong> <span><?= esc($horario['ventana_apertura']); ?></span></p>
-                    <p><strong>Ventana Cierre:</strong> <span><?= esc($horario['ventana_cierre']); ?></span></p>
-                    <p><strong>Cortina Apertura:</strong> <span><?= esc($horario['cortina_apertura']); ?></span></p>
-                    <p><strong>Cortina Cierre:</strong> <span><?= esc($horario['cortina_cierre']); ?></span></p>
-                    <p><strong>Postigón Apertura:</strong> <span><?= esc($horario['postigon_apertura']); ?></span></p>
-                    <p><strong>Postigón Cierre:</strong> <span><?= esc($horario['postigon_cierre']); ?></span></p>
-                    
-                    <div class="button-container">
-                        <form action="<?= base_url('configuracion/' . esc($horario['idhorario'])) ?>" method="GET" style="flex: 1;">
-                            <button type="submit" class="config-button">Configurar</button>
+        <div class="horarios-container">
+            <?php foreach ($horarios as $horario): ?>
+                <div class="horario-card">
+                    <h3 data-idhorario="<?= esc($horario['idhorario']); ?>">
+                        <span class="card-title">
+                            <?= isset($horario['nombre_tarjeta']) && !empty($horario['nombre_tarjeta'])
+                                ? esc($horario['nombre_tarjeta'])
+                                : 'Tu horario ' . session()->get('nombre'); ?>
+                        </span>
+                    </h3>
+                    <div class="card-scrollable-content">
+                        <p><strong>Ventana Apertura:</strong> <span><?= esc($horario['ventana_apertura']); ?></span></p>
+                        <p><strong>Ventana Cierre:</strong> <span><?= esc($horario['ventana_cierre']); ?></span></p>
+                        <p><strong>Cortina Apertura:</strong> <span><?= esc($horario['cortina_apertura']); ?></span></p>
+                        <p><strong>Cortina Cierre:</strong> <span><?= esc($horario['cortina_cierre']); ?></span></p>
+                        <p><strong>Postigón Apertura:</strong> <span><?= esc($horario['postigon_apertura']); ?></span></p>
+                        <p><strong>Postigón Cierre:</strong> <span><?= esc($horario['postigon_cierre']); ?></span></p>
+                        <div class="button-container">
+                            <form action="<?= base_url('configuracion/' . esc($horario['idhorario'])) ?>" method="GET">
+                                <button type="submit" class="config-button">Configurar</button>
+                            </form>
+                            <button type="button" class="config-button"
+                                    data-toggle="modal" data-target="#changeNameModal"
+                                    data-idhorario="<?= esc($horario['idhorario']); ?>"
+                                    data-current-name="<?= isset($horario['nombre_tarjeta']) && !empty($horario['nombre_tarjeta'])
+                                        ? esc($horario['nombre_tarjeta'])
+                                        : 'Horario de ' . session()->get('nombre'); ?>">
+                                Cambiar Nombre
+                            </button>
+                        </div>
+                        <form action="<?= site_url('borrar_tarjeta/' . esc($horario['idhorario'])) ?>" method="POST" onsubmit="return confirm('¿Seguro que quieres eliminar esta tarjeta?');">
+                            <button type="submit" class="delete-button">Eliminar</button>
                         </form>
-                        <button type="button" class="config-button"
-                                data-toggle="modal" data-target="#changeNameModal"
-                                data-idhorario="<?= esc($horario['idhorario']); ?>"
-                                data-current-name="<?= esc($horario['nombre_tarjeta'] ?? ''); ?>">
-                            Cambiar Nombre
-                        </button>
                     </div>
-                    
-                    <form action="<?= site_url('borrar_tarjeta/' . esc($horario['idhorario'])) ?>" method="POST" onsubmit="return confirm('¿Seguro que quieres eliminar esta tarjeta?');">
-                        <?= csrf_field() ?>
-                        <button type="submit" class="delete-button">Eliminar</button>
-                    </form>
                 </div>
-            </div>
-        <?php endforeach; ?>
+            <?php endforeach; ?>
         </div>
-</main>
+    </main>
     
     <div class="modal fade" id="changeNameModal" tabindex="-1" role="dialog" aria-labelledby="changeNameModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -255,7 +243,6 @@
     
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const username = <?= json_encode(session()->get('nombre')) ?>;
         const hamburgerButton = document.getElementById('menu-toggle');
         const navigationMenu = document.getElementById('navigationMenu');
         if (hamburgerButton && navigationMenu) {
@@ -293,8 +280,7 @@
                     const temp = Math.round(data.main.temp);
                     const description = data.weather[0].description;
                     const capitalizedDescription = description.charAt(0).toUpperCase() + description.slice(1);
-                    const greeting = username ? `Hola ${username}` : 'Hola'; // Crea un saludo personalizado
-                    const weatherText = `${greeting}, hoy en ${data.name} el día es ${capitalizedDescription} con ${temp}°C.`;
+                    const weatherText = `Hola, hoy en ${data.name} el día está ${capitalizedDescription} con ${temp}°C.`;
                     weatherPanelContent.textContent = weatherText;
                 }
             }).catch(error => console.error('Error al obtener datos del clima:', error));

@@ -67,6 +67,7 @@ class ServoController extends BaseController
      */
     public function actualizarEstado($servo_id, $estado)
     {
+        // 1. Validaciones básicas (igual que antes)
         $servo = $this->servoModel->find($servo_id);
         if (!$servo) {
             return $this->response->setJSON(['status' => 'error', 'message' => 'Servo no encontrado.'])->setStatusCode(404);
@@ -77,22 +78,65 @@ class ServoController extends BaseController
             return $this->response->setJSON(['status' => 'error', 'message' => 'Acceso denegado.'])->setStatusCode(403);
         }
 
-        $timezone = new \DateTimeZone('America/Argentina/Buenos_Aires');
-        $expires = (new \DateTime('now', $timezone))->modify('+1 minute');
+        // --- INICIO DE LA NUEVA LÓGICA DE CÁLCULO DE TIEMPO ---
 
+        $timezone = new \DateTimeZone('America/Argentina/Buenos_Aires');
+        $now = new \DateTime('now', $timezone);
+        $targetEstado = strtoupper($estado);
+        $expires = null; // Por defecto, no hay expiración
+
+        // 2. Determinar a qué horario programado debemos apuntar
+        $horarioReferencia = null;
+        if ($targetEstado === 'ABIERTO' && !empty($servo['horario_apertura'])) {
+            $horarioReferencia = $servo['horario_apertura'];
+        } elseif ($targetEstado === 'CERRADO' && !empty($servo['horario_cierre'])) {
+            $horarioReferencia = $servo['horario_cierre'];
+        }
+
+        // 3. Calcular la fecha de expiración si tenemos un horario de referencia
+        if ($horarioReferencia) {
+            try {
+                // Creamos un objeto DateTime para el horario de hoy
+                $horarioHoy = \DateTime::createFromFormat('H:i:s', $horarioReferencia, $timezone);
+                // Le asignamos la fecha de hoy
+                $horarioHoy->setDate($now->format('Y'), $now->format('m'), $now->format('d'));
+
+                // Si la hora programada ya pasó hoy, asumimos que se refiere a la de mañana
+                if ($horarioHoy < $now) {
+                    $horarioHoy->modify('+1 day');
+                }
+
+                // El tiempo de expiración es el horario programado más 1 minuto de precaución
+                $expires = (clone $horarioHoy)->modify('+1 minute');
+
+            } catch (\Exception $e) {
+                // Si hay un error en el formato de la hora, usamos un fallback
+                log_message('error', 'Error al parsear horario para override: ' . $e->getMessage());
+                // Fallback: 15 minutos de override manual si el horario es inválido
+                $expires = (clone $now)->modify('+15 minutes');
+            }
+        } else {
+            // Fallback: Si no hay horario configurado para esa acción, damos un override de 15 minutos
+            $expires = (clone $now)->modify('+15 minutes');
+        }
+
+        // 4. Preparar los datos para actualizar la base de datos
         $dataToUpdate = [
-            'estado_actual' => strtoupper($estado),
-            'modo_operacion' => 'MANUAL',
-            'manual_override_expires' => $expires->format('Y-m-d H:i:s')
+            'estado_actual'           => $targetEstado,
+            'modo_operacion'          => 'MANUAL',
+            'manual_override_expires' => $expires->format('Y-m-d H:i:s') // Guardamos el timestamp calculado
         ];
+        
+        // --- FIN DE LA NUEVA LÓGICA ---
 
         try {
             $this->servoModel->update($servo_id, $dataToUpdate);
             return $this->response->setJSON([
-                'status' => 'ok',
-                'estado' => $dataToUpdate['estado_actual'],
+                'status'   => 'ok',
+                'estado'   => $dataToUpdate['estado_actual'],
                 'servo_id' => $servo_id,
-                'modo' => $dataToUpdate['modo_operacion']
+                'modo'     => $dataToUpdate['modo_operacion'],
+                'expira'   => $dataToUpdate['manual_override_expires'] // Opcional: enviar la expiración a la vista
             ])->setStatusCode(200);
         } catch (\Exception $e) {
             log_message('error', 'Error al actualizar estado manual: ' . $e->getMessage());
@@ -101,10 +145,7 @@ class ServoController extends BaseController
     }
 
     /**
-     * ESTA ES LA FUNCIÓN QUE SE USARÁ TANTO PARA LA PÁGINA WEB COMO PARA EL ESP32.
-     * Devuelve el estado de TODOS los servos asociados a un dispositivo.
-     * Esta función también aplica la lógica horaria y actualiza la DB si es necesario.
-     * Ruta: /dispositivos/estado/{id_o_mac}
+     * Función principal para el ESP32 y la web. Decide y devuelve el estado de los servos.
      */
     public function obtenerEstadoDispositivo($macAddress)
     {
@@ -116,6 +157,7 @@ class ServoController extends BaseController
         $timezone = new \DateTimeZone('America/Argentina/Buenos_Aires');
         $nowFormatted = (new \DateTime('now', $timezone))->format('Y-m-d H:i:s');
 
+        // LÓGICA 1: REVERTIR A AUTOMÁTICO SI EL TIEMPO MANUAL HA EXPIRADO
         $servosExpirados = $this->servoModel
             ->where('dispositivo_id', $dispositivo['id'])
             ->where('modo_operacion', 'MANUAL')
@@ -126,15 +168,17 @@ class ServoController extends BaseController
         if (!empty($servosExpirados)) {
             foreach ($servosExpirados as $servo) {
                 $this->servoModel->update($servo['id'], [
-                    'modo_operacion' => 'AUTOMATICO',
+                    'modo_operacion'          => 'AUTOMATICO',
                     'manual_override_expires' => null
                 ]);
                 log_message('info', 'Servo ID ' . $servo['id'] . ' revertido a modo AUTOMATICO por expiración.');
             }
         }
         
+        // Volvemos a cargar los servos para tener los datos más actualizados
         $servos = $this->servoModel->where('dispositivo_id', $dispositivo['id'])->findAll();
 
+        // LÓGICA 2: CONSULTAR EL CLIMA (OpenWeatherMap)
         $apiKey = '0d132a7baaa02ea9cfc60077249f0254';
         $city = 'Rio Tercero,AR';
         $encodedCity = urlencode($city);
@@ -158,74 +202,44 @@ class ServoController extends BaseController
             $climaData = ['temperatura' => -100.0, 'esta_lloviendo' => false];
         }
 
+        // LÓGICA 3: CONSTRUIR LA RESPUESTA FINAL
         $respuesta = ['clima'  => $climaData, 'servos' => []];
         foreach ($servos as $servo) {
-            
-            // --- NUEVA LÓGICA DE DECISIÓN "CONDICIONES EN COMPETENCIA" ---
-            $decisionFinal = 'MANUAL'; // Valor por defecto si no es automático
+            $decisionFinal = $servo['estado_actual']; // Por defecto, es el estado actual
 
             if ($servo['modo_operacion'] === 'AUTOMATICO') {
                 $horaActual = date('H:i:s');
+                $estadoBaseHorario = 'MANUAL'; // Valor si no hay horarios
                 
-                // 1. Establecer el estado base según el HORARIO
-                $decisionFinal = 'MANUAL'; // Por defecto si no hay horario definido
                 if ($servo['horario_apertura'] && $servo['horario_cierre']) {
-                    if ($horaActual >= $servo['horario_apertura'] && $horaActual < $servo['horario_cierre']) {
-                        $decisionFinal = 'ABIERTO';
-                    } else {
-                        $decisionFinal = 'CERRADO';
-                    }
+                    $estadoBaseHorario = ($horaActual >= $servo['horario_apertura'] && $horaActual < $servo['horario_cierre']) ? 'ABIERTO' : 'CERRADO';
                 }
 
-                // 2. Aplicar "overrides" del CLIMA
+                $decisionAutomatica = $estadoBaseHorario;
+
+                // Aplicar overrides del clima
                 $tempActual = $climaData['temperatura'];
                 $estaLloviendo = $climaData['esta_lloviendo'];
                 $tempCerrar = (float)$servo['temp_min_cierre'];
                 $tempAbrir = (float)$servo['temp_max_apertura'];
                 $ignorarLluvia = (bool)$servo['permitir_lluvia'];
 
-                // Override por calor (puede ser anulado por frío o lluvia)
-                if ($tempActual != -100.0 && $tempAbrir != 0 && $tempActual >= $tempAbrir) {
-                    $decisionFinal = 'ABIERTO';
-                }
+                if ($tempActual != -100.0 && $tempAbrir != 0 && $tempActual >= $tempAbrir) $decisionAutomatica = 'ABIERTO';
+                if ($tempActual != -100.0 && $tempCerrar != 0 && $tempActual <= $tempCerrar) $decisionAutomatica = 'CERRADO';
+                if ($estaLloviendo && !$ignorarLluvia) $decisionAutomatica = 'CERRADO';
 
-                // Override por frío (tiene más prioridad que el calor y el horario)
-                if ($tempActual != -100.0 && $tempCerrar != 0 && $tempActual <= $tempCerrar) {
-                    $decisionFinal = 'CERRADO';
-                }
-
-                // Override por lluvia (MÁXIMA PRIORIDAD)
-                if ($estaLloviendo && !$ignorarLluvia) {
-                    $decisionFinal = 'CERRADO';
+                if ($decisionAutomatica !== 'MANUAL' && $servo['estado_actual'] !== $decisionAutomatica) {
+                    $this->servoModel->update($servo['id'], ['estado_actual' => $decisionAutomatica]);
+                    $decisionFinal = $decisionAutomatica; // Actualizamos la decisión final
+                    log_message('info', "Servo ID {$servo['id']} actualizado automáticamente a {$decisionFinal}.");
                 }
             }
-            // --- FIN DE LA NUEVA LÓGICA DE DECISIÓN ---
-
-            $proximoEventoTimestamp = 0;
-            if ($servo['horario_apertura'] && $servo['horario_cierre']) {
-                $now = new \DateTime('now', $timezone);
-                $aperturaHoy = \DateTime::createFromFormat('H:i:s', $servo['horario_apertura'], $timezone)->setDate($now->format('Y'), $now->format('m'), $now->format('d'));
-                $cierreHoy = \DateTime::createFromFormat('H:i:s', $servo['horario_cierre'], $timezone)->setDate($now->format('Y'), $now->format('m'), $now->format('d'));
-                $proximoEvento = null;
-                if ($aperturaHoy > $now) $proximoEvento = $aperturaHoy;
-                if ($cierreHoy > $now && ($proximoEvento === null || $cierreHoy < $proximoEvento)) $proximoEvento = $cierreHoy;
-                if ($proximoEvento === null) $proximoEvento = (clone $aperturaHoy)->modify('+1 day');
-                $proximoEventoTimestamp = $proximoEvento->getTimestamp();
-            }
-
+            
             $respuesta['servos'][] = [
                 'id'              => (int)$servo['id'],
-                'estado'          => $servo['estado_actual'],
+                'estado'          => $decisionFinal,
                 'modo'            => $servo['modo_operacion'],
                 'pin'             => (int)$servo['pin_gpio'],
-                'estado_horario'  => $decisionFinal, // Se envía la decisión final aquí
-                'proximo_evento_utc' => $proximoEventoTimestamp,
-                'condiciones'     => [
-                    'temp_abrir'     => (float)$servo['temp_max_apertura'],
-                    'temp_cerrar'    => (float)$servo['temp_min_cierre'],
-                    'viento_max'     => (float)$servo['viento_max_cierre'],
-                    'ignorar_lluvia' => (bool)$servo['permitir_lluvia']
-                ]
             ];
         }
         return $this->respond($respuesta);

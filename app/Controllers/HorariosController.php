@@ -4,7 +4,7 @@ namespace App\Controllers;
 
 use App\Models\HorariosModel;
 use App\Models\DispositivoModel;
-use App\Models\DisenoModel;
+
 use App\Models\ServoModel; // Asegúrate de importar ServoModel
 use CodeIgniter\API\ResponseTrait;
 
@@ -13,14 +13,14 @@ class HorariosController extends BaseController
     use ResponseTrait;
 
     protected $horariosModel;
-    protected $disenoModel;
+
     protected $dispositivoModel;
     protected $servoModel; // Propiedad para el nuevo ServoModel
 
     public function __construct()
     {
         $this->horariosModel = new HorariosModel();
-        $this->disenoModel = new DisenoModel();
+
         $this->dispositivoModel = new DispositivoModel();
         $this->servoModel = new ServoModel(); // Inicializar ServoModel
     }
@@ -105,11 +105,10 @@ class HorariosController extends BaseController
     
     // --- FIN DE LA LÓGICA MODIFICADA ---
 
-    $diseno = !empty($horarios['diseno_id']) ? $this->disenoModel->find($horarios['diseno_id']) : null;
+
 
     return view('configuracion', [
         'horarios'       => $horarios,
-        'diseno'         => $diseno,
         'condicionantes' => $condicionantes // Pasamos el array recién creado a la vista
     ]);
 }
@@ -214,20 +213,6 @@ class HorariosController extends BaseController
         return redirect()->back()->withInput()->with('error', 'Error al guardar la configuración: ' . $e->getMessage());
     }
 }
-    public function getEstadoVentana()
-    {
-        $disenoId = $this->request->getGet('diseno_id');
-        if (!$disenoId) {
-            return $this->response->setJSON(['error' => 'ID de diseño no proporcionado']);
-        }
-
-        $estado = $this->horariosModel->getEstadoVentana($disenoId);
-        if (!$estado) {
-            return $this->response->setJSON(['error' => 'No se encontraron horarios para este diseño']);
-        }
-
-        return $this->response->setJSON($estado);
-    }
 
 
     public function terminoscondiciones()

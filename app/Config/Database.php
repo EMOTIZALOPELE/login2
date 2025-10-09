@@ -29,7 +29,7 @@ class Database extends Config
         'hostname'     => 'localhost',
         'username'     => 'ivo',
         'password'     => 'Prometeus250320$',
-        'database'     => 'vecopo2',
+        'database'     => 'vecopo',
         'DBDriver'     => 'MySQLi',
         'DBPrefix'     => '',
         'pConnect'     => false,

@@ -248,7 +248,7 @@
                     <ul>
                         <li><a href="<?= base_url('irainicio') ?>">Inicio</a></li>
                         <li><a href="#" id="selected">Configurar</a></li>
-                        <li><a href="<?= base_url('pele') ?>">Diseño</a></li>
+
                         <li><a href="<?= base_url('logout') ?>">Salir</a></li>
                     </ul>
                 </nav>
@@ -259,7 +259,6 @@
              <ul>
                 <li><a href="<?= base_url('irainicio') ?>"><i class="fas fa-home"></i> Inicio</a></li>
                 <li><a href="#" id="selected-mobile"><i class="fas fa-sliders-h"></i> Configurar</a></li>
-                <li><a href="<?= base_url('pele') ?>"><i class="fas fa-palette"></i> Diseño</a></li>
                 <li><a href="<?= base_url('logout') ?>"><i class="fas fa-sign-out-alt"></i> Salir</a></li>
             </ul>
         </nav>

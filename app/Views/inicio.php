@@ -104,8 +104,8 @@
                         <ul>
                             <li><a href="<?= base_url('/inicio') ?>" id="selected">Inicio</a></li>
                             <li><a href="#" onclick="abrirModal()">Añadir Tarjeta</a></li>
-                            <li><a href="<?= base_url('pele') ?>">Diseño</a></li>
                             <li><a href="#" data-toggle="modal" data-target="#servoModal"><i class="fas fa-gamepad"></i> Manual</a></li>
+                            <li><a href="<?= base_url('dispositivos') ?>"><i class="fas fa-user-cog"></i> Dispositivos</a></li> 
                             <li><a href="<?= base_url('logout') ?>">Salir</a></li>
                         </ul>
                     </nav>
@@ -124,8 +124,8 @@
             <ul>
                 <li><a href="<?= base_url('/inicio') ?>" id="selected-mobile"><i class="fas fa-home"></i> Inicio</a></li>
                 <li><a href="#" onclick="abrirModalYCerrarMenu()"><i class="fas fa-plus-square"></i> Añadir Tarjeta</a></li>
-                <li><a href="<?= base_url('pele') ?>"><i class="fas fa-palette"></i> Diseño</a></li>
                 <li><a href="#" data-toggle="modal" data-target="#servoModal"><i class="fas fa-gamepad"></i> Manual</a></li>
+                <li><a href="<?= base_url('dispositivos') ?>"><i class="fas fa-user-cog"></i> Dispositivos</a></li>
                 <li><a href="<?= base_url('logout') ?>"><i class="fas fa-sign-out-alt"></i> Salir</a></li>
             </ul>
         </nav>
@@ -143,12 +143,16 @@
                         </span>
                     </h3>
                     <div class="card-scrollable-content">
-                        <p><strong>Ventana Apertura:</strong> <span><?= esc($horario['ventana_apertura']); ?></span></p>
-                        <p><strong>Ventana Cierre:</strong> <span><?= esc($horario['ventana_cierre']); ?></span></p>
-                        <p><strong>Cortina Apertura:</strong> <span><?= esc($horario['cortina_apertura']); ?></span></p>
-                        <p><strong>Cortina Cierre:</strong> <span><?= esc($horario['cortina_cierre']); ?></span></p>
-                        <p><strong>Postigón Apertura:</strong> <span><?= esc($horario['postigon_apertura']); ?></span></p>
-                        <p><strong>Postigón Cierre:</strong> <span><?= esc($horario['postigon_cierre']); ?></span></p>
+                        
+                        <?php if (isset($horario['servos']) && !empty($horario['servos'])): ?>
+                            <?php foreach ($horario['servos'] as $servo): ?>
+                                <p><strong><?= esc(ucfirst($servo['nombre_servo'] ?? 'Servo')) ?> Apertura:</strong> <span><?= esc($servo['horario_apertura']); ?></span></p>
+                                <p><strong><?= esc(ucfirst($servo['nombre_servo'] ?? 'Servo')) ?> Cierre:</strong> <span><?= esc($servo['horario_cierre']); ?></span></p>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <p>No hay horarios de servo configurados para este dispositivo.</p>
+                        <?php endif; ?>
+
                         <div class="button-container">
                             <form action="<?= base_url('configuracion/' . esc($horario['idhorario'])) ?>" method="GET">
                                 <button type="submit" class="config-button">Configurar</button>
@@ -216,7 +220,7 @@
             </form>
         </div>
     </div>
-    <div class="modal fade" id="servoModal" tabindex="-1" role="dialog" aria-labelledby="servoModalLabel" aria-hidden="true">
+     <div class="modal fade" id="servoModal" tabindex="-1" role="dialog" aria-labelledby="servoModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <form id="selectServoForm">
@@ -240,6 +244,15 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    
+    <script>
+        // Guardamos los nombres válidos de las tarjetas desde PHP en un array de JavaScript
+        const validCardNames = [
+            <?php foreach ($horarios as $horario): ?>
+                "<?= esc($horario['nombre_tarjeta'], 'js') ?>",
+            <?php endforeach; ?>
+        ];
+    </script>
     
     <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -302,6 +315,7 @@
         updateWeatherPanel();
         setInterval(updateWeatherPanel, 1800000);
     });
+
     $(document).ready(function() {
         $('#changeNameModal').on('show.bs.modal', function (event) {
             const button = $(event.relatedTarget);
@@ -311,6 +325,7 @@
             modal.find('.modal-body #newCardName').val(currentName);
             modal.find('.modal-body #cardIdToChange').val(cardId);
         });
+
         $('#saveNewNameBtn').on('click', function() {
             const cardId = $('#cardIdToChange').val();
             const newName = $('#newCardName').val();
@@ -330,13 +345,22 @@
                 error: function(xhr) { alert('Error de comunicación con el servidor.'); }
             });
         });
+        
         $('#selectServoForm').on('submit', function(e) {
             e.preventDefault();
             const form = $(this);
             const button = form.find('button[type="submit"]');
             const errorDiv = $('#servoError');
-            button.prop('disabled', true).text('Buscando...');
+            const enteredName = $('#tarjetaInput').val().trim();
+
+            if (!validCardNames.includes(enteredName)) {
+                errorDiv.text('El nombre de la tarjeta no existe o es incorrecto.').show();
+                return;
+            }
+            
+            button.prop('disabled', true).text('Verificando...');
             errorDiv.hide();
+            
             $.ajax({
                 url: '<?= base_url('/servos/seleccionar') ?>', method: 'POST',
                 data: form.serialize(), dataType: 'json',
@@ -351,6 +375,7 @@
                 complete: function() { button.prop('disabled', false).text('Continuar'); }
             });
         });
+
         $('#reclamarForm').on('submit', function(e){
             e.preventDefault();
             const form = $(this);

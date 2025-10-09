@@ -28,6 +28,11 @@
         .btn-custom:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(100, 255, 218, 0.2); }
         .mac-address { font-family: 'monospace'; background-color: rgba(0,0,0,0.3); padding: 5px 10px; border-radius: 5px; color: var(--accent-color); }
         .section-divider { border-top: 1px solid var(--input-border); margin: 2rem 0; }
+        .servo-item { background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 10px; margin-bottom: 1rem; border: 1px solid var(--input-border); }
+        .servo-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+        .servo-info { flex-grow: 1; }
+        .servo-name-display { font-family: 'Orbitron', sans-serif; color: var(--primary-color); font-size: 1.2rem; margin-bottom: 0.5rem; }
+        .servo-details { color: var(--text-secondary); font-size: 0.9rem; }
         .modal-content {
             background: var(--card-bg);
             border: 1px solid var(--input-border);
@@ -45,7 +50,7 @@
 <body>
 
     <div class="container-fluid">
-        <a href="<?= base_url('irainicio') ?>" style="text-decoration: none; color: var(--accent-color); margin-bottom: 2rem; display: inline-block;"><i class="fas fa-arrow-left"></i> Volver a Inicio</a>
+        <a href="<?= base_url('/irainicio') ?>" style="text-decoration: none; color: var(--accent-color); margin-bottom: 2rem; display: inline-block;"><i class="fas fa-arrow-left"></i> Volver a Inicio</a>
         <h1 class="page-title">Gestión de Dispositivos</h1>
 
         <?php if (session()->getFlashdata('success')): ?>
@@ -75,6 +80,38 @@
                                 </div>
                                 <button type="submit" class="btn-custom btn-primary-custom">Cambiar Nombre del Dispositivo</button>
                             </form>
+
+                            <hr class="section-divider">
+
+                            <!-- NUEVA SECCIÓN: Gestión de Servos -->
+                            <h3><i class="fas fa-cogs"></i> Gestión de Servos</h3>
+                            <?php if (!empty($item['servos'])): ?>
+                                <?php foreach ($item['servos'] as $servo): ?>
+                                    <div class="servo-item">
+                                        <div class="servo-header">
+                                            <div class="servo-info">
+                                                <div class="servo-name-display"><?= esc($servo['nombre_servo']) ?></div>
+                                                <div class="servo-details">
+                                                    Tipo: <?= esc(strtoupper($servo['tipo_elemento'])) ?> | 
+                                                    Pin: <?= esc($servo['pin_gpio']) ?> | 
+                                                    Estado: <?= esc($servo['estado_actual']) ?>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <form action="<?= site_url('dispositivos/cambiar-nombre-servo') ?>" method="POST">
+                                            <?= csrf_field() ?>
+                                            <input type="hidden" name="servo_id" value="<?= esc($servo['id']) ?>">
+                                            <div class="form-group">
+                                                <label for="nombre_servo_<?= esc($servo['id']) ?>">Nombre Personalizado</label>
+                                                <input type="text" class="form-control" id="nombre_servo_<?= esc($servo['id']) ?>" name="nombre_servo" value="<?= esc($servo['nombre_servo']) ?>" placeholder="Ej: Ventana Principal, Cortina Dormitorio, etc.">
+                                            </div>
+                                            <button type="submit" class="btn-custom btn-primary-custom">Actualizar Nombre</button>
+                                        </form>
+                                    </div>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <p style="color: var(--text-secondary);">No hay servos configurados para este dispositivo.</p>
+                            <?php endif; ?>
 
                             <hr class="section-divider">
 

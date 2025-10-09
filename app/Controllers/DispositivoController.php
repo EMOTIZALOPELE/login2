@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Models\DispositivoModel;
 use App\Models\HorariosModel;
+use App\Models\ServoModel;
 use CodeIgniter\Controller;
 
 class DispositivoController extends BaseController
@@ -12,6 +13,7 @@ class DispositivoController extends BaseController
     {
         $dispositivoModel = new DispositivoModel();
         $horariosModel = new HorariosModel();
+        $servoModel = new ServoModel();
         $userId = session()->get('id');
 
         // Obtenemos todos los dispositivos asociados al usuario
@@ -25,9 +27,13 @@ class DispositivoController extends BaseController
                                      ->where('usuario_id', $userId)
                                      ->first();
 
+            // Obtenemos los servos asociados a este dispositivo
+            $servos = $servoModel->where('dispositivo_id', $dispositivo['id'])->findAll();
+
             $data['dispositivos_y_tarjetas'][] = [
                 'dispositivo' => $dispositivo,
-                'tarjeta' => $tarjeta
+                'tarjeta' => $tarjeta,
+                'servos' => $servos
             ];
         }
 
@@ -67,32 +73,79 @@ class DispositivoController extends BaseController
         return redirect()->to('/dispositivos')->with('error', 'No se pudo actualizar el nombre de la tarjeta.');
     }
 
+    public function cambiarNombreServo()
+    {
+        try {
+            $servoModel = new ServoModel();
+            $dispositivoModel = new DispositivoModel();
+            
+            $servoId = $this->request->getPost('servo_id');
+            $nuevoNombre = $this->request->getPost('nombre_servo');
+            $userId = session()->get('id');
+
+            // Validar que el nombre no esté vacío
+            if (empty($nuevoNombre)) {
+                return redirect()->back()->with('error', 'El nombre del servo no puede estar vacío.');
+            }
+
+            // Verificar que el servo pertenece a un dispositivo del usuario
+            $servo = $servoModel->find($servoId);
+            if (!$servo) {
+                return redirect()->back()->with('error', 'Servo no encontrado.');
+            }
+
+            $dispositivo = $dispositivoModel->where('id', $servo['dispositivo_id'])
+                                           ->where('usuario_id', $userId)
+                                           ->first();
+
+            if (!$dispositivo) {
+                return redirect()->back()->with('error', 'No tienes permisos para modificar este servo.');
+            }
+
+            // Actualizar en la base de datos
+            $servoModel->update($servoId, [
+                'nombre_servo' => $nuevoNombre,
+                'updated_at' => date('Y-m-d H:i:s')
+            ]);
+
+            return redirect()->back()->with('success', 'Nombre del servo actualizado correctamente.');
+
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Error al actualizar el nombre del servo: ' . $e->getMessage());
+        }
+    }
+
     public function eliminarDispositivo($dispositivoId)
     {
         $dispositivoModel = new DispositivoModel();
-        $horariosModel = new HorariosModel(); // Necesitamos el modelo de Horarios
+        $horariosModel = new HorariosModel();
+        $servoModel = new ServoModel();
         $userId = session()->get('id');
 
         // Verificamos que el dispositivo pertenece al usuario
         $dispositivo = $dispositivoModel->where('id', $dispositivoId)->where('usuario_id', $userId)->first();
 
         if ($dispositivo) {
-            // 1. Eliminar la tarjeta/horario asociado de la tabla 'horarios'
+            // 1. Eliminar los servos asociados al dispositivo
+            $servoModel->where('dispositivo_id', $dispositivoId)->delete();
+
+            // 2. Eliminar la tarjeta/horario asociado de la tabla 'horarios'
             $horariosModel->where('dispositivo_id', $dispositivoId)
-                          ->where('usuario_id', $userId) // Doble chequeo de seguridad
+                          ->where('usuario_id', $userId)
                           ->delete();
 
-            // 2. Actualizar el dispositivo para liberarlo y limpiar datos
+            // 3. Actualizar el dispositivo para liberarlo y limpiar datos
             $updateData = [
                 'esta_usado' => 0,
-                'usuario_id' => 0, // Desvincular del usuario
-                'nombre_dispositivo' => '' // Limpiar el nombre del dispositivo
+                'usuario_id' => null,
+                'nombre_dispositivo' => ''
             ];
             $dispositivoModel->update($dispositivoId, $updateData);
             
-            return redirect()->to('/dispositivos')->with('success', 'Dispositivo y tarjeta asociada eliminados correctamente.');
+            return redirect()->to('/dispositivos')->with('success', 'Dispositivo, servos y tarjeta asociada eliminados correctamente.');
         }
 
         return redirect()->to('/dispositivos')->with('error', 'No se pudo encontrar o eliminar el dispositivo.');
     }
+    
 }

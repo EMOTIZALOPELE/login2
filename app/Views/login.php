@@ -146,13 +146,22 @@
         .login-links {
             text-align: center;
             margin-top: 1.5rem;
+            display: flex;
+            flex-direction: column; /* Apila los enlaces verticalmente */
+            gap: 0.8rem; /* Añade espacio entre los enlaces */
+        }
+
+        .login-links .main-actions, .login-links .secondary-actions {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem; /* Espacio entre links en la misma línea */
         }
 
         .login-links a {
             color: var(--accent-color);
             text-decoration: none;
             font-size: 0.9rem;
-            margin: 0 0.5rem;
             transition: color 0.3s ease, text-shadow 0.3s ease;
         }
 
@@ -198,12 +207,12 @@
                 padding: 0.8rem 1.2rem;
                 font-size: 1rem;
             }
-             .login-links a, .login-links span {
-                display: block;
-                margin-bottom: 0.5rem;
+             .login-links .main-actions, .login-links .secondary-actions {
+                flex-direction: column;
+                gap: 0.5rem;
             }
-            .login-links span{
-                display: none; /* Ocultar separador en móvil si los links son bloques */
+            .login-links span {
+                display: none; /* Ocultar separador en móvil */
             }
         }
 
@@ -239,9 +248,16 @@
             <button class="login-button" type="submit">Entrar</button>
             
             <div class="login-links">
-                <a href="<?= base_url('/forgotpassword') ?>">¿Olvidaste tu contraseña?</a>
-                <span>|</span>
-                <a href="<?= base_url('/tercon') ?>">Crear cuenta nueva</a>
+                <div class="main-actions">
+                    <a href="<?= base_url('/forgotpassword') ?>">¿Olvidaste tu contraseña?</a>
+                    <span>|</span>
+                    <a href="<?= base_url('/tercon') ?>">Crear cuenta nueva</a>
+                </div>
+                <div class="secondary-actions">
+                     <a href="<?= base_url('/modifypass') ?>">¿Quieres cambiar tu contraseña?</a>
+                     <span>|</span>
+                     <a href="<?= base_url('/modifyname') ?>">¿Quieres cambiar tu nombre?</a>
+                </div>
             </div>
         </form>
     </main>

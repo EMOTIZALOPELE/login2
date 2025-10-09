@@ -18,8 +18,11 @@ $routes->post('/forgotpassword1', 'Home::forgotPPassword');
 $routes->get('/reset-password/(:any)', 'Home::showResetPasswordForm/$1'); 
 $routes->post('/reset-password', 'Home::resetPassword'); 
 
-// PÁGINA DE INICIO (HOME) Y HORARIOS
-$routes->get('/irainicio', 'HorariosController::index');
+// ====================================================================
+// ===== CORRECCIÓN CLAVE =====
+// Ahora /irainicio apunta al controlador Home y a la función irainicio() que hemos preparado.
+$routes->get('/irainicio', 'Home::irainicio');
+// ====================================================================
 $routes->get('mishorarios', 'HorariosController::index');
 
 // CONFIGURACIÓN DE DISPOSITIVOS
@@ -29,6 +32,13 @@ $routes->get('/configuracion', 'ConfiguracionController::index');
 $routes->post('/configuracion/guardar', 'ConfiguracionController::guardar');
 // Ruta con parámetro para ver la configuración de un dispositivo específico
 $routes->get('configuracion/(:num)', 'ConfiguracionController::index/$1');
+
+// RUTAS DE LA VISTA DE DISPOSITIVOS
+$routes->get('/dispositivos', 'DispositivoController::index');
+$routes->post('/dispositivos/cambiar-nombre-dispositivo', 'DispositivoController::cambiarNombreDispositivo');
+$routes->post('/dispositivos/cambiar-nombre-tarjeta', 'DispositivoController::cambiarNombreTarjeta');
+$routes->post('dispositivos/cambiar-nombre-servo', 'DispositivoController::cambiarNombreServo');
+$routes->post('/dispositivos/eliminar/(:num)', 'DispositivoController::eliminarDispositivo/$1');
 
 // PÁGINA DE HORARIOS (Rutas consolidadas de tu código)
 $routes->post('configurar/(:any)', 'HorariosController::configurarHorario/$1');
@@ -60,11 +70,11 @@ $routes->get('/iniciovaregister', 'Home::inicioregister');
 $routes->get('/tercon', 'HorariosController::terminoscondiciones');
 $routes->get('/pantalla', 'Home::iniciar2');
 
-// PLANOS Y DISEÑOS
-$routes->get('/pele', 'Home::iradiseño');
-$routes->get('diseno', 'DisenoController::crear');
-$routes->post('diseno/guardar', 'DisenoController::guardar');
-$routes->get('diseno/crear', 'DisenoController::crear');
+// Rutas para modificar nombre y contraseña
+$routes->get('/modifyname', 'Home::irAModifyName');
+$routes->post('/update-username', 'Home::updateUsername');
+$routes->get('/modifypass', 'Home::irAModifyPass');
+$routes->post('/update-password', 'Home::updatePassword');
 
 // PAYPAL
 $routes->post('/paypal/createOrder', 'PayPalController::createOrder');
@@ -85,3 +95,4 @@ $routes->post('servo/(:num)/dias/guardar', 'ConfiguracionController::guardarDias
 $routes->get('servo/(:num)/dias', 'ConfiguracionController::obtenerDiasServo/$1');
 $routes->get('servo/(:num)/verificar-hoy', 'ConfiguracionController::verificarActivacionHoy/$1');
 $routes->get('dispositivo/(:num)/configuracion-dias', 'ConfiguracionController::obtenerConfiguracionCompleta/$1');
+

@@ -21,8 +21,16 @@ $routes->post('/forgotpassword1', 'Home::forgotPPassword');
 $routes->get('/reset-password/(:any)', 'Home::showResetPasswordForm/$1'); 
 $routes->post('/reset-password', 'Home::resetPassword'); 
 
+<<<<<<< HEAD
 // Ahora /irainicio apunta al controlador Home y a la función irainicio() que hemos preparado.
 $routes->get('/irainicio', 'Home::irainicio');
+=======
+// ====================================================================
+// ===== CORRECCIÓN CLAVE =====
+// Ahora /irainicio apunta al controlador Home y a la función irainicio() que hemos preparado.
+$routes->get('/irainicio', 'Home::irainicio');
+// ====================================================================
+>>>>>>> 5713a74aeae9c8278a7179ddb883ccac5ba353c4
 $routes->get('mishorarios', 'HorariosController::index');
 
 // CONFIGURACIÓN DE DISPOSITIVOS
@@ -31,8 +39,12 @@ $routes->get('/configuracion', 'ConfiguracionController::index');
 // Ruta para guardar la configuración (POST)
 $routes->post('/configuracion/guardar', 'ConfiguracionController::guardar');
 // Ruta con parámetro para ver la configuración de un dispositivo específico
+<<<<<<< HEAD
 $routes->get('/configuracion/(:num)', 'ConfiguracionController::index/$1');
 $routes->post('/configuracion/guardar', 'ConfiguracionController::guardar'); // Ruta para el formulario
+=======
+$routes->get('configuracion/(:num)', 'ConfiguracionController::index/$1');
+>>>>>>> 5713a74aeae9c8278a7179ddb883ccac5ba353c4
 
 // RUTAS DE LA VISTA DE DISPOSITIVOS
 $routes->get('/dispositivos', 'DispositivoController::index');
@@ -82,6 +94,7 @@ $routes->post('/paypal/createOrder', 'PayPalController::createOrder');
 $routes->post('/paypal/captureOrder', 'PayPalController::captureOrder');
 $routes->get('/continuar-pago', 'PayPalController::continuarPago', ['filter' => 'auth']);
 
+<<<<<<< HEAD
 $routes->get('/api/mis-compras', 'PayPalController::apiMisCompras', ['filter' => 'auth']);
 
 
@@ -93,6 +106,8 @@ $routes->post('/paypal/captureOrder', 'PayPalController::captureOrder'); // La c
 $routes->get('/mis-compras', 'PayPalController::misCompras', ['filter' => 'auth']); 
 $routes->post('/guardar-direccion', 'PayPalController::guardarDireccion', ['filter' => 'auth']);
 
+=======
+>>>>>>> 5713a74aeae9c8278a7179ddb883ccac5ba353c4
 // CLIMA
 $routes->get('api/weather/current', 'WeatherController::getCurrentWeather');
 $routes->get('api/weather/forecast', 'WeatherController::getForecastWeather');

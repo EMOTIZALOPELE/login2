@@ -33,9 +33,12 @@
         .servo-info { flex-grow: 1; }
         .servo-name-display { font-family: 'Orbitron', sans-serif; color: var(--primary-color); font-size: 1.2rem; margin-bottom: 0.5rem; }
         .servo-details { color: var(--text-secondary); font-size: 0.9rem; }
+<<<<<<< HEAD
         .device-info-card { background: rgba(255,255,255,0.05); padding: 1.5rem; border-radius: 15px; border: 1px solid var(--input-border); margin-bottom: 1.5rem; }
         .info-label { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 0.25rem; }
         .info-value { color: var(--text-primary); font-size: 1.1rem; font-weight: 500; }
+=======
+>>>>>>> 5713a74aeae9c8278a7179ddb883ccac5ba353c4
         .modal-content {
             background: var(--card-bg);
             border: 1px solid var(--input-border);
@@ -52,12 +55,17 @@
 </head>
 <body>
 
+<<<<<<< HEAD
     <?php
 $title = 'Gestión de Dispositivos - VECOPO';
 ?>
 <?= $this->include('partials/header') ?>
 
     <div class="container-fluid" style="padding-top: 2rem;">
+=======
+    <div class="container-fluid">
+        <a href="<?= base_url('/irainicio') ?>" style="text-decoration: none; color: var(--accent-color); margin-bottom: 2rem; display: inline-block;"><i class="fas fa-arrow-left"></i> Volver a Inicio</a>
+>>>>>>> 5713a74aeae9c8278a7179ddb883ccac5ba353c4
         <h1 class="page-title">Gestión de Dispositivos</h1>
 
         <?php if (session()->getFlashdata('success')): ?>
@@ -76,6 +84,7 @@ $title = 'Gestión de Dispositivos - VECOPO';
                 <div class="device-card">
                     <div class="row">
                         <div class="col-lg-6">
+<<<<<<< HEAD
                             <!-- Información del Dispositivo (SOLO LECTURA) -->
                             <div class="device-info-card">
                                 <h3><i class="fas fa-microchip"></i> Información del Dispositivo</h3>
@@ -122,6 +131,23 @@ $title = 'Gestión de Dispositivos - VECOPO';
                             <hr class="section-divider">
 
                             <!-- Gestión de Servos -->
+=======
+                            <h3><i class="fas fa-microchip"></i> Dispositivo</h3>
+                            <p><strong>MAC del Dispositivo:</strong> <span class="mac-address"><?= esc($item['dispositivo']['codigo']) ?></span></p>
+                            <form action="<?= site_url('dispositivos/cambiar-nombre-dispositivo') ?>" method="POST" class="mt-4">
+                                <?= csrf_field() ?>
+                                <input type="hidden" name="dispositivo_id" value="<?= esc($item['dispositivo']['id']) ?>">
+                                <div class="form-group">
+                                    <label for="nombre_dispositivo_<?= esc($item['dispositivo']['id']) ?>">Nombre del Dispositivo</label>
+                                    <input type="text" class="form-control" id="nombre_dispositivo_<?= esc($item['dispositivo']['id']) ?>" name="nombre_dispositivo" value="<?= esc($item['dispositivo']['nombre_dispositivo']) ?>" placeholder="Ej: Domo Principal">
+                                </div>
+                                <button type="submit" class="btn-custom btn-primary-custom">Cambiar Nombre del Dispositivo</button>
+                            </form>
+
+                            <hr class="section-divider">
+
+                            <!-- NUEVA SECCIÓN: Gestión de Servos -->
+>>>>>>> 5713a74aeae9c8278a7179ddb883ccac5ba353c4
                             <h3><i class="fas fa-cogs"></i> Gestión de Servos</h3>
                             <?php if (!empty($item['servos'])): ?>
                                 <?php foreach ($item['servos'] as $servo): ?>
@@ -141,6 +167,7 @@ $title = 'Gestión de Dispositivos - VECOPO';
                                             <input type="hidden" name="servo_id" value="<?= esc($servo['id']) ?>">
                                             <div class="form-group">
                                                 <label for="nombre_servo_<?= esc($servo['id']) ?>">Nombre Personalizado</label>
+<<<<<<< HEAD
                                                 <input type="text" class="form-control" id="nombre_servo_<?= esc($servo['id']) ?>" 
                                                        name="nombre_servo" value="<?= esc($servo['nombre_servo']) ?>" 
                                                        placeholder="Ej: Ventana Principal, Cortina Dormitorio, etc." required>
@@ -148,12 +175,18 @@ $title = 'Gestión de Dispositivos - VECOPO';
                                             <button type="submit" class="btn-custom btn-primary-custom">
                                                 <i class="fas fa-edit"></i> Actualizar Nombre
                                             </button>
+=======
+                                                <input type="text" class="form-control" id="nombre_servo_<?= esc($servo['id']) ?>" name="nombre_servo" value="<?= esc($servo['nombre_servo']) ?>" placeholder="Ej: Ventana Principal, Cortina Dormitorio, etc.">
+                                            </div>
+                                            <button type="submit" class="btn-custom btn-primary-custom">Actualizar Nombre</button>
+>>>>>>> 5713a74aeae9c8278a7179ddb883ccac5ba353c4
                                         </form>
                                     </div>
                                 <?php endforeach; ?>
                             <?php else: ?>
                                 <p style="color: var(--text-secondary);">No hay servos configurados para este dispositivo.</p>
                             <?php endif; ?>
+<<<<<<< HEAD
                         </div>
 
                         <div class="col-lg-6 mt-5 mt-lg-0">
@@ -205,6 +238,38 @@ $title = 'Gestión de Dispositivos - VECOPO';
                                     <small class="text-muted"><?= $item['tarjeta'] ? esc($item['tarjeta']['idhorario']) : 'N/A' ?></small>
                                 </div>
                             </div>
+=======
+
+                            <hr class="section-divider">
+
+                            <h4 style="color: var(--danger-color);">Eliminar Dispositivo</h4>
+                            <p style="color: var(--text-secondary);">Esta acción eliminará permanentemente el dispositivo y su tarjeta de horarios asociada.</p>
+                            <button type="button" class="btn-custom btn-danger-custom" 
+                                    data-toggle="modal" 
+                                    data-target="#confirmDeleteModal"
+                                    data-form-action="<?= site_url('dispositivos/eliminar/' . esc($item['dispositivo']['id'])) ?>"
+                                    data-card-name="<?= esc($item['tarjeta'] ? $item['tarjeta']['nombre_tarjeta'] : 'ninguna') ?>">
+                                Eliminar Dispositivo
+                            </button>
+                        </div>
+
+                        <div class="col-lg-6 mt-5 mt-lg-0">
+                            <?php if ($item['tarjeta']): ?>
+                                <h3><i class="far fa-credit-card"></i> Tarjeta Asociada</h3>
+                                <form action="<?= site_url('dispositivos/cambiar-nombre-tarjeta') ?>" method="POST" class="mt-4">
+                                     <?= csrf_field() ?>
+                                     <input type="hidden" name="tarjeta_id" value="<?= esc($item['tarjeta']['idhorario']) ?>">
+                                    <div class="form-group">
+                                        <label for="nombre_tarjeta_<?= esc($item['tarjeta']['idhorario']) ?>">Nombre de la Tarjeta</label>
+                                        <input type="text" class="form-control" id="nombre_tarjeta_<?= esc($item['tarjeta']['idhorario']) ?>" name="nombre_tarjeta" value="<?= esc($item['tarjeta']['nombre_tarjeta']) ?>" placeholder="Ej: Horarios de Verano">
+                                    </div>
+                                    <button type="submit" class="btn-custom btn-primary-custom">Cambiar Nombre de Tarjeta</button>
+                                </form>
+                            <?php else: ?>
+                                <h3><i class="far fa-credit-card"></i> Tarjeta Asociada</h3>
+                                <p style="color: var(--text-secondary);">Este dispositivo no tiene una tarjeta de horarios asociada.</p>
+                            <?php endif; ?>
+>>>>>>> 5713a74aeae9c8278a7179ddb883ccac5ba353c4
                         </div>
                     </div>
                 </div>
@@ -212,7 +277,10 @@ $title = 'Gestión de Dispositivos - VECOPO';
         <?php endif; ?>
     </div>
 
+<<<<<<< HEAD
     <!-- Modal de Confirmación de Eliminación -->
+=======
+>>>>>>> 5713a74aeae9c8278a7179ddb883ccac5ba353c4
     <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -223,7 +291,11 @@ $title = 'Gestión de Dispositivos - VECOPO';
                     </button>
                 </div>
                 <div class="modal-body">
+<<<<<<< HEAD
                     <p>¿Estás seguro de que quieres eliminar el dispositivo "<span id="deviceNameToDelete" class="font-weight-bold"></span>"?</p>
+=======
+                    <p>¿Estás seguro de que quieres eliminar este dispositivo?</p>
+>>>>>>> 5713a74aeae9c8278a7179ddb883ccac5ba353c4
                     <p class="font-weight-bold" style="color: var(--danger-color);">
                         Atención: Esta acción también eliminará permanentemente la tarjeta de horarios llamada "<span id="cardNameToDelete" class="font-weight-bold"></span>" y liberará la MAC.
                     </p>
@@ -246,6 +318,7 @@ $title = 'Gestión de Dispositivos - VECOPO';
     $(document).ready(function() {
         // Script para manejar el modal de confirmación de borrado
         $('#confirmDeleteModal').on('show.bs.modal', function (event) {
+<<<<<<< HEAD
             var button = $(event.relatedTarget);
             var formAction = button.data('form-action');
             var cardName = button.data('card-name');
@@ -278,6 +351,18 @@ $title = 'Gestión de Dispositivos - VECOPO';
             console.log('Enviando formulario - tarjeta_id:', tarjetaId, 'nombre:', nombreTarjeta);
             return true;
         });
+=======
+            var button = $(event.relatedTarget); // Botón que activó el modal
+            var formAction = button.data('form-action'); // Extraer la URL del data-attribute
+            var cardName = button.data('card-name'); // Extraer el nombre de la tarjeta
+
+            var modal = $(this);
+            // Actualizar el contenido del modal
+            modal.find('.modal-body #cardNameToDelete').text(cardName);
+            // Actualizar la action del formulario dentro del modal
+            modal.find('#deleteDeviceForm').attr('action', formAction);
+        });
+>>>>>>> 5713a74aeae9c8278a7179ddb883ccac5ba353c4
     });
     </script>
 </body>

@@ -5,12 +5,16 @@ namespace App\Controllers;
 use App\Models\HorariosModel;
 use App\Models\UserModel;
 use App\Models\ServoModel;
+<<<<<<< HEAD
 use App\Models\AuthTokenModel;
+=======
+>>>>>>> 5713a74aeae9c8278a7179ddb883ccac5ba353c4
 use CodeIgniter\Controller;
 use CodeIgniter\I18n\Time;
 
 class Home extends Controller
 {
+<<<<<<< HEAD
     protected $horariosModel;
     protected $userModel;
     protected $servoModel;
@@ -25,6 +29,68 @@ class Home extends Controller
         $this->authTokenModel = new AuthTokenModel();
         $this->autoLogin();
     }
+=======
+    /**
+     * Carga la vista de inicio con todas las tarjetas y sus servos asociados.
+     */
+    public function irainicio()
+    {
+        // 1. Instanciar los modelos necesarios
+        $horariosModel = new HorariosModel();
+        $servoModel = new ServoModel();
+
+        // 2. Obtener el ID del usuario de la sesión actual
+        $usuario_id = session()->get('id');
+
+        // Si no hay usuario logueado, redirigir a la página de login
+        if (!$usuario_id) {
+            return redirect()->to('/login');
+        }
+
+        // 3. Obtener todas las tarjetas (horarios) que pertenecen al usuario
+        $horarios = $horariosModel->where('usuario_id', $usuario_id)->findAll();
+
+        // 4. Recorrer cada tarjeta para añadirle la información de sus servos
+        foreach ($horarios as &$horario) {
+            
+            if (!empty($horario['dispositivo_id'])) {
+                // Busca en la tabla 'servos' usando el 'dispositivo_id' de la tarjeta
+                $servosAsociados = $servoModel->where('dispositivo_id', $horario['dispositivo_id'])->findAll();
+                
+                // Añade el array de servos encontrados a la tarjeta actual
+                $horario['servos'] = $servosAsociados;
+            } else {
+                // Si no hay dispositivo_id, asigna un array vacío para evitar errores
+                $horario['servos'] = [];
+            }
+        }
+        unset($horario); // Buena práctica después de un bucle con referencia
+
+        // 5. Preparar los datos para enviar a la vista
+        $data['horarios'] = $horarios;
+
+        // 6. Cargar la vista de inicio, pasándole los datos ya procesados
+        return view('inicio', $data);
+    }
+    
+    public function iniciar2()
+    {
+        return view('inicio2');
+    }
+    public function iralogin()
+    {
+        return view('login');
+    }
+    public function inicioregister()
+    {
+        return view('register');
+    }
+    public function iraconfiguracion()
+    {
+        return view('configuracion');
+    }
+
+>>>>>>> 5713a74aeae9c8278a7179ddb883ccac5ba353c4
 
     public function index()
     {
@@ -163,9 +229,13 @@ class Home extends Controller
             }
             $session->setFlashdata('error', 'Error al actualizar el token de recuperación.');
             return redirect()->back();
+<<<<<<< HEAD
         }
         $session->setFlashdata('error', 'Correo electrónico no encontrado.');
         return redirect()->back();
+=======
+        }       
+>>>>>>> 5713a74aeae9c8278a7179ddb883ccac5ba353c4
     }
 
     public function forgotpassword()   { return view('forgotpassword'); }
@@ -254,6 +324,7 @@ class Home extends Controller
         return view('horarios_view', ['horarios' => $horarios]);
     }
 
+<<<<<<< HEAD
     public function irAModifyName() { return view('modifyname'); }
     public function irAModifyPass() { return view('modifypass'); }
 
@@ -263,15 +334,47 @@ class Home extends Controller
         $identifier = $this->request->getPost('identifier');
         $password = $this->request->getPost('password');
         $newUsername = $this->request->getPost('new_username');
+=======
+    // Cargar la vista para modificar el nombre de usuario
+    public function irAModifyName()
+    {
+        return view('modifyname');
+    }
+
+    // Cargar la vista para modificar la contraseña
+    public function irAModifyPass()
+    {
+        return view('modifypass');
+    }
+
+    // Procesar la actualización del nombre de usuario
+    public function updateUsername()
+    {
+        $session = session();
+        $userModel = new UserModel();
+
+        $identifier = $this->request->getPost('identifier');
+        $password = $this->request->getPost('password');
+        $newUsername = $this->request->getPost('new_username');
+
+        // 1. Validación de campos
+>>>>>>> 5713a74aeae9c8278a7179ddb883ccac5ba353c4
         if (empty($identifier) || empty($password) || empty($newUsername)) {
             $session->setFlashdata('error', 'Todos los campos son obligatorios.');
             return redirect()->back()->withInput();
         }
+<<<<<<< HEAD
         $existingUser = $this->userModel->where('nombre', $newUsername)->first();
+=======
+        
+        // 2. Buscar si el nuevo nombre de usuario ya existe
+        $existingUser = $userModel->where('nombre', $newUsername)->first();
+>>>>>>> 5713a74aeae9c8278a7179ddb883ccac5ba353c4
         if ($existingUser) {
             $session->setFlashdata('error', 'El nuevo nombre de usuario ya está en uso. Por favor, elige otro.');
             return redirect()->back()->withInput();
         }
+<<<<<<< HEAD
         $user = filter_var($identifier, FILTER_VALIDATE_EMAIL)
             ? $this->userModel->where('email', $identifier)->first()
             : $this->userModel->where('nombre', $identifier)->first();
@@ -414,3 +517,83 @@ class Home extends Controller
 
     
 }
+=======
+
+        // 3. Verificar al usuario actual
+        $user = null;
+        if (filter_var($identifier, FILTER_VALIDATE_EMAIL)) {
+            $user = $userModel->where('email', $identifier)->first();
+        } else {
+            $user = $userModel->where('nombre', $identifier)->first();
+        }
+        
+        // 4. Si el usuario existe y la contraseña es correcta, actualizar
+        if ($user && password_verify($password, $user['password'])) {
+            $userModel->update($user['id'], ['nombre' => $newUsername]);
+            
+            // Opcional: si el usuario está logueado, actualiza la sesión
+            if (session()->get('id') == $user['id']) {
+                session()->set('nombre', $newUsername);
+            }
+
+            $session->setFlashdata('success', '¡Nombre de usuario actualizado con éxito! Ya puedes iniciar sesión con tu nuevo nombre.');
+            return redirect()->to('/login');
+        } else {
+            $session->setFlashdata('error', 'Email/Usuario actual o contraseña incorrectos.');
+            return redirect()->back()->withInput();
+        }
+    }
+
+    // Procesar la actualización de la contraseña
+    public function updatePassword()
+{
+    $session = session();
+    $userModel = new UserModel();
+
+    $identifier = $this->request->getPost('identifier');
+    $currentPassword = $this->request->getPost('current_password');
+    $newPassword = $this->request->getPost('new_password');
+    $confirmPassword = $this->request->getPost('confirm_new_password');
+
+    // 1. Validación de campos
+    if (empty($identifier) || empty($currentPassword) || empty($newPassword) || empty($confirmPassword)) {
+        $session->setFlashdata('error', 'Todos los campos son obligatorios.');
+        return redirect()->back()->withInput();
+    }
+    
+    if ($newPassword !== $confirmPassword) {
+        $session->setFlashdata('error', 'Las nuevas contraseñas no coinciden.');
+        return redirect()->back()->withInput();
+    }
+    
+    if (strlen($newPassword) < 6) { // Puedes añadir más reglas de validación
+        $session->setFlashdata('error', 'La nueva contraseña debe tener al menos 6 caracteres.');
+        return redirect()->back()->withInput();
+    }
+
+    // 2. Verificar al usuario
+    $user = null;
+    if (filter_var($identifier, FILTER_VALIDATE_EMAIL)) {
+        $user = $userModel->where('email', $identifier)->first();
+    } else {
+        $user = $userModel->where('nombre', $identifier)->first();
+    }
+
+    // 3. Si el usuario existe y la contraseña actual es correcta, actualizar
+    if ($user && password_verify($currentPassword, $user['password'])) {
+        $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+        $userModel->update($user['id'], ['password' => $hashedPassword]);
+        
+        $session->setFlashdata('success', '✅ ¡Contraseña actualizada con éxito! Ya puedes usar tu nueva contraseña.');
+        
+        // 🌟 CORRECCIÓN: Redirige a la misma vista (modifypass) para mostrar el mensaje
+        return redirect()->to(base_url('modify-pass')); 
+    } else {
+        $session->setFlashdata('error', 'Email/Usuario o contraseña actual incorrectos.');
+        return redirect()->back()->withInput();
+    }
+}
+
+}
+
+>>>>>>> 5713a74aeae9c8278a7179ddb883ccac5ba353c4

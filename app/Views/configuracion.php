@@ -329,7 +329,11 @@
             </div>
         <?php endif; ?>
 
+<<<<<<< HEAD
         <form method="POST" action="<?= site_url('/configuracion/guardar') ?>" >
+=======
+        <form method="POST" action="<?= site_url('configuracion/guardar') ?>" >
+>>>>>>> 5713a74aeae9c8278a7179ddb883ccac5ba353c4
            <input type="hidden" name="dispositivo_id" value="<?= $dispositivo_id ?? '' ?>">
 
             <div class="content-block" id="ventana_block">
@@ -341,6 +345,7 @@
                 <div class="form-group">
                     <label for="ventana_cierre">Cierre:</label>
                     <input type="time" id="ventana_cierre" name="close_hour_ventana" class="form-control-time" value="<?= esc($horarios['ventana']['cierre'] ?? '18:00') ?>">
+<<<<<<< HEAD
                 </div>
                 
                 <div class="form-group">
@@ -357,7 +362,25 @@
                             </div>
                         <?php } ?>
                     </div>
+=======
+>>>>>>> 5713a74aeae9c8278a7179ddb883ccac5ba353c4
                 </div>
+                
+                <div class="form-group">
+    <label>Días activos para <?= esc($servos['ventana']['nombre_servo'] ?? 'Ventana') ?></label>
+    <div class="days-checkbox-group">
+        <?php
+        $diasVentana = $dias_servos['ventana'] ?? [];
+        foreach ($todos_dias as $dia) {
+            $checked = in_array($dia['ID'], $diasVentana) ? 'checked' : '';
+        ?>
+            <div class="day-checkbox">
+                <input type="checkbox" id="ventana_<?= $dia['ID'] ?>" name="ventana_days[]" value="<?= $dia['ID'] ?>" <?= $checked ?>>
+                <label for="ventana_<?= $dia['ID'] ?>"><?= substr($dia['DIA_semana'], 0, 1) ?></label>
+            </div>
+        <?php } ?>
+    </div>
+</div>
                 
                 <h3>Condicionantes</h3>
                 <div class="form-group">
@@ -387,6 +410,7 @@
                 <div class="form-group">
                     <label for="cortina_cierre">Cierre:</label>
                     <input type="time" id="cortina_cierre" name="close_hour_cortina" class="form-control-time" value="<?= esc($horarios['cortina']['cierre'] ?? '20:00') ?>">
+<<<<<<< HEAD
                 </div>
                 
                 <div class="form-group">
@@ -403,7 +427,25 @@
                             </div>
                         <?php } ?>
                     </div>
+=======
+>>>>>>> 5713a74aeae9c8278a7179ddb883ccac5ba353c4
                 </div>
+                
+                <div class="form-group">
+    <label>Días activos para <?= esc($servos['cortina']['nombre_servo'] ?? 'Cortina') ?></label>
+    <div class="days-checkbox-group">
+        <?php
+        $diasCortina = $dias_servos['cortina'] ?? [];
+        foreach ($todos_dias as $dia) {
+            $checked = in_array($dia['ID'], $diasCortina) ? 'checked' : '';
+        ?>
+            <div class="day-checkbox">
+                <input type="checkbox" id="cortina_<?= $dia['ID'] ?>" name="cortina_days[]" value="<?= $dia['ID'] ?>" <?= $checked ?>>
+                <label for="cortina_<?= $dia['ID'] ?>"><?= substr($dia['DIA_semana'], 0, 1) ?></label>
+            </div>
+        <?php } ?>
+    </div>
+</div>
                 
                 <h3>Condicionantes</h3>
                 <div class="form-group">
@@ -433,6 +475,7 @@
                 <div class="form-group">
                     <label for="postigon_cierre">Cierre:</label>
                     <input type="time" id="postigon_cierre" name="close_hour_postigon" class="form-control-time" value="<?= esc($horarios['postigon']['cierre'] ?? '19:30') ?>">
+<<<<<<< HEAD
                 </div>
                 
                 <div class="form-group">
@@ -449,7 +492,25 @@
                             </div>
                         <?php } ?>
                     </div>
+=======
+>>>>>>> 5713a74aeae9c8278a7179ddb883ccac5ba353c4
                 </div>
+                
+                <div class="form-group">
+    <label>Días activos para <?= esc($servos['postigon']['nombre_servo'] ?? 'Postigón') ?></label>
+    <div class="days-checkbox-group">
+        <?php
+        $diasPostigon = $dias_servos['postigon'] ?? [];
+        foreach ($todos_dias as $dia) {
+            $checked = in_array($dia['ID'], $diasPostigon) ? 'checked' : '';
+        ?>
+            <div class="day-checkbox">
+                <input type="checkbox" id="postigon_<?= $dia['ID'] ?>" name="postigon_days[]" value="<?= $dia['ID'] ?>" <?= $checked ?>>
+                <label for="postigon_<?= $dia['ID'] ?>"><?= substr($dia['DIA_semana'], 0, 1) ?></label>
+            </div>
+        <?php } ?>
+    </div>
+</div>
                 
                 <h3>Condicionantes</h3>
                 <div class="form-group">

@@ -59,6 +59,29 @@ class App extends BaseConfig
      */
     public string $uriProtocol = 'REQUEST_URI';
 
+    /**
+     * --------------------------------------------------------------------------
+     * Cookie Related Variables
+     * --------------------------------------------------------------------------
+     *
+     * 'cookiePrefix'   => Un prefijo para evitar colisiones.
+     * 'cookieDomain'   => Configura el dominio para compartir cookies entre subdominios.
+     * 'cookiePath'     => La ruta donde la cookie es válida.
+     * 'cookieSecure'   => ¡IMPORTANTE! true si usas HTTPS.
+     * 'cookieHTTPOnly' => true para prevenir acceso desde JavaScript (más seguro).
+     * 'cookieSameSite' => Controles de seguridad para Cross-Site Request Forgery.
+     *
+     * @var array<string, string|bool>
+     */
+    public array $cookie = [
+        'prefix'   => '',
+        'domain'   => 'vecopo.ddns.net', // <-- Corregido para tu dominio
+        'path'     => '/',
+        'secure'   => true,              // <-- Corregido a 'true' porque usas https://
+        'httponly' => true,
+        'samesite' => 'Lax',
+    ];
+
     /*
     |--------------------------------------------------------------------------
     | Allowed URL Characters

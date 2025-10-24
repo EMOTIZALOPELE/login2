@@ -4,28 +4,49 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class CondicionantesModel extends Model
+class CondicionanteModel extends Model
 {
     protected $table = 'condicionantes';
     protected $primaryKey = 'id';
+    protected $useAutoIncrement = true;
+    protected $returnType     = 'array';
+    protected $useSoftDeletes = false;
+    protected $protectFields    = true;
     protected $allowedFields = [
-        'dispositivo_id',
-        'ventana_apertura',
-        'ventana_cierre',
-        'temp_min',
-        'temp_max',
-        'velocidad_viento_max',
+        'ID_VCP', 
+        'temp_min', 
+        'temp_max', 
+        'velocidad_viento_max', 
         'permitir_lluvia'
     ];
 
-    // Opcional: Define reglas de validación para asegurar la integridad de los datos
-    protected $validationRules = [
-        'device_code' => 'required|max_length[20]',
-        'ventana_apertura' => 'required',
-        'ventana_cierre' => 'required',
-        'min_temp' => 'required|numeric',
-        'max_temp' => 'required|numeric',
-        'allow_rain' => 'required|in_list[0,1]',
-        'max_wind_speed' => 'required|numeric'
+    // Dates
+    protected $useTimestamps = false;
+    protected $dateFormat    = 'datetime';
+    protected $createdField  = 'created_at';
+    protected $updatedField  = 'updated_at';
+    protected $deletedField  = 'deleted_at';
+
+    // Validation
+    protected $validationRules      = [
+        'ID_VCP'                 => 'required|integer',
+        'temp_min'               => 'permit_empty|numeric',
+        'temp_max'               => 'permit_empty|numeric',
+        'velocidad_viento_max'   => 'permit_empty|numeric',
+        'permitir_lluvia'        => 'permit_empty|integer',
     ];
+    protected $validationMessages   = [];
+    protected $skipValidation       = false;
+    protected $cleanValidationRules = true;
+
+    // Callbacks
+    protected $allowCallbacks = true;
+    protected $beforeInsert   = [];
+    protected $afterInsert    = [];
+    protected $beforeUpdate   = [];
+    protected $afterUpdate    = [];
+    protected $beforeFind     = [];
+    protected $afterFind      = [];
+    protected $beforeDelete   = [];
+    protected $afterDelete    = [];
 }

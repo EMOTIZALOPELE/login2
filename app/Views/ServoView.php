@@ -86,6 +86,11 @@
     </style>
 </head>
 <body>
+    <?php
+$title = 'Control de Servo - VECOPO';
+?>
+<?= $this->include('partials/header') ?>
+
     <main class="main-wrapper">
         <div class="control-card">
             <h1>Control de Servos - VECOPO</h1>
@@ -115,13 +120,16 @@
                             </div>
 
                             <div class="controls-wrapper">
-                                <button class="btn-control btn-open" onclick="controlarServo(<?= esc($servo['id']); ?>, 'abierto')">
+                                <button type="button" class="btn-control btn-open"
+                                    data-servo-id="<?= esc($servo['id']); ?>"
+                                    data-comando-url="<?= site_url('funcional/actualizarEstado/' . esc($servo['id']) . '/abierto'); ?>">
                                     <i class="fas fa-door-open"></i> Abrir
                                 </button>
-                                <button class="btn-control btn-close" onclick="controlarServo(<?= esc($servo['id']); ?>, 'cerrado')">
-                                    <i class="fas fa-door-closed"></i> Cerrar
+                                <button type="button" class="btn-control btn-close"
+                                    data-servo-id="<?= esc($servo['id']); ?>"
+                                    data-comando-url="<?= site_url('funcional/actualizarEstado/' . esc($servo['id']) . '/cerrado'); ?>">
+                                    <i class="fas fa-door-close"></i> Cerrar
                                 </button>
-                                
                             </div>
                         </div>
                     <?php endforeach; ?>
@@ -130,25 +138,36 @@
                 <?php endif; ?>
             </div>
         </div>
-        <div style="margin-top: 1rem;">
-            <button class="btn-control btn-config" onclick="history.back()">
-                <i class="fas fa-arrow-left"></i> Volver
-            </button>
-        </div>
     </main>
 
-    <script>
-        const dispositivoId = <?= $dispositivo['id'] ?? 'null' ?>;
-        const dispositivoMac = `<?= esc($dispositivo['codigo'] ?? '') ?>`; 
-        const URL_BASE_CI = '<?= base_url() ?>';
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-        // Objeto para almacenar los elementos de la UI de cada servo
-        const servoElements = {};
+        <script>
+        // Pasar los nombres de tarjetas válidos al header
+        window.validCardNames = [
+            <?php if (!empty($tarjetas)): ?>
+                <?php foreach($tarjetas as $tarjeta): ?>
+                    <?php if (!empty($tarjeta['nombre_tarjeta'])): ?>
+            "<?= esc($tarjeta['nombre_tarjeta'], 'js') ?>",
+                    <?php endif; ?>
+                <?php endforeach; ?>
+            <?php endif; ?>
+        ];
 
-        if (!dispositivoId || dispositivoMac === "") {
-            alert("Error: No se ha seleccionado o configurado ningún dispositivo válido.");
-            window.location.href = `${URL_BASE_CI}/irainicio`;
-        } else {
+        $(document).ready(function() {
+            // --- CONFIGURACIÓN INICIAL ---
+            const dispositivoMac = `<?= esc($dispositivo['codigo'] ?? '') ?>`;
+            const URL_BASE_CI = '<?= base_url() ?>';
+            const csrfToken = $('meta[name="csrf-token"]').attr('content');
+
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                }
+            });
+
+            const servoElements = {};
             document.querySelectorAll('.servo-item').forEach(item => {
                 const servoId = item.dataset.servoId;
                 servoElements[servoId] = {
@@ -157,88 +176,75 @@
                     modeElement: document.getElementById(`modo-${servoId}`)
                 };
             });
-        }
 
-        function controlarServo(servoId, comando) {
-            console.log(`Enviando comando ${comando} al servo ${servoId}`);
-            const url = `${URL_BASE_CI}/funcional/actualizarEstado/${servoId}/${comando}`;
-            console.log('URL de la petición:', url);
-            
-            fetch(url)
-                .then(response => {
-                    console.log('Status de la respuesta:', response.status);
-                    if (!response.ok) {
-                        return response.json().then(err => { 
-                            console.error('Error en la respuesta:', err);
-                            throw new Error(err.message || 'Error del servidor'); 
-                        });
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log('Respuesta completa del servidor:', data);
-                    if (data.status === 'ok') {
-                        console.log(`Orden "${data.estado}" enviada al servo ${data.servo_id}. Modo: ${data.modo}`);
-                        actualizarUI(data.servo_id, data.estado, data.modo);
+            // Control manual
+            $('.controls-wrapper .btn-control').on('click', function(e) {
+                e.preventDefault();
+                
+                const button = $(this);
+                const comandoUrl = button.data('comando-url');
+
+                if (!comandoUrl) {
+                    console.error('El botón no tiene un atributo data-comando-url.');
+                    return;
+                }
+
+                button.prop('disabled', true).fadeTo(200, 0.5);
+
+                $.ajax({
+                    url: comandoUrl,
+                    method: 'GET',
+                    dataType: 'json'
+                }).done(function(response) {
+                    if (response.status === 'ok') {
+                        actualizarUI(response.servo_id, response.estado, response.modo);
+                        console.log(`Servo ${response.servo_id} puesto en modo MANUAL. Expira en: ${response.expira}`);
                     } else {
-                        throw new Error(data.message || 'El servidor no pudo procesar la orden para el servo.');
+                        alert('Error al ejecutar la acción: ' + (response.message || 'Error desconocido.'));
                     }
-                })
-                .catch(error => {
-                    console.error('Error al controlar servo:', error);
-                    alert('Error: ' + error.message);
+                }).fail(function(jqXHR) {
+                    console.error("AJAX Error:", jqXHR.status, jqXHR.responseText);
+                    alert('La petición falló. Revisa la consola (F12) para más detalles.');
+                }).always(function() {
+                    button.prop('disabled', false).fadeTo(200, 1.0);
                 });
-        }
+            });
 
-        function actualizarEstadoDesdeServidor() {
-            if (!dispositivoMac) return; 
-
-            fetch(`${URL_BASE_CI}/dispositivos/estado/${dispositivoMac}`)
-                .then(res => res.json())
-                .then(data => {
-                    if (data && data.servos && Array.isArray(data.servos)) {
-                        data.servos.forEach(servoData => {
-                            if (servoElements[servoData.id]) { 
-                                actualizarUI(servoData.id, servoData.estado, servoData.modo); 
-                            }
-                        });
-                    } else {
-                        console.warn('Respuesta del servidor no contiene un array de servos o está vacía:', data);
-                    }
-                })
-                .catch(error => console.error('Error al obtener estado de servos:', error));
-        }
-
-        function actualizarUI(servoId, estado, modoOperacion) {
-            console.log('Actualizando UI para servo:', servoId, 'Estado:', estado, 'Modo:', modoOperacion);
-            const elements = servoElements[servoId];
-            if (!elements) {
-                console.error('No se encontraron elementos UI para el servo:', servoId);
-                return;
+            function actualizarEstadoDesdeServidor() {
+                if (!dispositivoMac) return;
+                fetch(`${URL_BASE_CI}/dispositivos/estado/${dispositivoMac}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data && data.servos && Array.isArray(data.servos)) {
+                            data.servos.forEach(servoData => {
+                                if (servoElements[servoData.id]) {
+                                    actualizarUI(servoData.id, servoData.estado, servoData.modo);
+                                }
+                            });
+                        }
+                    })
+                    .catch(error => console.error('Error al obtener estado de servos:', error));
             }
 
-            const estadoLimpio = estado.toLowerCase().trim();
-            elements.statusElement.textContent = estado.toUpperCase();
-            elements.statusElement.className = `status-indicator status-${estadoLimpio}`;
-
-            if (estadoLimpio === 'abierto') {
-                elements.iconElement.className = `fas fa-door-open servo-icon-display`;
-            } else if (estadoLimpio === 'cerrado') {
-                elements.iconElement.className = `fas fa-door-closed servo-icon-display`;
-            } else {
-                elements.iconElement.className = `fas fa-question-circle servo-icon-display`;
+            function actualizarUI(servoId, estado, modoOperacion) {
+                const elements = servoElements[servoId];
+                if (!elements) return;
+                const estadoLimpio = (estado || '').toLowerCase().trim();
+                elements.statusElement.textContent = estado ? estado.toUpperCase() : 'N/A';
+                elements.statusElement.className = `status-indicator status-${estadoLimpio || 'desconocido'}`;
+                if (estadoLimpio === 'abierto') {
+                    elements.iconElement.className = `fas fa-door-open servo-icon-display`;
+                } else if (estadoLimpio === 'cerrado') {
+                    elements.iconElement.className = `fas fa-door-closed servo-icon-display`;
+                }
+                if (elements.modeElement && modoOperacion) {
+                    elements.modeElement.textContent = modoOperacion.toUpperCase();
+                }
             }
-
-            if (elements.modeElement && modoOperacion) {
-                elements.modeElement.textContent = modoOperacion.toUpperCase();
-            }
-        }
-
-        // Actualizar estado cada 10 segundos en lugar de 3
-        setInterval(actualizarEstadoDesdeServidor, 10000);
-
-        // Cargar estado inicial al cargar la página
-        document.addEventListener('DOMContentLoaded', actualizarEstadoDesdeServidor);
+            
+            setInterval(actualizarEstadoDesdeServidor, 10000);
+            actualizarEstadoDesdeServidor();
+        });
     </script>
 
 </body>

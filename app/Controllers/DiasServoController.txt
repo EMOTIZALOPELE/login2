@@ -1,0 +1,77 @@
+
+<?php
+
+namespace App\Controllers;
+
+use App\Models\ServoModel;
+use App\Models\ServosDiasModel;
+use App\Models\DiasSemanasModel;
+
+class DiasServoController extends BaseController
+{
+    protected $servoModel;
+    protected $servosDiasModel;
+    protected $diasSemanasModel;
+
+    public function __construct()
+    {
+        $this->servoModel = new ServoModel();
+        $this->servosDiasModel = new ServosDiasModel();
+        $this->diasSemanasModel = new DiasSemanasModel();
+    }
+
+    /**
+     * Mostrar formulario de configuración
+     */
+    public function index($dispositivoId)
+    {
+        // Obtener todos los servos del dispositivo
+        $servos = $this->servoModel->where('dispositivo_id', $dispositivoId)->findAll();
+        
+        // Obtener días de la semana para cada servo
+        $diasServos = [];
+        foreach ($servos as $servo) {
+            $dias = $this->servosDiasModel->getDiasForServo($servo['id']);
+            $diasServos[$servo['tipo_elemento']] = array_column($dias, 'dia_semana_id');
+        }
+        
+        // Obtener todos los días de semana disponibles
+        $todosDias = $this->diasSemanasModel->findAll();
+        
+        $data = [
+            'dispositivo_id' => $dispositivoId,
+            'servos' => $servos,
+            'dias_servos' => $diasServos,
+            'todos_dias' => $todosDias
+        ];
+        
+        return view('configuracion', $data);
+    }
+
+    /**
+     * Guardar solo los días de la semana
+     */
+    public function guardar()
+    {
+        $dispositivoId = $this->request->getPost('dispositivo_id');
+        
+        // Obtener todos los servos del dispositivo
+        $servos = $this->servoModel->where('dispositivo_id', $dispositivoId)->findAll();
+        
+        foreach ($servos as $servo) {
+            $tipo = $servo['tipo_elemento'];
+            
+            // Obtener los días seleccionados para este tipo de servo
+            $diasSeleccionados = $this->request->getPost("{$tipo}_days") ?? [];
+            
+            // Guardar los días en la tabla servos_dias
+            $this->servosDiasModel->saveDiasForServo($servo['id'], $diasSeleccionados);
+        }
+        
+        return redirect()->back()->with('success', 'Días de la semana guardados correctamente');
+        log_message('debug', print_r($this->request->getPost(), true));
+    }
+
+    // Otros métodos (getConfiguracionDispositivo, obtenerDiasServo, etc.) pueden permanecer sin cambios
+    // si los necesitas para otras funcionalidades.
+}

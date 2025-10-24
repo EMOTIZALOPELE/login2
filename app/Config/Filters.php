@@ -36,6 +36,9 @@ class Filters extends BaseFilters
         'pagecache'     => PageCache::class,
         'performance'   => PerformanceMetrics::class,
         'SessionAdmin'  => \App\Filters\SessionAdmin::class,
+        'auth'     => \App\Filters\AuthFilter::class,
+        'verified' => \App\Filters\VerifiedUserFilter::class, 
+
     ];
 
     /**
@@ -109,6 +112,52 @@ class Filters extends BaseFilters
         "SessionAdmin" => [
             "before" => [
                 "/inicio"
+            ]
+        ],
+        'auth' => [ // ✅ Filtro de autenticación
+            'before' => [
+                '/irainicio',
+                '/mishorarios',
+                '/configuracion',
+                '/configuracion/*',
+                '/dispositivos',
+                '/modifyname',
+                '/modifypass',
+                '/continuar-pago',
+                '/mis-compras',
+                '/paypal/createOrder',
+                '/masivo/*',
+                '/funcional/*',
+                '/servos/*',
+                '/horarios/*',
+                '/addtarjeta',
+                '/addtarjeta/*',
+                '/crear-tarjeta',
+                '/tercon',
+                '/pantalla'
+            ]
+        ],
+        'verified' => [ // ✅ Filtro de verificación de email
+            'before' => [
+                '/irainicio',
+                '/mishorarios',
+                '/configuracion',
+                '/configuracion/*',
+                '/dispositivos',
+                '/modifyname',
+                '/modifypass',
+                '/continuar-pago',
+                '/mis-compras',
+                '/paypal/createOrder',
+                '/masivo/*',
+                '/funcional/*',
+                '/servos/*',
+                '/horarios/*',
+                '/addtarjeta',
+                '/addtarjeta/*',
+                '/crear-tarjeta',
+                '/tercon',
+                '/pantalla'
             ]
         ]
     ];

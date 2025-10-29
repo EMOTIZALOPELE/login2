@@ -3,15 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://www.paypal.com/sdk/js?client-id=test&currency=USD"></script>
+    <script src="https://www.paypal.com/sdk/js?client-id=AdGS2GrGBbZXq41yYDW2A-0dVD5avVuWiQO-XQDVAOxMepuO0HmkCL6kFfwIbLLjIc0gT9tB3KmIL0hJ&currency=USD"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
+    
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <?= view('partials/icono') ?>
 
-    <title>VECOPO</title> <style>
+    <title>VECOPO</title> 
+    
+    <style>
         /* Reset de estilos básicos */
         * {
             margin: 0;
@@ -543,12 +546,26 @@
     </style>
 </head>
 <body>
-    <header>
-        <a href="<?= base_url('/iniciovalogin') ?>" class="login-btn">Iniciar sesión</a>
-        <h1 class="logo">VECOPO</h1>
-        <a href="<?= base_url('/tercon') ?>" class="register-btn">Registrarse</a>
-    </header>
 
+
+    <header>
+        <?php 
+            $session = \Config\Services::session(); 
+            // Prueba esto para ver qué variables tienes en sesión
+            // var_dump($session->get()); // Descomenta para debug
+            $usuarioLogueado = $session->get('id') || $session->get('usuario_id'); // Verifica ambas
+        ?>
+
+        <?php if ($usuarioLogueado): ?>
+            <a href="<?= base_url('/mis-compras') ?>" class="login-btn">Mis Compras</a>
+            <h1 class="logo">VECOPO</h1>
+            <a href="<?= base_url('/logout') ?>" class="register-btn">Cerrar Sesión</a> 
+        <?php else: ?>
+            <a href="<?= base_url('/iniciovalogin') ?>" class="login-btn">Iniciar sesión</a>
+            <h1 class="logo">VECOPO</h1>
+            <a href="<?= base_url('/tercon') ?>" class="register-btn">Registrarse</a>
+        <?php endif; ?>
+    </header>
     <section class="presentation">
         <div class="presentation-content">
 
@@ -602,6 +619,38 @@
         </div>
     </section>
 
+    <!-- Modal de Mensaje de Pago Exitoso -->
+    <div class="modal fade" id="pagoExitosoModal" tabindex="-1" role="dialog" aria-labelledby="pagoExitosoModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title" id="modalTitulo">¡Pago Completado!</h5>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p id="modalCuerpo">Tu compra se ha completado con éxito.</p>
+                    <div id="contenedorOrderId" style="display:none; margin-top: 15px; padding: 10px; background-color: #f3f3f3; border-radius: 5px;">
+                        <p class="mb-1"><strong>Order ID:</strong></p>
+                        <div class="input-group">
+                            <p id="orderIDparaCopiar" class="form-control" style="background-color: #fff; font-weight: bold;"></p>
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="button" id="btnCopiarId" onclick="copiarOrderId()">
+                                    <i class="far fa-copy"></i> Copiar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" id="modalBotonCerrar">Cerrar</button>
+                    <a href="#" class="btn btn-primary" id="modalBotonPrincipal">Continuar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <section class="paypal">
         <div class="dollar-rain">
             <span>$</span>
@@ -611,8 +660,8 @@
             <span>$</span>
             <span>$</span>
             <span>$</span>
-            <span>peru</span>
-            <span>peruka</span>
+            <span>$</span>
+            <span>$</span>
             <span>$</span> 
             <span>$</span>
             <span>$</span>
@@ -622,7 +671,7 @@
             </div>
         <div class="paypal-container">
             <div class="precio-container">
-                <span class="precio-simbolo">$</span>19.99
+                <span class="precio-simbolo">$</span>90.00
                 <div class="precio-descripcion">Plan Básico</div>
             </div>
             <div class="paypalcard">
@@ -644,8 +693,8 @@
 
         <div class="paypal-container">
             <div class="precio-container">
-                <span class="precio-simbolo">$</span>49.99
-                <div class="precio-descripcion">Plan Pro</div>
+                <span class="precio-simbolo">$</span>130.00
+                <div class="precio-descripcion">Plan Intermedio</div>
             </div>
             <div class="paypalcard">
                 <div class="paypalcard-item">
@@ -666,7 +715,7 @@
 
         <div class="paypal-container">
             <div class="precio-container">
-                <span class="precio-simbolo">$</span>99.99
+                <span class="precio-simbolo">$</span>200.00
                 <div class="precio-descripcion">Plan Enterprise</div>
             </div>
             <div class="paypalcard">
@@ -693,181 +742,139 @@
         </div>
     </footer>
 
+    
     <script>
         // Base URL para las llamadas a tu controlador
-        const baseUrl = '<?= base_url() ?>'; // Asegúrate de que base_url() funcione en tu vista
-
-        // Función para manejar errores de AJAX o PayPal
+        const baseUrl = '<?= base_url() ?>'; 
+        
+        // Función para manejar errores
         function handleError(err) {
-            console.error(err);
-            alert('Ocurrió un error durante el proceso de pago. Por favor, inténtalo de nuevo.');
-            // Puedes añadir lógica para mostrar un mensaje de error más amigable en la UI
+            console.error("Error de PayPal/Fetch:", err);
+            const errorMessage = err.message || 'Ocurrió un error desconocido durante el proceso de pago. Por favor, inténtalo de nuevo.';
+            
+            // Si es error de autenticación, redirigir al login
+            if (err.message && err.message.includes('not_authenticated')) {
+                window.location.href = '<?= base_url('/iniciovalogin') ?>';
+                return;
+            }
+            
+            $('#modalTitulo').text('Error de Pago');
+            $('#modalCuerpo').text(errorMessage);
+            $('#contenedorOrderId').hide();
+            $('#modalBotonPrincipal').text('Cerrar').attr('href', '#').off('click').on('click', () => $('#pagoExitosoModal').modal('hide'));
+            $('#modalBotonCerrar').hide();
+            $('#pagoExitosoModal').modal('show');
         }
 
-        // Configuración para el Plan Básico (19.99)
+        // Función para crear orden con manejo de autenticación
+        function createOrderHandler(amount) {
+            return fetch(baseUrl + '/paypal/createOrder', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ amount: amount })
+            }).then(res => {
+                if (res.status === 401) {
+                    // Usuario no autenticado - redirigir al login
+                    return res.json().then(data => {
+                        window.location.href = data.redirect_url || '<?= base_url('/iniciovalogin') ?>';
+                        throw new Error("Redireccionando al login...");
+                    });
+                }
+                
+                if (!res.ok) {
+                    return res.json().then(error => { 
+                        throw new Error(error.error || "Error de servidor al crear orden"); 
+                    }).catch(() => {
+                        throw new Error("Respuesta de servidor inválida (Status: " + res.status + ")");
+                    });
+                }
+                
+                return res.json();
+            }).then(order => {
+                if (!order.id) {
+                    throw new Error("La respuesta de PayPal no contiene un Order ID.");
+                }
+                return order.id;
+            })
+            .catch(handleError);
+        }
+
+        // Función onApprove actualizada
+        function handleApproval(data, actions) {
+            return fetch(baseUrl + '/paypal/captureOrder', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    orderID: data.orderID
+                })
+            }).then(function(response) {
+                if (!response.ok) {
+                    return response.json().then(errorData => {
+                        throw new Error('Error al capturar el pago: ' + (errorData.error || response.statusText));
+                    });
+                }
+                return response.json();
+            }).then(function(responseData) {
+                
+                //  Redirigir a selección de servos si es necesario
+                if (responseData.redirect_url) {
+                    window.location.href = responseData.redirect_url;
+                    return;
+                }
+
+                const modal = $('#pagoExitosoModal');
+                const titulo = $('#modalTitulo');
+                const cuerpo = $('#modalCuerpo');
+                const contOrderId = $('#contenedorOrderId');
+                const btnPrincipal = $('#modalBotonPrincipal');
+                const btnCerrar = $('#modalBotonCerrar');
+
+                if (responseData.user_created) {
+                    titulo.text('¡Cuenta Creada y Compra Exitosa!');
+                    cuerpo.text('Hemos creado una cuenta para ti con tu email de PayPal. Te hemos enviado tus credenciales de acceso por email. Tu compra ha sido registrada con éxito.');
+                } else {
+                    titulo.text('¡Compra Exitosa!');
+                    cuerpo.text('Tu pago ha sido procesado con éxito y vinculado a tu cuenta.');
+                }
+
+                contOrderId.hide();
+                btnPrincipal.text('Ir a Mis Compras');
+                btnPrincipal.attr('href', '<?= base_url('/mis-compras') ?>');
+                btnCerrar.hide();
+
+                modal.modal('show');
+
+            }).catch(handleError);
+        }
+
+        // Configuración de botones PayPal (mantener igual)
         paypal.Buttons({
             createOrder: function(data, actions) {
-                // Llama a tu controlador para crear la orden en el lado del servidor
-                return fetch(baseUrl + '/paypal/createOrder', { // Asegúrate de que esta ruta sea correcta
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        amount: '19.99' // Pasa el monto al controlador
-                    })
-                }).then(function(response) {
-                    if (!response.ok) {
-                        // Si la respuesta no es exitosa, lanza un error
-                        return response.json().then(errorData => {
-                            throw new Error('Error al crear la orden en el servidor: ' + (errorData.error || response.statusText));
-                        });
-                    }
-                    return response.json();
-                }).then(function(order) {
-                    // Devuelve el ID de la orden recibida del controlador
-                    return order.id;
-                }).catch(handleError); // Maneja errores de la llamada AJAX o del controlador
+                return createOrderHandler('99.00'); 
             },
-            onApprove: function(data, actions) {
-                // Llama a tu controlador para capturar la orden en el lado del servidor
-                return fetch(baseUrl + '/paypal/captureOrder', { // Asegúrate de que esta ruta sea correcta
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        orderID: data.orderID // Pasa el ID de la orden a tu controlador
-                    })
-                }).then(function(response) {
-                     if (!response.ok) {
-                         // Si la respuesta no es exitosa, lanza un error
-                         return response.json().then(errorData => {
-                             throw new Error('Error al capturar el pago en el servidor: ' + (errorData.error || response.statusText));
-                         });
-                     }
-                    return response.json();
-                }).then(function(details) {
-                    // Aquí manejas la respuesta de tu controlador después de capturar el pago
-                    // Tu controlador ya guarda en BD y envía email.
-                    // Puedes mostrar un mensaje de éxito al usuario.
-                    alert('¡Pago completado! Gracias ' + (details.payer ? details.payer.name.given_name : ''));
-                    // Redirige al usuario después de un pago exitoso
-                    window.location.href = baseUrl + '/iniciovalogin'; // Asegúrate de que esta ruta sea correcta
-                }).catch(handleError); // Maneja errores de la llamada AJAX o del controlador
-            },
-            onError: handleError, // Usa la función genérica para errores de PayPal SDK
-            style: {
-                layout: 'vertical',
-                color: 'gold',
-                shape: 'pill',
-                label: 'pay'
-            }
+            onApprove: handleApproval,
+            onError: handleError,
+            style: { layout: 'vertical', color: 'gold', shape: 'pill', label: 'pay' }
         }).render('#paypal-button-container-1');
 
-
-        // Configuración para el Plan Pro (49.99)
         paypal.Buttons({
             createOrder: function(data, actions) {
-                return fetch(baseUrl + '/paypal/createOrder', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        amount: '49.99' // Pasa el monto correcto
-                    })
-                }).then(function(response) {
-                    if (!response.ok) {
-                         return response.json().then(errorData => {
-                             throw new Error('Error al crear la orden en el servidor: ' + (errorData.error || response.statusText));
-                         });
-                     }
-                    return response.json();
-                }).then(function(order) {
-                    return order.id;
-                }).catch(handleError);
+                return createOrderHandler('130.00');
             },
-            onApprove: function(data, actions) {
-                return fetch(baseUrl + '/paypal/captureOrder', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        orderID: data.orderID
-                    })
-                }).then(function(response) {
-                     if (!response.ok) {
-                         return response.json().then(errorData => {
-                             throw new Error('Error al capturar el pago en el servidor: ' + (errorData.error || response.statusText));
-                         });
-                     }
-                    return response.json();
-                }).then(function(details) {
-                    alert('¡Pago completado! Gracias ' + (details.payer ? details.payer.name.given_name : ''));
-                    window.location.href = baseUrl + '/iniciovalogin';
-                }).catch(handleError);
-            },
-             onError: handleError,
-            style: {
-                layout: 'vertical',
-                color: 'gold',
-                shape: 'pill',
-                label: 'pay'
-            }
+            onApprove: handleApproval,
+            onError: handleError,
+            style: { layout: 'vertical', color: 'gold', shape: 'pill', label: 'pay' }
         }).render('#paypal-button-container-2');
 
-        // Configuración para el Plan Enterprise (99.99)
         paypal.Buttons({
             createOrder: function(data, actions) {
-                return fetch(baseUrl + '/paypal/createOrder', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        amount: '99.99' // Pasa el monto correcto
-                    })
-                }).then(function(response) {
-                     if (!response.ok) {
-                         return response.json().then(errorData => {
-                             throw new Error('Error al crear la orden en el servidor: ' + (errorData.error || response.statusText));
-                         });
-                     }
-                    return response.json();
-                }).then(function(order) {
-                    return order.id;
-                }).catch(handleError);
+                return createOrderHandler('200.00');
             },
-            onApprove: function(data, actions) {
-                return fetch(baseUrl + '/paypal/captureOrder', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        orderID: data.orderID
-                    })
-                }).then(function(response) {
-                     if (!response.ok) {
-                         return response.json().then(errorData => {
-                             throw new Error('Error al capturar el pago en el servidor: ' + (errorData.error || response.statusText));
-                         });
-                     }
-                    return response.json();
-                }).then(function(details) {
-                    alert('¡Pago completado! Gracias ' + (details.payer ? details.payer.name.given_name : ''));
-                    window.location.href = baseUrl + '/iniciovalogin';
-                }).catch(handleError);
-            },
-             onError: handleError,
-            style: {
-                layout: 'vertical',
-                color: 'gold',
-                shape: 'pill',
-                label: 'pay'
-            }
+            onApprove: handleApproval,
+            onError: handleError,
+            style: { layout: 'vertical', color: 'gold', shape: 'pill', label: 'pay' }
         }).render('#paypal-button-container-3');
     </script>
 </body>

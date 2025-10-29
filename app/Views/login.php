@@ -146,13 +146,22 @@
         .login-links {
             text-align: center;
             margin-top: 1.5rem;
+            display: flex;
+            flex-direction: column; /* Apila los enlaces verticalmente */
+            gap: 0.8rem; /* Añade espacio entre los enlaces */
+        }
+
+        .login-links .main-actions, .login-links .secondary-actions {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem; /* Espacio entre links en la misma línea */
         }
 
         .login-links a {
             color: var(--accent-color);
             text-decoration: none;
             font-size: 0.9rem;
-            margin: 0 0.5rem;
             transition: color 0.3s ease, text-shadow 0.3s ease;
         }
 
@@ -198,12 +207,12 @@
                 padding: 0.8rem 1.2rem;
                 font-size: 1rem;
             }
-             .login-links a, .login-links span {
-                display: block;
-                margin-bottom: 0.5rem;
+             .login-links .main-actions, .login-links .secondary-actions {
+                flex-direction: column;
+                gap: 0.5rem;
             }
-            .login-links span{
-                display: none; /* Ocultar separador en móvil si los links son bloques */
+            .login-links span {
+                display: none; /* Ocultar separador en móvil */
             }
         }
 
@@ -220,6 +229,9 @@
         <?php endif; ?>
 
         <form action="<?= base_url('login') ?>" method="post">
+
+            <input type="hidden" name="<?= csrf_token() ?>" value="<?= csrf_hash() ?>">
+
             <div class="form-group">
                 <label for="identifier" class="form-label">Email o Usuario</label>
                 <input class="form-control-custom" type="text" name="identifier" id="identifier" 
@@ -236,34 +248,64 @@
                 </div>
             </div>
             
+            <div class="form-group form-check text-left my-3">
+                 <input type="checkbox" name="remember_me" class="form-check-input" id="rememberMeCheck">
+                 <label class="form-check-label" for="rememberMeCheck" style="color: var(--text-secondary);">
+                    Mantenerme conectado
+                 </label>
+            </div>
+
             <button class="login-button" type="submit">Entrar</button>
             
             <div class="login-links">
-                <a href="<?= base_url('/forgotpassword') ?>">¿Olvidaste tu contraseña?</a>
-                <span>|</span>
-                <a href="<?= base_url('/tercon') ?>">Crear cuenta nueva</a>
+                <div class="main-actions">
+                    <a href="<?= base_url('/forgotpassword') ?>">¿Olvidaste tu contraseña?</a>
+                    <span>|</span>
+                    <a href="<?= base_url('/tercon') ?>">Crear cuenta nueva</a>
+                </div>
+                <div class="secondary-actions">
+                     <a href="<?= base_url('/modifypass') ?>">¿Quieres cambiar tu contraseña?</a>
+                     <span>|</span>
+                     <a href="<?= base_url('/modifyname') ?>">¿Quieres cambiar tu nombre?</a>
+                </div>
             </div>
         </form>
     </main>
 
     <script>
-        
-        // Script para mostrar/ocultar contraseña
+        // Script para mostrar/ocultar contraseña (usando Font Awesome)
         let eyeicon = document.getElementById("eyeicon"); 
         let password = document.getElementById("password"); 
         
         if (eyeicon && password) {
             eyeicon.onclick = function(){
-                if(password.type == "password"){
+                if(password.type === "password"){
                     password.type = "text";
-                    // Cambiar a un icono de ojo abierto (ejemplo, si tuvieras otro)
-                    eyeicon.src = "https://icons.veryicon.com/png/o/miscellaneous/myfont/eye-open-4.png"; // O usa Font Awesome
+                    eyeicon.classList.remove('fa-eye');
+                    eyeicon.classList.add('fa-eye-slash');
                 } else {
                     password.type = "password";
-                    eyeicon.src = "https://static.thenounproject.com/png/1035969-200.png";
+                    eyeicon.classList.remove('fa-eye-slash');
+                    eyeicon.classList.add('fa-eye');
                 }
             }
         }
+        
+        // ** NUEVO SCRIPT DE REDIRECCIÓN **
+        document.addEventListener('DOMContentLoaded', function() {
+            // 1. Lee la URL guardada cuando el usuario fue forzado al login
+            const redirectUrl = sessionStorage.getItem('redirect_after_login');
+            const redirectField = document.getElementById('redirectUrlField');
+
+            // 2. Si existe una URL de retorno, la inyecta en el campo oculto del formulario
+            if (redirectUrl && redirectField) {
+                redirectField.value = redirectUrl;
+                
+                // Opcional: Eliminar la clave para evitar que se use en futuros logins normales
+                // No lo quitamos inmediatamente, ya que si el login falla, la URL debe seguir ahí.
+                // Lo limpiaremos en el servidor o al cargar la página de destino.
+            }
+        });
     </script>
     
     </body>

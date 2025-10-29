@@ -7,6 +7,8 @@
 #include <ESPAsyncWebServer.h>
 #include <ArduinoJson.h>
 #include <map>
+#include <vector>
+#include <algorithm>
 #include "time.h"
 
 // --- CONFIGURACIÓN ---
@@ -19,15 +21,30 @@ const char* AP_SSID = "ESP32_Config_Servo";
 const char* AP_PASSWORD = "password";
 IPAddress AP_LOCAL_IP(192, 168, 4, 1);
 
+// !!! --- CONFIGURACIÓN DE PRIORIDAD --- !!!
+// Define qué pin corresponde a la cortina para darle prioridad de movimiento.
+const int CORTINA_PIN = 4;
+
+
 const char* ntpServer = "pool.ntp.org";
 const long  gmtOffset_sec = -3 * 3600;
 const int   daylightOffset_sec = 0;
 
 // --- OBJETOS Y ESTRUCTURAS ---
 Servo servoPin2;
-Servo servoPin4;
+Servo servoPin4; // Servo de rotación continua
 Servo servoPin16;
+
+// guarda el estado actual de cada servo ("ABIERTO" o "CERRADO")
 std::map<int, String> servoLocalStates;
+
+// Estructura para almacenar las acciones pendientes de los servos
+struct ServoAction {
+    int pin;
+    int servoId;
+    String targetState;
+    String modo;
+};
 
 Servo* getServoObject(int pin) {
     switch (pin) {
@@ -50,21 +67,27 @@ void startAPMode();
 void checkServer();
 void switchToAutoMode(int servoId);
 void reportNewState(int servoId, String newState);
+void moveServo(Servo* servo, int pin, String targetState);
 
 void setup() {
     Serial.begin(115200);
     delay(1000);
-    Serial.println("\n--- Iniciando Dispositivo Vecopo v3.8 (Auto-Corrección de Modo) ---");
+    Serial.println("\n--- Iniciando Dispositivo Vecopo v4.5 (Prioridad de Cortina) ---");
 
+    // Servos estándar
     servoPin2.attach(2);
     servoPin2.write(0);
     servoLocalStates[2] = "CERRADO";
-    servoPin4.attach(4);
-    servoPin4.write(0);
-    servoLocalStates[4] = "CERRADO";
+
     servoPin16.attach(16);
     servoPin16.write(0);
     servoLocalStates[16] = "CERRADO";
+
+    // Servo de rotación continua (Pin 4)
+    servoPin4.attach(4);
+    servoPin4.write(90); // 90 es DETENIDO para servos de rotación continua
+    servoLocalStates[4] = "CERRADO";
+
 
     preferences.begin("wifi-creds", false);
     String STA_ssid = preferences.getString("ssid", "");
@@ -90,12 +113,79 @@ void loop() {
     }
 }
 
+// =======================================================================================
+// FUNCIÓN MODIFICADA PARA CONTROLAR EL MOVIMIENTO Y VELOCIDAD DE LOS SERVOS
+// =======================================================================================
+/**
+ * @brief Mueve un servo a un estado deseado, aplicando lógica de velocidad y control de ruido.
+ * @param servo Puntero al objeto Servo a mover.
+ * @param pin El número de pin del servo.
+ * @param targetState El estado deseado ("ABIERTO" o "CERRADO").
+ */
+void moveServo(Servo* servo, int pin, String targetState) {
+    if (servo == nullptr) return;
+
+    if (pin == 4) { // Lógica INVERTIDA específica para el servo de rotación continua en el pin 4
+        // --- AJUSTA ESTOS VALORES A TU GUSTO ---
+        
+        // Define la "fuerza" del giro. Un número más alto significa un giro más rápido.
+        int speedOffsetOpen = 30;  // Más alto = más rápido al abrir (ej: 90 + 30 = 120)
+        int speedOffsetClose = 35; // Más bajo = más lento al cerrar (ej: 90 - 35 = 55)
+
+        int duration = 3000; // Duración del giro en milisegundos
+
+        // !!! IMPORTANTE PARA EL RUIDO !!!
+        // Ajusta este valor hasta que el servo deje de hacer ruido cuando está parado.
+        // Prueba con 91, 92, 89, 88, etc.
+        int stopSpeed = 91;
+
+        // Calculamos las velocidades para cada dirección
+        int speedOpen = stopSpeed + speedOffsetOpen;
+        int speedClose = stopSpeed - speedOffsetClose;
+
+        if (targetState == "ABIERTO") { // La orden es ABRIR, pero ejecutamos la acción de CERRAR
+            Serial.printf("-> [Pin %d] Orden ABRIR recibida, ejecutando Cierre por %d ms...\n", pin, duration);
+            servo->write(speedClose); // Usamos la velocidad de cierre
+            delay(duration);
+            servo->write(stopSpeed);
+            Serial.printf("-> [Pin %d] Detenido.\n", pin);
+        } else if (targetState == "CERRADO") { // La orden es CERRAR, pero ejecutamos la acción de ABRIR
+            Serial.printf("-> [Pin %d] Orden CERRAR recibida, ejecutando Apertura por %d ms...\n", pin, duration);
+            servo->write(speedOpen); // Usamos la velocidad de apertura
+            delay(duration);
+            servo->write(stopSpeed);
+            Serial.printf("-> [Pin %d] Detenido.\n", pin);
+        }
+    } else { // Lógica ESTÁNDAR para los otros servos (0-180 grados) con control de velocidad
+        int currentPos = servo->read();
+
+        // --- AJUSTA ESTE VALOR PARA CAMBIAR LA VELOCIDAD ---
+        // Un valor MÁS ALTO hará que el movimiento sea MÁS LENTO. (Pausa en milisegundos)
+        int servoStepDelay = 15;
+
+        if (targetState == "ABIERTO") { // Orden ABRIR, se mueve a 180°
+            Serial.printf("-> [Pin %d] Moviendo lentamente a ABIERTO (180°)...\n", pin);
+            for (int pos = currentPos; pos <= 180; pos++) {
+                servo->write(pos);
+                delay(servoStepDelay);
+            }
+        } else { // Asume CERRADO, se mueve a 0°
+            Serial.printf("-> [Pin %d] Moviendo lentamente a CERRADO (0°)...\n", pin);
+            for (int pos = currentPos; pos >= 0; pos--) {
+                servo->write(pos);
+                delay(servoStepDelay);
+            }
+        }
+    }
+}
+
+
 void reportNewState(int servoId, String newState) {
     WiFiClientSecure client;
     client.setInsecure();
     HTTPClient http;
     String url = "https://" + String(serverHost) + String(serverReportStatePath) + String(servoId) + "/" + newState;
-   
+    
     Serial.print("Reportando nuevo estado al servidor: ");
     Serial.println(url);
 
@@ -117,7 +207,7 @@ void switchToAutoMode(int servoId) {
     client.setInsecure();
     HTTPClient http;
     String url = "https://" + String(serverHost) + String(serverSetModePath) + String(servoId) + "/AUTOMATICO";
-   
+    
     Serial.print("Enviando petición para cambiar a modo AUTO: ");
     Serial.println(url);
 
@@ -140,12 +230,12 @@ void checkServer() {
     WiFiClientSecure client;
     client.setInsecure();
     HTTPClient http;
-   
+    
     String mac = WiFi.macAddress();
     mac.replace(":", "");
     mac.toLowerCase();
     String fullUrl = "https://" + String(serverHost) + String(serverPath) + mac;
-   
+    
     if (http.begin(client, fullUrl)) {
         int httpCode = http.GET();
 
@@ -154,8 +244,7 @@ void checkServer() {
 
             Serial.println("📦 JSON recibido del servidor:");
             Serial.println(payload);
-            Serial.println("-----------------------------");
-
+            
             StaticJsonDocument<1536> doc;
             DeserializationError error = deserializeJson(doc, payload);
 
@@ -166,11 +255,14 @@ void checkServer() {
                 return;
             }
 
+            // Vector para almacenar todas las acciones de movimiento necesarias
+            std::vector<ServoAction> pendingActions;
+
             JsonObject clima = doc["clima"];
             float temperaturaActual = clima["temperatura"];
             bool estaLloviendo = clima["esta_lloviendo"];
 
-            Serial.printf("Clima recibido del servidor: Temp=%.1f°C, Lloviendo=%s\n", temperaturaActual, estaLloviendo ? "Si" : "No");
+            Serial.printf("Clima recibido: Temp=%.1f°C, Lloviendo=%s\n", temperaturaActual, estaLloviendo ? "Si" : "No");
 
             JsonArray servosArray = doc["servos"].as<JsonArray>();
             if (!servosArray) {
@@ -178,118 +270,89 @@ void checkServer() {
                 return;
             }
 
+            // --- PASO 1: RECOLECTAR TODAS LAS ACCIONES NECESARIAS ---
             for (JsonObject servoObj : servosArray) {
                 int pin = servoObj["pin"];
                 int servoId = servoObj["id"];
-                Serial.printf("🔍 Analizando servo ID %d (Pin %d)\n", servoId, pin);
-
-                Servo* currentServo = getServoObject(pin);
-                if (currentServo == nullptr) continue;
-
                 String modo = servoObj["modo"].as<String>();
                 modo.toUpperCase();
                 String estadoHorario = servoObj["estado_horario"].as<String>();
                 estadoHorario.toUpperCase();
-               
-                Serial.println("-------------------------");
-                Serial.printf("Procesando servo ID %d (Pin %d) | Modo: %s\n", servoId, pin, modo.c_str());
-
-                // --- LÓGICA DE AUTO-CORRECCIÓN DE MODO ---
-                if (modo == "MANUAL" && (estadoHorario == "ABIERTO" || estadoHorario == "CERRADO")) {
-                    Serial.printf("Inconsistencia detectada: Modo MANUAL pero con horario activo. Solicitando cambio a AUTOMATICO para servo ID %d.\n", servoId);
-                    switchToAutoMode(servoId);
-                }
+                
+                String accionFinal = ""; // Variable para guardar la acción final
 
                 if (modo == "MANUAL") {
-                    long proximoEventoUTC = servoObj["proximo_evento_utc"];
-                    time_t now;
-                    time(&now);
-                   
-                    if (proximoEventoUTC > 0) {
-                        long diff = proximoEventoUTC - now;
-                        Serial.printf("Próximo evento en %ld segundos.\n", diff);
-                        if (diff > 0 && diff <= 900) {
-                            Serial.println("¡Evento cercano! Cambiando a modo AUTOMATICO.");
-                            switchToAutoMode(servoId);
-                        }
-                    }
-                   
                     String estadoActualDB = servoObj["estado"].as<String>();
                     estadoActualDB.toUpperCase();
                     if (servoLocalStates[pin] != estadoActualDB) {
-                        if (estadoActualDB == "ABIERTO") currentServo->write(180); else currentServo->write(0);
-                        servoLocalStates[pin] = estadoActualDB;
-                        Serial.printf("-> Movido a %s por orden manual.\n", estadoActualDB.c_str());
-                    } else {
-                        Serial.printf("-> No se requiere movimiento. Estado actual: %s\n", servoLocalStates[pin].c_str());
+                        accionFinal = estadoActualDB;
                     }
                 }
                 else if (modo == "AUTOMATICO") {
                     if (estadoHorario == "ABIERTO" || estadoHorario == "CERRADO") {
                         if (servoLocalStates[pin] != estadoHorario) {
-                            if (estadoHorario == "ABIERTO") currentServo->write(180); else currentServo->write(0);
-                            servoLocalStates[pin] = estadoHorario;
-                            Serial.printf("--> Movido a %s por horario.\n", estadoHorario.c_str());
-                            reportNewState(servoId, estadoHorario);
-                        } else {
-                            Serial.printf("--> No se requiere movimiento. Estado actual por horario: %s\n", servoLocalStates[pin].c_str());
+                            accionFinal = estadoHorario;
                         }
-                    }
-                    else {
-                        // ✅ AQUÍ VA EL NUEVO CÓDGO - REEMPLAZA LO QUE HAY DENTRO DE ESTE ELSE
+                    } else { // Lógica climática
                         JsonObject condiciones = servoObj["condiciones"];
                         if (!condiciones || temperaturaActual == -100.0) continue;
-
+                        
                         String accionDeseada = servoLocalStates[pin];
                         bool ignorarLluvia = condiciones["ignorar_lluvia"];
-
-                        // ✅ MANEJO CORRECTO DE VALORES NULOS
-                        float tempAbrir = -100.0;
-                        float tempCerrar = -100.0;
-
-                        if (condiciones.containsKey("temp_abrir") && !condiciones["temp_abrir"].isNull()) {
-                            tempAbrir = condiciones["temp_abrir"].as<float>();
-                        }
-                        if (condiciones.containsKey("temp_cerrar") && !condiciones["temp_cerrar"].isNull()) {
-                            tempCerrar = condiciones["temp_cerrar"].as<float>();
-                        }
-
-                        bool tieneTempAbrir = tempAbrir != -100.0;
-                        bool tieneTempCerrar = tempCerrar != -100.0;
-
-                        Serial.printf("🌡️ Temperaturas - Abrir: %.1f°C, Cerrar: %.1f°C\n", tempAbrir, tempCerrar);
-                        Serial.printf("📊 Condiciones - TieneAbrir: %d, TieneCerrar: %d\n", tieneTempAbrir, tieneTempCerrar);
-
-                        // --- LÓGICA CLIMÁTICA ---
-                        if (estaLloviendo && !ignorarLluvia) {
-                            accionDeseada = "CERRADO";
-                            Serial.println("--> Cerrando por lluvia");
-                        }
-                        else if (tieneTempAbrir && temperaturaActual >= tempAbrir) {
-                            accionDeseada = "ABIERTO";
-                            Serial.printf("--> Abriendo por calor (%.1f°C >= %.1f°C)\n", temperaturaActual, tempAbrir);
-                        }
-                        else if (tieneTempCerrar && temperaturaActual <= tempCerrar) {
-                            accionDeseada = "CERRADO";
-                            Serial.printf("--> Cerrando por frío (%.1f°C <= %.1f°C)\n", temperaturaActual, tempCerrar);
-                        }
-                        else {
-                            accionDeseada = servoLocalStates[pin];
-                            Serial.println("--> Sin reglas de temperatura activas. Manteniendo estado actual.");
-                        }
-
+                        float tempAbrir = condiciones.containsKey("temp_abrir") && !condiciones["temp_abrir"].isNull() ? condiciones["temp_abrir"].as<float>() : -100.0;
+                        float tempCerrar = condiciones.containsKey("temp_cerrar") && !condiciones["temp_cerrar"].isNull() ? condiciones["temp_cerrar"].as<float>() : -100.0;
+                        
+                        if (estaLloviendo && !ignorarLluvia) accionDeseada = "CERRADO";
+                        else if (tempAbrir != -100.0 && temperaturaActual >= tempAbrir) accionDeseada = "ABIERTO";
+                        else if (tempCerrar != -100.0 && temperaturaActual <= tempCerrar) accionDeseada = "CERRADO";
+                        
                         if (servoLocalStates[pin] != accionDeseada) {
-                            if (accionDeseada == "ABIERTO") currentServo->write(180); else currentServo->write(0);
-                            servoLocalStates[pin] = accionDeseada;
-                            Serial.printf("--> Movido a %s por condición climática.\n", accionDeseada.c_str());
-                            reportNewState(servoId, accionDeseada);
-                        } else {
-                            Serial.printf("--> No se requiere movimiento. Estado actual: %s\n", servoLocalStates[pin].c_str());
+                           accionFinal = accionDeseada;
                         }
                     }
                 }
+                
+                // Si se determinó que se necesita una acción, la añadimos a la lista
+                if (accionFinal != "") {
+                    pendingActions.push_back({pin, servoId, accionFinal, modo});
+                }
             }
-            Serial.println("-------------------------");
+
+            // --- PASO 2: PRIORIZAR Y EJECUTAR ACCIONES ---
+            if (!pendingActions.empty()) {
+                Serial.println("-------------------------");
+                Serial.printf("▶️ Se encontraron %d acciones pendientes.\n", pendingActions.size());
+
+                // Buscamos si la cortina necesita moverse y la ponemos al principio de la lista.
+                int cortinaActionIndex = -1;
+                for (int i = 0; i < pendingActions.size(); ++i) {
+                    if (pendingActions[i].pin == CORTINA_PIN) {
+                        cortinaActionIndex = i;
+                        break;
+                    }
+                }
+
+                // Si encontramos la acción de la cortina y no está ya al principio, la movemos.
+                if (cortinaActionIndex > 0) {
+                    Serial.printf("Priorizando la cortina (Pin %d).\n", CORTINA_PIN);
+                    std::swap(pendingActions[0], pendingActions[cortinaActionIndex]);
+                }
+
+                // Ahora ejecutamos las acciones en orden (la cortina, si existe, será la primera).
+                for (const auto& action : pendingActions) {
+                    Servo* servoToMove = getServoObject(action.pin);
+                    moveServo(servoToMove, action.pin, action.targetState);
+                    servoLocalStates[action.pin] = action.targetState;
+
+                    if (action.modo == "AUTOMATICO") {
+                        reportNewState(action.servoId, action.targetState);  //para reportale el nuevo estado al servidor o sea automatico
+                    }
+                }
+            } else {
+                 Serial.println("-------------------------");
+                 Serial.println("✅ No se requieren movimientos. Todo en orden.");
+            }
+
         } else {
             Serial.printf("Error en la petición HTTP al servidor, código: %d (%s)\n", httpCode, http.errorToString(httpCode).c_str());
         }
@@ -339,7 +402,7 @@ void startAPMode() {
         int n = WiFi.scanNetworks();
         for (int i = 0; i < n; ++i) { html += "<option value='" + WiFi.SSID(i) + "'>" + WiFi.SSID(i) + "</option>"; }
         html += "</select><br><input name='pass' type='password' placeholder='Contraseña'><br><br><input type='submit' value='Guardar y Conectar'></form></body></html>";
-   
+    
         request->send(200, "text/html", html);
     });
 

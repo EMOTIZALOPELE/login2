@@ -5,12 +5,12 @@ namespace App\Controllers;
 use App\Models\DispositivoModel;
 use App\Models\HorariosModel; 
 use App\Models\ServoModel;    
-use CodeIgniter\API\ResponseTrait;
-use Psr\Log\LogLevel;
+use CodeIgniter\API\ResponseTrait; // Para usar $this->response->setJSON() y setStatusCode()
+use Psr\Log\LogLevel; // Importar para los niveles de log
 
 class ServoController extends BaseController
 {
-    use ResponseTrait;
+    use ResponseTrait; // Habilita el ResponseTrait para manejar respuestas JSON fácilmente
 
     protected $dispositivoModel;
     protected $horariosModel;
@@ -26,35 +26,50 @@ class ServoController extends BaseController
     }
 
     /**
-     * Carga la vista de control del servo.
+     * Carga la vista de control del servo, pasándole los datos del dispositivo y sus servos.
+     * La vista ahora mostrará múltiples servos.
+     * Ruta: /masivo/{dispositivo_id}
      */
     public function estado($dispositivo_id = null)
     {
         if (empty($dispositivo_id)) {
+            log_message(LogLevel::ERROR, 'ServoController::estado - Dispositivo_id no especificado.');
             return redirect()->to(base_url('/irainicio'))->with('error', 'No se ha especificado un dispositivo.');
         }
 
         $dispositivo = $this->dispositivoModel->find($dispositivo_id);
 
         if (!$dispositivo) {
+            log_message(LogLevel::ERROR, 'ServoController::estado - Dispositivo con ID ' . $dispositivo_id . ' no encontrado.');
             return redirect()->to(base_url('/irainicio'))->with('error', 'Dispositivo no encontrado.');
         }
 
+        // Verificar que el dispositivo pertenece al usuario logueado
         if ($dispositivo['usuario_id'] != session()->get('id')) {
+            log_message(LogLevel::WARNING, 'ServoController::estado - Acceso denegado. Usuario ' . session()->get('id') . ' intentó acceder al dispositivo ' . $dispositivo_id . ' (propietario: ' . $dispositivo['usuario_id'] . ').');
             return redirect()->to(base_url('/irainicio'))->with('error', 'No tienes permiso para controlar este dispositivo.');
         }
 
+        // Obtener TODOS los servos asociados a este dispositivo desde la nueva tabla 'servos'
         $servos = $this->servoModel->where('dispositivo_id', $dispositivo_id)->findAll();
+
+        // 🔥 NUEVO: Obtener los nombres de todas las tarjetas del usuario
+        $tarjetas = $this->horariosModel
+            ->where('usuario_id', session()->get('id'))
+            ->findAll();
 
         $data = [
             'dispositivo' => $dispositivo,
-            'servos_asociados' => $servos
+            'servos_asociados' => $servos, // Pasar los servos a la vista
+            'tarjetas' => $tarjetas // 🔥 Pasar las tarjetas a la vista
         ];
         return view('ServoView', $data);
     }
 
     /**
-     * Establece el estado manual de un servo y calcula dinámicamente el tiempo de expiración.
+     * El Frontend (página web) llama a esta función para establecer el estado deseado
+     * de un servo ESPECÍFICO (control manual).
+     * Ruta: /funcional/actualizarEstado/{servo_id}/{estado}
      */
     public function actualizarEstado($servo_id, $estado)
     {
@@ -97,22 +112,9 @@ class ServoController extends BaseController
      * Esta función también aplica la lógica horaria y actualiza la DB si es necesario.
      * Ruta: /dispositivos/estado/{id_o_mac}
      */
-    public function obtenerEstadoDispositivo($id_o_mac)
+    public function obtenerEstadoDispositivo($macAddress)
     {
-        // Configurar zona horaria para Argentina
-        date_default_timezone_set('America/Argentina/Buenos_Aires');
-        
-        log_message(LogLevel::INFO, "obtenerEstadoDispositivo: Iniciando con ID/MAC: " . $id_o_mac);
-        
-        // 1. Determinar si el identificador es numérico (ID del dispositivo) o una cadena (MAC)
-        if (is_numeric($id_o_mac)) {
-            $dispositivo = $this->dispositivoModel->find($id_o_mac);
-            log_message(LogLevel::INFO, "Buscando por ID numérico: " . $id_o_mac);
-        } else {
-            $dispositivo = $this->dispositivoModel->where('codigo', $id_o_mac)->first();
-            log_message(LogLevel::INFO, "Buscando por MAC: " . $id_o_mac);
-        }
-
+        $dispositivo = $this->dispositivoModel->where('codigo', $macAddress)->first();
         if (!$dispositivo) {
             return $this->failNotFound('Dispositivo no encontrado');
         }

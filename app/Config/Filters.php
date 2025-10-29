@@ -36,6 +36,9 @@ class Filters extends BaseFilters
         'pagecache'     => PageCache::class,
         'performance'   => PerformanceMetrics::class,
         'SessionAdmin'  => \App\Filters\SessionAdmin::class,
+        'auth'     => \App\Filters\AuthFilter::class,
+        'verified' => \App\Filters\VerifiedUserFilter::class, 
+
     ];
 
     /**
@@ -71,6 +74,26 @@ class Filters extends BaseFilters
      */
     public array $globals = [
         'before' => [
+            'csrf' => [
+                'except' => [
+                    'login', // Excluir la ruta de login
+                    'register/store', // Excluir registro
+                    'forgotpassword1', // Excluir recuperación de contraseña
+                    'reset-password', // Excluir reset de password
+                    'api/*', // Excluir todas las APIs
+                    'paypal/*',
+                    'paypal/captureOrder', // PayPal webhook
+                    'paypal/createOrder',
+                    'api/esp32/*', // Rutas ESP32
+                    'borrar_tarjeta/*',
+                    'dispositivos/reclamar', 
+                    '/mis-compras',
+                    'servos/seleccionar',    
+                    'actualizar_nombre_tarjeta',
+                    'seleccionar-plan',
+                    'verificar-servos-configurados'
+                ]
+            ],    
             // 'honeypot',
             // 'csrf',
             // 'invalidchars',
@@ -109,6 +132,52 @@ class Filters extends BaseFilters
         "SessionAdmin" => [
             "before" => [
                 "/inicio"
+            ]
+        ],
+        'auth' => [ // ✅ Filtro de autenticación
+            'before' => [
+                '/irainicio',
+                '/mishorarios',
+                '/configuracion',
+                '/configuracion/*',
+                '/dispositivos',
+                '/modifyname',
+                '/modifypass',
+                '/continuar-pago',
+                '/mis-compras',
+                '/paypal/createOrder',
+                '/masivo/*',
+                '/funcional/*',
+                '/servos/*',
+                '/horarios/*',
+                '/addtarjeta',
+                '/addtarjeta/*',
+                '/crear-tarjeta',
+                '/tercon',
+                '/pantalla'
+            ]
+        ],
+        'verified' => [ // ✅ Filtro de verificación de email
+            'before' => [
+                '/irainicio',
+                '/mishorarios',
+                '/configuracion',
+                '/configuracion/*',
+                '/dispositivos',
+                '/modifyname',
+                '/modifypass',
+                '/continuar-pago',
+                '/mis-compras',
+                '/paypal/createOrder',
+                '/masivo/*',
+                '/funcional/*',
+                '/servos/*',
+                '/horarios/*',
+                '/addtarjeta',
+                '/addtarjeta/*',
+                '/crear-tarjeta',
+                '/tercon',
+                '/pantalla'
             ]
         ]
     ];

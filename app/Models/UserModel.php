@@ -15,9 +15,9 @@ class UserModel extends Model
         'ciudad',
         'reset_token',
         'reset_expires',
-        'Nombreventana',
-        'ventana',
-        'cortina',
-        'postigon'];
+        'verificacion_token',
+        'verificacion_registro',
+        'expira_verificacion',
+        'is_verified'];
     protected $useTimestamps = true;
 }

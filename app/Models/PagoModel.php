@@ -32,12 +32,15 @@ class PagoModel extends Model
     // Campos permitidos para inserción o actualización masiva
     protected $allowedFields = [
         'order_id',
+        'usuario_id', 
         'email',
         'monto',
         'moneda',
         'fecha', // Campo para la fecha y hora del pago
         'estado',
-        'detalles', // Para almacenar los detalles completos de la respuesta de PayPal (JSON)
+        'detalles',
+        'tipos_servos',
+        'cant_servos',
     ];
 
     // Reglas de validación antes de insertar o actualizar

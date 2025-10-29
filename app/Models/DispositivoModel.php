@@ -14,7 +14,7 @@ class DispositivoModel extends Model
         'created_at', 
         'updated_at',
         'esta_usado',
-        'estado'
+        'pago_id'
     ];
 
     // Función útil para verificar si un código está disponible

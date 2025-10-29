@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>VECOPO - Automatizacion</title>
+    <title>VECOPO - Control Inteligente</title>
     
     <script src="https://kit.fontawesome.com/6f93a4b68f.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -104,8 +104,9 @@
                         <ul>
                             <li><a href="<?= base_url('/inicio') ?>" id="selected">Inicio</a></li>
                             <li><a href="#" onclick="abrirModal()">Añadir Tarjeta</a></li>
-                            <li><a href="<?= base_url('pele') ?>">Diseño</a></li>
                             <li><a href="#" data-toggle="modal" data-target="#servoModal"><i class="fas fa-gamepad"></i> Manual</a></li>
+                            <li><a href="<?= base_url('dispositivos') ?>"><i class="fas fa-user-cog"></i> Dispositivos</a></li> 
+                            <li><a href="<?= base_url('mis-compras') ?>"><i class="fas fa-shopping-bag"></i> Mis Compras</a></li>
                             <li><a href="<?= base_url('logout') ?>">Salir</a></li>
                         </ul>
                     </nav>
@@ -124,62 +125,79 @@
             <ul>
                 <li><a href="<?= base_url('/inicio') ?>" id="selected-mobile"><i class="fas fa-home"></i> Inicio</a></li>
                 <li><a href="#" onclick="abrirModalYCerrarMenu()"><i class="fas fa-plus-square"></i> Añadir Tarjeta</a></li>
-                <li><a href="<?= base_url('pele') ?>"><i class="fas fa-palette"></i> Diseño</a></li>
                 <li><a href="#" data-toggle="modal" data-target="#servoModal"><i class="fas fa-gamepad"></i> Manual</a></li>
+                <li><a href="<?= base_url('dispositivos') ?>"><i class="fas fa-user-cog"></i> Dispositivos</a></li>
                 <li><a href="<?= base_url('logout') ?>"><i class="fas fa-sign-out-alt"></i> Salir</a></li>
             </ul>
         </nav>
     </header>
 
     <main class="container__card">
-    
-    <?php if (session()->getFlashdata('mensaje') || session()->getFlashdata('success')): ?>
-        <div class="alert alert-success"><?= session()->getFlashdata('mensaje') ?? session()->getFlashdata('success') ?></div>
-    <?php endif; ?>
-    <?php if (session()->getFlashdata('error')): ?>
-        <div class="alert alert-danger"><?= session()->getFlashdata('error') ?></div>
-    <?php endif; ?>
 
-    <div class="horarios-container">
-        
-        <?php foreach ($horarios as $horario): ?>
-            <div class="horario-card">
-                <h3 data-idhorario="<?= esc($horario['idhorario']); ?>">
-                    <span class="card-title">
-                        <?= isset($horario['nombre_tarjeta']) && !empty($horario['nombre_tarjeta'])
-                            ? esc($horario['nombre_tarjeta'])
-                            : 'Tu horario ' . session()->get('nombre'); ?>
-                    </span>
-                </h3>
-                <div class="card-scrollable-content">
-                    <p><strong>Ventana Apertura:</strong> <span><?= esc($horario['ventana_apertura']); ?></span></p>
-                    <p><strong>Ventana Cierre:</strong> <span><?= esc($horario['ventana_cierre']); ?></span></p>
-                    <p><strong>Cortina Apertura:</strong> <span><?= esc($horario['cortina_apertura']); ?></span></p>
-                    <p><strong>Cortina Cierre:</strong> <span><?= esc($horario['cortina_cierre']); ?></span></p>
-                    <p><strong>Postigón Apertura:</strong> <span><?= esc($horario['postigon_apertura']); ?></span></p>
-                    <p><strong>Postigón Cierre:</strong> <span><?= esc($horario['postigon_cierre']); ?></span></p>
-                    
-                    <div class="button-container">
-                        <form action="<?= base_url('configuracion/' . esc($horario['idhorario'])) ?>" method="GET" style="flex: 1;">
-                            <button type="submit" class="config-button">Configurar</button>
-                        </form>
-                        <button type="button" class="config-button"
-                                data-toggle="modal" data-target="#changeNameModal"
-                                data-idhorario="<?= esc($horario['idhorario']); ?>"
-                                data-current-name="<?= esc($horario['nombre_tarjeta'] ?? ''); ?>">
-                            Cambiar Nombre
-                        </button>
-                    </div>
-                    
-                    <form action="<?= site_url('borrar_tarjeta/' . esc($horario['idhorario'])) ?>" method="POST" onsubmit="return confirm('¿Seguro que quieres eliminar esta tarjeta?');">
-                        <?= csrf_field() ?>
-                        <button type="submit" class="delete-button">Eliminar</button>
-                    </form>
-                </div>
+        <?php // ?>
+        <?php if (session()->getFlashdata('success')): ?>
+            <div class="alert alert-success" role="alert" style="background-color: var(--success-color); color: var(--dark-bg); border: none; border-radius: 10px; margin-bottom: 1.5rem;">
+                <?= session()->getFlashdata('success') ?>
             </div>
-        <?php endforeach; ?>
+        <?php endif; ?>
+        <?php if (session()->getFlashdata('error')): ?>
+            <div class="alert alert-danger" role="alert" style="background-color: var(--danger-color); color: var(--text-primary); border: none; border-radius: 10px; margin-bottom: 1.5rem;">
+                <?= session()->getFlashdata('error') ?>
+            </div>
+        <?php endif; ?>
+        <?php // ?>
+
+
+        <div class="horarios-container">
+            <?php foreach ($horarios as $horario): ?>
+                <div class="horario-card">
+                    
+                    <?php // ?>
+                    <h3 data-idhorario="<?= esc($horario['idhorario']); ?>">
+                        <span class="card-title">
+                            <?= isset($horario['nombre_tarjeta']) && !empty($horario['nombre_tarjeta'])
+                                ? esc($horario['nombre_tarjeta'])
+                                : 'Tu horario ' . session()->get('nombre'); ?>
+                        </span>
+                    </h3>
+                    <div class="card-scrollable-content">
+                        
+                        <?php if (isset($horario['servos']) && !empty($horario['servos'])): ?>
+                            <?php foreach ($horario['servos'] as $servo): ?>
+                                <p><strong><?= esc(ucfirst($servo['nombre_servo'] ?? 'Servo')) ?> Apertura:</strong> <span><?= esc($servo['horario_apertura']); ?></span></p>
+                                <p><strong><?= esc(ucfirst($servo['nombre_servo'] ?? 'Servo')) ?> Cierre:</strong> <span><?= esc($servo['horario_cierre']); ?></span></p>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <p>No hay horarios de servo configurados para este dispositivo.</p>
+                        <?php endif; ?>
+
+                        <div class="button-container">
+                            <button type="button" class="config-button" 
+                                    data-dispositivo-id="<?= esc($horario['dispositivo_id'] ?? $horario['idhorario']) ?>">
+                                Configurar
+                            </button>
+                            
+                            <button type="button" class="config-button"
+                                    data-toggle="modal" data-target="#changeNameModal"
+                                    data-idhorario="<?= esc($horario['idhorario']); ?>"
+                                    data-current-name="<?= isset($horario['nombre_tarjeta']) && !empty($horario['nombre_tarjeta'])
+                                        ? esc($horario['nombre_tarjeta'])
+                                        : 'Horario de ' . session()->get('nombre'); ?>">
+                                Cambiar Nombre
+                            </button>
+                        </div>
+                        
+                        <?php // ?>
+                        <form action="<?= site_url('borrar_tarjeta/' . esc($horario['idhorario'])) ?>" method="POST" onsubmit="return confirm('¿Seguro que quieres eliminar esta tarjeta?');">
+                                <input type="hidden" name="<?= csrf_token() ?>" value="<?= csrf_hash() ?>">
+
+                            <button type="submit" class="delete-button">Eliminar</button>
+                        </form>
+                    </div>
+                </div>
+            <?php endforeach; ?>
         </div>
-</main>
+    </main>
     
     <div class="modal fade" id="changeNameModal" tabindex="-1" role="dialog" aria-labelledby="changeNameModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -217,6 +235,7 @@
         <div>
             <h3>Añadir Nuevo Dispositivo</h3>
             <form id="reclamarForm"> 
+                <input type="hidden" name="<?= csrf_token() ?>" value="<?= csrf_hash() ?>">
                 <input type="text" id="macInput" name="mac_address" placeholder="Ingrese la Dirección MAC del Dispositivo" required>
                 <div id="macError" style="color:var(--danger-color); display:none; margin-top:10px; font-size: 0.9rem;"></div>
                 <div class="modal-footer">
@@ -226,10 +245,11 @@
             </form>
         </div>
     </div>
-    <div class="modal fade" id="servoModal" tabindex="-1" role="dialog" aria-labelledby="servoModalLabel" aria-hidden="true">
+     <div class="modal fade" id="servoModal" tabindex="-1" role="dialog" aria-labelledby="servoModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <form id="selectServoForm">
+                    <input type="hidden" name="<?= csrf_token() ?>" value="<?= csrf_hash() ?>">
                     <div class="modal-header">
                         <h5 class="modal-title" id="servoModalLabel">Control Manual</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="color: var(--primary-color);">&times;</span></button>
@@ -248,10 +268,36 @@
         </div>
     </div>
 
+    <div style="background: rgba(255,0,0,0.1); padding: 10px; margin: 10px; border-radius: 5px; display: none;">
+        <h4>DEBUG Info:</h4>
+        <?php foreach ($horarios as $index => $horario): ?>
+            <p>Tarjeta <?= $index + 1 ?>: 
+                ID Horario: <?= $horario['idhorario'] ?>, 
+                Dispositivo ID: <?= $horario['dispositivo_id'] ?? 'No tiene' ?>
+            </p>
+        <?php endforeach; ?>
+    </div>
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     
     <script>
+        // Guardamos los nombres válidos de las tarjetas desde PHP en un array de JavaScript
+        const validCardNames = [
+            <?php foreach ($horarios as $horario): ?>
+                "<?= esc($horario['nombre_tarjeta'], 'js') ?>",
+            <?php endforeach; ?>
+        ];
+    </script>
+
+    <script>
+
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': '<?= csrf_hash() ?>'
+            }
+        });
+
     document.addEventListener('DOMContentLoaded', function() {
         const hamburgerButton = document.getElementById('menu-toggle');
         const navigationMenu = document.getElementById('navigationMenu');
@@ -312,6 +358,7 @@
         updateWeatherPanel();
         setInterval(updateWeatherPanel, 1800000);
     });
+
     $(document).ready(function() {
         $('#changeNameModal').on('show.bs.modal', function (event) {
             const button = $(event.relatedTarget);
@@ -321,6 +368,7 @@
             modal.find('.modal-body #newCardName').val(currentName);
             modal.find('.modal-body #cardIdToChange').val(cardId);
         });
+
         $('#saveNewNameBtn').on('click', function() {
             const cardId = $('#cardIdToChange').val();
             const newName = $('#newCardName').val();
@@ -340,13 +388,22 @@
                 error: function(xhr) { alert('Error de comunicación con el servidor.'); }
             });
         });
+        
         $('#selectServoForm').on('submit', function(e) {
             e.preventDefault();
             const form = $(this);
             const button = form.find('button[type="submit"]');
             const errorDiv = $('#servoError');
-            button.prop('disabled', true).text('Buscando...');
+            const enteredName = $('#tarjetaInput').val().trim();
+
+            if (!validCardNames.includes(enteredName)) {
+                errorDiv.text('El nombre de la tarjeta no existe o es incorrecto.').show();
+                return;
+            }
+            
+            button.prop('disabled', true).text('Verificando...');
             errorDiv.hide();
+            
             $.ajax({
                 url: '<?= base_url('/servos/seleccionar') ?>', method: 'POST',
                 data: form.serialize(), dataType: 'json',
@@ -361,7 +418,9 @@
                 complete: function() { button.prop('disabled', false).text('Continuar'); }
             });
         });
+
         $('#reclamarForm').on('submit', function(e){
+            
             e.preventDefault();
             const form = $(this);
             const button = form.find('button[type="submit"]');
@@ -369,6 +428,7 @@
             button.prop('disabled', true).text('Verificando...');
             errorDiv.hide();
             $.ajax({
+                
                 url: '<?= base_url('/dispositivos/reclamar') ?>', method: 'POST',
                 data: form.serialize(), dataType: 'json',
                 success: function(response) {
@@ -383,7 +443,56 @@
                 complete: function() { button.prop('disabled', false).text('Reclamar Dispositivo'); }
             });
         });
-    });
+
+        console.log('=== DEBUG CONFIGURAR ===');
+        console.log('Botones con data-dispositivo-id:', $('.config-button[data-dispositivo-id]').length);
+        $('.config-button[data-dispositivo-id]').each(function(i) {
+            console.log('Botón ' + i + ':', $(this).data('dispositivo-id'));
+        });
+
+        // ✅ NUEVO CÓDIGO - CON redirect_url
+        $(document).on('click', '.config-button[data-dispositivo-id]', function() {
+            const dispositivoId = $(this).data('dispositivo-id');
+            const button = $(this);
+            
+            console.log('Dispositivo ID clickeado:', dispositivoId);
+            
+            button.prop('disabled', true).text('Verificando...');
+            
+            $.ajax({
+                url: '<?= base_url('verificar-servos-configurados') ?>',
+                method: 'POST',
+                data: { 
+                    dispositivo_id: dispositivoId,
+                    '<?= csrf_token() ?>': '<?= csrf_hash() ?>'
+                },
+                dataType: 'json',
+                success: function(response) {
+                    console.log('Respuesta del servidor:', response);
+                    
+                    // 🔥 CAMBIO: Usar redirect_url si existe
+                    if (response.redirect_url) {
+                        window.location.href = response.redirect_url;
+                    } else if (response.configurado) {
+                        window.location.href = '<?= base_url('configuracion') ?>/' + dispositivoId;
+                    } else if (response.pago_id) {
+                        window.location.href = '<?= base_url('seleccionar-servos') ?>/' + response.pago_id;
+                    } else if (response.error) {
+                        alert('Error: ' + response.error);
+                        button.prop('disabled', false).text('Configurar');
+                    } else {
+                        alert('Error desconocido. Intenta nuevamente.');
+                        button.prop('disabled', false).text('Configurar');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error AJAX:', error);
+                    alert('Error de conexión. Intenta nuevamente.');
+                    button.prop('disabled', false).text('Configurar');
+                }
+            });
+        });
+            });
     </script>
 </body>
 </html>

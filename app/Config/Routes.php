@@ -21,8 +21,21 @@ $routes->post('/forgotpassword1', 'Home::forgotPPassword');
 $routes->get('/reset-password/(:any)', 'Home::showResetPasswordForm/$1'); 
 $routes->post('/reset-password', 'Home::resetPassword'); 
 
+<<<<<<< HEAD
 // Ahora /irainicio apunta al controlador Home y a la función irainicio() que hemos preparado.
 $routes->get('/irainicio', 'Home::irainicio');
+=======
+<<<<<<< HEAD
+// Ahora /irainicio apunta al controlador Home y a la función irainicio() que hemos preparado.
+$routes->get('/irainicio', 'Home::irainicio');
+=======
+// ====================================================================
+// ===== CORRECCIÓN CLAVE =====
+// Ahora /irainicio apunta al controlador Home y a la función irainicio() que hemos preparado.
+$routes->get('/irainicio', 'Home::irainicio');
+// ====================================================================
+>>>>>>> 5713a74aeae9c8278a7179ddb883ccac5ba353c4
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
 $routes->get('mishorarios', 'HorariosController::index');
 
 // CONFIGURACIÓN DE DISPOSITIVOS
@@ -31,8 +44,17 @@ $routes->get('/configuracion', 'ConfiguracionController::index');
 // Ruta para guardar la configuración (POST)
 $routes->post('/configuracion/guardar', 'ConfiguracionController::guardar');
 // Ruta con parámetro para ver la configuración de un dispositivo específico
+<<<<<<< HEAD
 $routes->get('/configuracion/(:num)', 'ConfiguracionController::index/$1');
 $routes->post('/configuracion/guardar', 'ConfiguracionController::guardar'); // Ruta para el formulario
+=======
+<<<<<<< HEAD
+$routes->get('/configuracion/(:num)', 'ConfiguracionController::index/$1');
+$routes->post('/configuracion/guardar', 'ConfiguracionController::guardar'); // Ruta para el formulario
+=======
+$routes->get('configuracion/(:num)', 'ConfiguracionController::index/$1');
+>>>>>>> 5713a74aeae9c8278a7179ddb883ccac5ba353c4
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
 
 // RUTAS DE LA VISTA DE DISPOSITIVOS
 $routes->get('/dispositivos', 'DispositivoController::index');
@@ -57,8 +79,11 @@ $routes->get('horarios/configuracion/(:num)', 'HorariosController::configuracion
 $routes->post('/dispositivos/reclamar', 'HorariosController::reclamarDispositivoPorMac');
 $routes->post('/servos/seleccionar', 'HorariosController::seleccionarDispositivoPorNombre');
 $routes->post('/guardar_horarios', 'HorariosController::guardar_horarios');
+<<<<<<< HEAD
 $routes->post('horarios/eliminar/(:num)', 'HorariosController::eliminarHorario/$1', ['filter' => 'auth']);
 $routes->post('horarios/borrar-tarjeta/(:segment)', 'HorariosController::borrarTarjeta/$1');
+=======
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
 
 // PÁGINA DE SERVO
 $routes->get('/masivo/(:num)', 'ServoController::estado/$1');
@@ -66,9 +91,12 @@ $routes->get('/funcional/actualizarEstado/(:num)/(:any)', 'ServoController::actu
 $routes->get('/dispositivos/estado/(:segment)', 'ServoController::obtenerEstadoDispositivo/$1');
 $routes->get('/servos/set-mode/(:num)/(:segment)', 'ServoController::setModoOperacion/$1/$2');
 $routes->get('/servos/report-state/(:num)/(:segment)', 'ServoController::reportEstado/$1/$2');
+<<<<<<< HEAD
 $routes->post('/servo/eliminar/(:num)', 'ServoController::eliminarServo/$1');
 //RUTA PARA LA ELIMINACIÓN DEL SERVO
 $routes->post('servo/eliminar/(:num)', 'ServoController::eliminarServo/$1', ['filter' => 'auth']);
+=======
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
 
 // INICIO 2
 $routes->get('/iniciovalogin', 'Home::iralogin');
@@ -85,21 +113,40 @@ $routes->post('/update-password', 'Home::updatePassword');
 // PAYPAL
 $routes->post('/paypal/captureOrder', 'PayPalController::captureOrder');
 $routes->get('/continuar-pago', 'PayPalController::continuarPago', ['filter' => 'auth']);
+<<<<<<< HEAD
 $routes->get('/api/mis-compras', 'PayPalController::apiMisCompras', ['filter' => 'auth']);
 $routes->get('seleccionar-servos/(:num)', 'PayPalController::seleccionarServos/$1');
 $routes->post('guardar-configuracion-servos', 'PayPalController::guardarConfiguracionServos');
 $routes->post('verificar-servos-configurados', 'PayPalController::verificarServosConfigurados');
+=======
+
+<<<<<<< HEAD
+$routes->get('/api/mis-compras', 'PayPalController::apiMisCompras', ['filter' => 'auth']);
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
 
 
 // Aplicamos el filtro 'auth' para forzar el login antes de crear la orden.
 $routes->post('/paypal/createOrder', 'PayPalController::createOrder', ['filter' => 'auth']);
+<<<<<<< HEAD
+=======
+$routes->post('/paypal/captureOrder', 'PayPalController::captureOrder'); // La captura no necesita filtro, la orden ya tiene el usuario_id.
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
 
 // Estas son las rutas para el formulario de envío y validación de la compra de paypal
 $routes->get('/mis-compras', 'PayPalController::misCompras', ['filter' => 'auth']); 
 $routes->post('/guardar-direccion', 'PayPalController::guardarDireccion', ['filter' => 'auth']);
+<<<<<<< HEAD
 $routes->get('seleccionar-plan', 'PayPalController::seleccionarPlan'); //esto es lo que manda a los planes en caso de no tener compras realizadas
 
 // CLIMA
+=======
+
+=======
+>>>>>>> 5713a74aeae9c8278a7179ddb883ccac5ba353c4
+// CLIMA
+$routes->get('api/weather/current', 'WeatherController::getCurrentWeather');
+$routes->get('api/weather/forecast', 'WeatherController::getForecastWeather');
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
 $routes->get('/config', 'HorariosController::apiclima');
 
 // RUTAS PARA LA ESP32

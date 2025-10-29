@@ -13,7 +13,11 @@ class PayPalController extends Controller
     {
         $session = \Config\Services::session();
         
+<<<<<<< HEAD
         // VERIFICAR AMBAS VARIABLES POSIBLES DE SESIÓN
+=======
+        // 🔥 VERIFICAR AMBAS VARIABLES POSIBLES DE SESIÓN
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
         $usuario_id = $session->get('usuario_id') ?? $session->get('id');
         
         if (!$usuario_id) {
@@ -84,7 +88,11 @@ class PayPalController extends Controller
             return $this->response->setJSON(["error" => "No se recibió un Order ID"])->setStatusCode(400);
         }
 
+<<<<<<< HEAD
         // OBTENER USUARIO DE AMBAS VARIABLES POSIBLES
+=======
+        // 🔥 OBTENER USUARIO DE AMBAS VARIABLES POSIBLES
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
         $usuario_id = $session->get('usuario_id') ?? $session->get('id');
 
         $accessToken = $this->getAccessToken();
@@ -115,8 +123,13 @@ class PayPalController extends Controller
             if (!$usuario_id && $emailPagador) {
                 // Buscar si existe usuario con ese email
                 $usuarioExistente = $db->table('usuarios')
+<<<<<<< HEAD
                                     ->where('email', $emailPagador)
                                     ->get()->getRow();
+=======
+                                      ->where('email', $emailPagador)
+                                      ->get()->getRow();
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
                 
                 if ($usuarioExistente) {
                     // Usuario existe pero no estaba logueado - vincular compra
@@ -145,6 +158,7 @@ class PayPalController extends Controller
             if ($emailPagador) {
                 $this->sendConfirmationEmail($emailPagador, $orderID, $nuevoUsuarioCreado, $usuario_id);
             }
+<<<<<<< HEAD
 
             // 🔥 NUEVO: VERIFICAR SI NECESITA SELECCIÓN DE SERVOS
             $montoCapturado = $resultData['purchase_units'][0]['payments']['captures'][0]['amount']['value'] ?? 0;
@@ -160,6 +174,8 @@ class PayPalController extends Controller
                     'orderID' => $orderID
                 ]);
             }
+=======
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
         }
 
         return $this->response->setJSON([
@@ -169,9 +185,14 @@ class PayPalController extends Controller
             'user_created' => $nuevoUsuarioCreado,
             'user_id' => $usuario_id
         ]);
+<<<<<<< HEAD
 
         // Limpiar datos temporales
         $this->clearPaymentTempData();
+=======
+        // Limpiar datos temporales
+    $this->clearPaymentTempData();
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
     }
 
     private function getPlanName($amount)
@@ -401,11 +422,16 @@ private function sendConfirmationEmail($email, $orderID, $nuevoUsuario, $usuario
             $montoCapturado = $paymentData['purchase_units'][0]['payments']['captures'][0]['amount']['value'] ?? 0;
             $monedaCapturada = $paymentData['purchase_units'][0]['payments']['captures'][0]['amount']['currency_code'] ?? 'USD';
 
+<<<<<<< HEAD
             // Determinar plan basado en el monto
             $planInfo = $this->determinarPlan($montoCapturado);
             
             $data = [
                 'usuario_id' => $usuario_id,
+=======
+            $data = [
+                'usuario_id' => $usuario_id, // El nuevo campo
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
                 'order_id' => $orderID,
                 'email' => $paymentData['payer']['email_address'] ?? '',
                 'monto' => $montoCapturado,
@@ -418,7 +444,11 @@ private function sendConfirmationEmail($email, $orderID, $nuevoUsuario, $usuario
             ];
 
             $db->table('pagos')->insert($data);
+<<<<<<< HEAD
             $pagoIdInsertado = $db->insertID();
+=======
+            $pagoIdInsertado = $db->insertID(); // Obtenemos el ID del pago guardado
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
             
             $db->transComplete();
             
@@ -427,11 +457,16 @@ private function sendConfirmationEmail($email, $orderID, $nuevoUsuario, $usuario
                 return null;
             }
 
+<<<<<<< HEAD
             return $pagoIdInsertado;
+=======
+            return $pagoIdInsertado; // Devolvemos el ID
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
             
         } catch (\Exception $e) {
             log_message('error', 'Excepción al guardar pago: ' . $e->getMessage());
             return null;
+<<<<<<< HEAD
         }
     }
 
@@ -462,6 +497,8 @@ private function sendConfirmationEmail($email, $orderID, $nuevoUsuario, $usuario
                 'tipos_servos' => '', // El usuario elegirá después
                 'plan_nombre' => 'Plan Básico'
             ];
+=======
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
         }
     }
 
@@ -612,7 +649,11 @@ private function sendConfirmationEmail($email, $orderID, $nuevoUsuario, $usuario
         $session = \Config\Services::session();
         $db = \Config\Database::connect();
 
+<<<<<<< HEAD
            //  Verificar qué datos de sesión tenemos
+=======
+           // 🔥 DEBUG: Verificar qué datos de sesión tenemos
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
         log_message('debug', 'Sesión usuario_id: ' . ($session->get('usuario_id') ?? 'NULL'));
         log_message('debug', 'Sesión id: ' . ($session->get('id') ?? 'NULL'));
 
@@ -651,6 +692,7 @@ private function sendConfirmationEmail($email, $orderID, $nuevoUsuario, $usuario
             ])->setStatusCode(500);
         }
     }
+<<<<<<< HEAD
     public function seleccionarPlan()
     {
         $session = \Config\Services::session();
@@ -837,5 +879,7 @@ private function sendConfirmationEmail($email, $orderID, $nuevoUsuario, $usuario
             ])->setStatusCode(500);
         }
     }
+=======
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
 
 }

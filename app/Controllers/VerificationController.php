@@ -118,7 +118,11 @@ class VerificationController extends Controller
         return $emailService->send();
     }
 
+<<<<<<< HEAD
     //Verificar estado de verificación
+=======
+    // ✅ NUEVO MÉTODO: Verificar estado de verificación
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
     public function checkVerificationStatus()
     {
         $userModel = new UserModel();

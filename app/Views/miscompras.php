@@ -8,7 +8,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+<<<<<<< HEAD
         /* ... Estilos CSS (Se mantienen sin cambios) ... */
+=======
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
         :root {
             --primary: #00b4d8;
             --primary-dark: #1f53c5;
@@ -52,7 +55,10 @@
             border-bottom: 1px solid var(--card-border);
         }
         
+<<<<<<< HEAD
         /* Modificación para los inputs */
+=======
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
         .form-control {
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.2);
@@ -61,7 +67,11 @@
             padding: 12px 15px;
             transition: all 0.3s ease;
         }
+<<<<<<< HEAD
 
+=======
+        
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
         .form-control:focus {
             background: rgba(255, 255, 255, 0.15);
             color: white;
@@ -195,6 +205,64 @@
             color: rgba(255, 255, 255, 0.3);
         }
         
+<<<<<<< HEAD
+=======
+        .step-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        .step-indicator:before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.1);
+            z-index: 1;
+        }
+        
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .step-circle {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        
+        .step.active .step-circle {
+            background: linear-gradient(45deg, var(--primary-dark), var(--primary));
+            box-shadow: 0 0 0 5px rgba(0, 180, 216, 0.2);
+        }
+        
+        .step-label {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .step.active .step-label {
+            color: var(--primary);
+            font-weight: 500;
+        }
+        
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
         @media (max-width: 992px) {
             .purchase-history {
                 margin-top: 30px;
@@ -211,6 +279,10 @@
 
     <div class="container-fluid" style="padding-top: 2rem;">
         <div class="row justify-content-center">
+<<<<<<< HEAD
+=======
+            <!-- Formulario de validación de compra -->
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
             <div class="col-lg-7 col-md-12 mb-4">
                 <div class="card-custom">
                     <div class="card-header-custom">
@@ -218,10 +290,19 @@
                         <p class="text-center mb-0 mt-2">Ingresa el Order ID que recibiste al pagar y completa tus datos de envío.</p>
                     </div>
                     <div class="card-body p-4">
+<<<<<<< HEAD
                         
                         <form id="envioForm">
                             <?= csrf_field() ?>
                             
+=======
+                        <div class="step-indicator">
+                            
+                            
+                        </div>
+                        
+                        <form id="envioForm">
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
                             <div class="form-group">
                                 <label for="order_id" class="form-label"><i class="fas fa-receipt me-2"></i><strong>Order ID de PayPal</strong></label>
                                 <input type="text" class="form-control" id="order_id" name="order_id" placeholder="Ej: 2XD69434WB4945849" required>
@@ -246,6 +327,7 @@
                             </div>
 
                             <div class="section-title mt-4">Dirección de Envío</div>
+<<<<<<< HEAD
                             
                             <div class="form-group">
                                 <label for="pais" class="form-label"><i class="fas fa-globe-americas me-2"></i>País</label>
@@ -264,6 +346,22 @@
                                 </div>
                             </div>
 
+=======
+                            <div class="form-group">
+                                <label for="pais" class="form-label"><i class="fas fa-globe-americas me-2"></i>País</label>
+                                <input type="text" class="form-control" id="pais" name="pais" required>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 form-group">
+                                    <label for="provincia" class="form-label">Provincia / Estado</label>
+                                    <input type="text" class="form-control" id="provincia" name="provincia" required>
+                                </div>
+                                <div class="col-md-6 form-group">
+                                    <label for="ciudad" class="form-label">Ciudad</label>
+                                    <input type="text" class="form-control" id="ciudad" name="ciudad" required>
+                                </div>
+                            </div>
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
                             <div class="row">
                                 <div class="col-md-8 form-group">
                                     <label for="calle" class="form-label">Calle</label>
@@ -299,6 +397,10 @@
                 </div>
             </div>
             
+<<<<<<< HEAD
+=======
+            <!-- Historial de compras -->
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
             <div class="col-lg-5 col-md-12">
                 <div class="card-custom h-100">
                     <div class="card-header-custom">
@@ -323,10 +425,13 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     
     <script>
+<<<<<<< HEAD
         // Obtenemos el nombre y valor del token CSRF directamente del DOM
         const csrfName = $('meta[name=csrf-token]').attr('content');
         const csrfToken = $('meta[name=csrf-hash]').attr('content');
         
+=======
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
         $(document).ready(function() {
             // Cargar historial de compras al cargar la página
             loadPurchaseHistory();
@@ -337,6 +442,7 @@
                 // Limpiamos mensajes anteriores
                 $('#mensaje').hide().removeClass('alert-success alert-danger');
 
+<<<<<<< HEAD
                 // Recolectamos los datos del formulario (incluirá el token CSRF automáticamente)
                 const $form = $(this);
                 const formData = {};
@@ -348,6 +454,23 @@
                 // o si la generación es dinámica, usamos el campo oculto generado por csrf_field()
                 formData['<?= csrf_token() ?>'] = $('[name="<?= csrf_token() ?>"]').val();
 
+=======
+                // Recolectamos los datos del formulario
+                let formData = {
+                    order_id: $('#order_id').val(),
+                    nombre: $('#nombre').val(),
+                    apellido: $('#apellido').val(),
+                    telefono: $('#telefono').val(),
+                    pais: $('#pais').val(),
+                    provincia: $('#provincia').val(),
+                    ciudad: $('#ciudad').val(),
+                    calle: $('#calle').val(),
+                    numero_calle: $('#numero_calle').val(),
+                    piso: $('#piso').val(),
+                    depto: $('#depto').val(),
+                    codigopostal: $('#codigopostal').val()
+                };
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
 
                 // Enviamos por FETCH a nuestro controlador
                 fetch('<?= base_url("/guardar-direccion") ?>', {
@@ -365,9 +488,14 @@
                         $('#mensaje').text(data.message)
                                 .addClass('alert alert-success')
                                 .show();
+<<<<<<< HEAD
                         // Limpiar formulario 
                         $('#envioForm')[0].reset();
                         
+=======
+                        // Limpiar formulario
+                        $('#envioForm')[0].reset();
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
                         // Recargar historial de compras
                         loadPurchaseHistory();
                     } else {
@@ -383,7 +511,11 @@
                 });
             });
             
+<<<<<<< HEAD
             // Función para cargar el historial de compras (mantenida)
+=======
+            // Función para cargar el historial de compras
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
             function loadPurchaseHistory() {
                 console.log('Cargando historial de compras...');
                 
@@ -396,7 +528,14 @@
                     credentials: 'same-origin' // Importante para enviar cookies de sesión
                 })
                 .then(response => {
+<<<<<<< HEAD
                     if (!response.ok) {
+=======
+                    console.log('Respuesta recibida:', response.status, response.statusText);
+                    
+                    if (!response.ok) {
+                        // Si la respuesta no es exitosa, intentamos leer el mensaje de error
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
                         return response.json().then(errorData => {
                             throw new Error(errorData.error || `Error ${response.status}: ${response.statusText}`);
                         }).catch(() => {
@@ -406,6 +545,11 @@
                     return response.json();
                 })
                 .then(data => {
+<<<<<<< HEAD
+=======
+                    console.log('Datos recibidos:', data);
+                    
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
                     if (data.success) {
                         displayPurchaseHistory(data.compras);
                     } else {
@@ -413,6 +557,10 @@
                     }
                 })
                 .catch(error => {
+<<<<<<< HEAD
+=======
+                    console.error('Error completo:', error);
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
                     $('#purchase-history-container').html(`
                         <div class="no-purchases">
                             <i class="fas fa-exclamation-triangle"></i>
@@ -425,6 +573,7 @@
             }
 
             
+<<<<<<< HEAD
             // Función para mostrar el historial de compras (mantenida)
             function displayPurchaseHistory(purchases) {
                 const container = $('#purchase-history-container');
@@ -484,6 +633,69 @@
                 
                 container.html(html);
             }
+=======
+            // Función para mostrar el historial de compras
+            function displayPurchaseHistory(purchases) {
+            const container = $('#purchase-history-container');
+            
+            console.log('Mostrando compras:', purchases);
+            
+            if (!purchases || purchases.length === 0) {
+                container.html(`
+                    <div class="no-purchases">
+                        <i class="fas fa-shopping-bag"></i>
+                        <h5>Aún no tienes compras</h5>
+                        <p>Una vez que realices una compra, aparecerá aquí.</p>
+                        <small class="text-muted">Las compras se vinculan automáticamente a tu cuenta</small>
+                        <div class="mt-4">
+                            <a href="<?= base_url('/pantalla') ?>" class="btn btn-comprar">
+                                <i class="fas fa-shopping-cart me-2"></i>Realizar mi primera compra
+                            </a>
+                        </div>
+                    </div>
+                `);
+                return;
+            }
+            
+            let html = '';
+            purchases.forEach(purchase => {
+                const date = new Date(purchase.fecha);
+                const formattedDate = date.toLocaleDateString('es-ES', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+                
+                // Formatear monto
+                const montoFormateado = parseFloat(purchase.monto).toFixed(2);
+                
+                html += `
+                    <div class="purchase-card">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div class="purchase-id">${purchase.order_id}</div>
+                            <span class="status-badge status-completed">Completado</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <div class="purchase-date">${formattedDate}</div>
+                                <div class="mt-1">
+                                    <small><i class="fas fa-user me-1"></i>${purchase.nombre || 'No especificado'}</small>
+                                </div>
+                                <div class="mt-1">
+                                    <small><i class="fas fa-map-marker-alt me-1"></i>${purchase.pais || 'No especificado'}</small>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="purchase-amount">${purchase.moneda} ${montoFormateado}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.html(html);
+                    }
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
         });
     </script>
 

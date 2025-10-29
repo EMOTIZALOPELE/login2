@@ -87,6 +87,7 @@ class registerController extends Controller
     }
 
     private function sendVerificationEmail($email, $code)
+<<<<<<< HEAD
     {
         $emailService = \Config\Services::email();
         
@@ -114,4 +115,33 @@ class registerController extends Controller
         
         return $emailService->send();
     }
+=======
+{
+    $emailService = \Config\Services::email();
+    
+    $subject = 'Código de Verificación de Cuenta Vecopo';
+    
+    // 1. Datos que se pasarán a la plantilla HTML
+    $data = [
+        'subject' => $subject,
+        'code' => $code,
+        'verification_link' => site_url('verify-code-view?email=' . urlencode($email))
+    ];
+
+    // 2. Cargar la vista (template HTML) y capturar el contenido
+    // CodeIgniter 4 usa view() para renderizar la vista y devolver el HTML.
+    $message = view('emails/verificacion', $data);
+
+    $emailService->setTo($email);
+    $emailService->setSubject($subject);
+    
+    // 3. Establecer el mensaje con el contenido HTML renderizado
+    $emailService->setMessage($message);
+    
+    // 4. Asegurar que el tipo de correo sea HTML
+    $emailService->setMailType('html'); 
+    
+    return $emailService->send();
+}
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
 }

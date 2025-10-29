@@ -142,6 +142,7 @@ $title = 'Control de Servo - VECOPO';
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<<<<<<< HEAD
 
         <script>
         // Pasar los nombres de tarjetas válidos al header
@@ -167,6 +168,51 @@ $title = 'Control de Servo - VECOPO';
                 }
             });
 
+=======
+
+<<<<<<< HEAD
+        <script>
+        // Pasar los nombres de tarjetas válidos al header
+        window.validCardNames = [
+            <?php if (!empty($tarjetas)): ?>
+                <?php foreach($tarjetas as $tarjeta): ?>
+                    <?php if (!empty($tarjeta['nombre_tarjeta'])): ?>
+            "<?= esc($tarjeta['nombre_tarjeta'], 'js') ?>",
+                    <?php endif; ?>
+                <?php endforeach; ?>
+            <?php endif; ?>
+        ];
+
+=======
+    <script>
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
+        $(document).ready(function() {
+            // --- CONFIGURACIÓN INICIAL ---
+            const dispositivoMac = `<?= esc($dispositivo['codigo'] ?? '') ?>`;
+            const URL_BASE_CI = '<?= base_url() ?>';
+<<<<<<< HEAD
+            const csrfToken = $('meta[name="csrf-token"]').attr('content');
+
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                }
+            });
+
+=======
+            // Se toma el token CSRF una sola vez para reutilizarlo.
+            const csrfToken = $('meta[name="csrf-token"]').attr('content');
+
+            // Configuración global para que TODAS las peticiones AJAX de jQuery incluyan el token CSRF
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                }
+            });
+
+            // Almacenar referencias a elementos de la UI para mayor eficiencia
+>>>>>>> 5713a74aeae9c8278a7179ddb883ccac5ba353c4
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
             const servoElements = {};
             document.querySelectorAll('.servo-item').forEach(item => {
                 const servoId = item.dataset.servoId;
@@ -177,11 +223,29 @@ $title = 'Control de Servo - VECOPO';
                 };
             });
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
             // Control manual
             $('.controls-wrapper .btn-control').on('click', function(e) {
                 e.preventDefault();
                 
                 const button = $(this);
+<<<<<<< HEAD
+=======
+=======
+            // --- NUEVA LÓGICA DE CONTROL MANUAL (MÁS SIMPLE) ---
+            
+            // Asignar un único evento de clic a todos los botones de control que no sean para volver atrás.
+            $('.controls-wrapper .btn-control').on('click', function(e) {
+                // Evitar cualquier comportamiento por defecto del botón.
+                e.preventDefault();
+                
+                const button = $(this);
+                // Tomamos la URL para la acción directamente del atributo 'data-comando-url' del botón.
+>>>>>>> 5713a74aeae9c8278a7179ddb883ccac5ba353c4
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
                 const comandoUrl = button.data('comando-url');
 
                 if (!comandoUrl) {
@@ -189,6 +253,10 @@ $title = 'Control de Servo - VECOPO';
                     return;
                 }
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
                 button.prop('disabled', true).fadeTo(200, 0.5);
 
                 $.ajax({
@@ -206,10 +274,47 @@ $title = 'Control de Servo - VECOPO';
                     console.error("AJAX Error:", jqXHR.status, jqXHR.responseText);
                     alert('La petición falló. Revisa la consola (F12) para más detalles.');
                 }).always(function() {
+<<<<<<< HEAD
+=======
+=======
+                // Deshabilitar el botón para evitar clics múltiples mientras se procesa la petición.
+                button.prop('disabled', true).fadeTo(200, 0.5);
+
+                // Llamada AJAX directa para actualizar el estado.
+                $.ajax({
+                    url: comandoUrl, // La URL ya contiene el servo_id y el estado deseado ('abierto' o 'cerrado').
+                    method: 'GET',   // El método que espera tu controlador 'actualizarEstado'.
+                    dataType: 'json' // Esperamos una respuesta en formato JSON.
+                }).done(function(response) {
+                    // Si el servidor responde que todo fue bien...
+                    if (response.status === 'ok') {
+                        // Actualizamos la interfaz de usuario inmediatamente para darle feedback al usuario.
+                        actualizarUI(response.servo_id, response.estado, response.modo);
+                        console.log(`Servo ${response.servo_id} puesto en modo MANUAL. Expira en: ${response.expira}`);
+                    } else {
+                        // Si el servidor responde con un error, lo mostramos.
+                        alert('Error al ejecutar la acción: ' + (response.message || 'Error desconocido.'));
+                    }
+                }).fail(function(jqXHR) {
+                    // Si la petición AJAX falla por completo (ej: error de red, error 500 del servidor).
+                    console.error("AJAX Error:", jqXHR.status, jqXHR.responseText);
+                    alert('La petición falló. Revisa la consola (F12) para más detalles.');
+                }).always(function() {
+                    // Se ejecuta siempre, tanto si la petición tuvo éxito como si falló.
+                    // Volver a habilitar el botón después de que la petición haya terminado.
+>>>>>>> 5713a74aeae9c8278a7179ddb883ccac5ba353c4
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
                     button.prop('disabled', false).fadeTo(200, 1.0);
                 });
             });
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+            // --- FUNCIONES PARA ACTUALIZAR LA UI (SIN CAMBIOS) ---
+>>>>>>> 5713a74aeae9c8278a7179ddb883ccac5ba353c4
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
             function actualizarEstadoDesdeServidor() {
                 if (!dispositivoMac) return;
                 fetch(`${URL_BASE_CI}/dispositivos/estado/${dispositivoMac}`)
@@ -242,7 +347,16 @@ $title = 'Control de Servo - VECOPO';
                 }
             }
             
+<<<<<<< HEAD
             setInterval(actualizarEstadoDesdeServidor, 10000);
+<<<<<<< HEAD
+=======
+=======
+            // Polling para mantener la UI actualizada automáticamente cada 10 segundos.
+            setInterval(actualizarEstadoDesdeServidor, 10000);
+            // Llamada inicial para cargar el estado en cuanto la página esté lista.
+>>>>>>> 5713a74aeae9c8278a7179ddb883ccac5ba353c4
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
             actualizarEstadoDesdeServidor();
         });
     </script>

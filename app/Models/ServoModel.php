@@ -15,8 +15,18 @@ class ServoModel extends Model
     protected $returnType = 'array';
     protected $useSoftDeletes = false;
 
+<<<<<<< HEAD
     // Lista completa de campos permitidos, AHORA INCLUYE 'horario_id' para la relación FK
     protected $allowedFields = [
+=======
+<<<<<<< HEAD
+    // ¡ESTA ES LA PARTE IMPORTANTE!
+    // Lista completa de campos permitidos, según tu imagen de la BD.
+    protected $allowedFields = [
+=======
+    protected $allowedFields    = [
+>>>>>>> 5713a74aeae9c8278a7179ddb883ccac5ba353c4
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
         'dispositivo_id',
         'pin_gpio',
         'tipo_elemento',
@@ -25,12 +35,28 @@ class ServoModel extends Model
         'horario_cierre',
         'estado_actual',
         'modo_operacion',
+<<<<<<< HEAD
         'manual_override_expires',
+=======
+<<<<<<< HEAD
+        'manual_override_expires',
+=======
+>>>>>>> 5713a74aeae9c8278a7179ddb883ccac5ba353c4
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
         'updated_at',
         'temp_min_cierre',
         'temp_max_apertura',
         'viento_max_cierre',
+<<<<<<< HEAD
         'permitir_lluvia'
+=======
+<<<<<<< HEAD
+        'permitir_lluvia'
+=======
+        'permitir_lluvia',
+        'manual_override_expires'
+>>>>>>> 5713a74aeae9c8278a7179ddb883ccac5ba353c4
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
     ];
 
     // Configuración de Timestamps (solo usamos updated_at)
@@ -38,6 +64,7 @@ class ServoModel extends Model
     protected $createdField  = ''; // No usamos 'created_at'
     protected $updatedField  = 'updated_at'; // Tu campo se llama 'updated_at'
     protected $deletedField  = '';
+<<<<<<< HEAD
 
     // =========================================================================
     // 🔥 FUNCIÓN DE ELIMINACIÓN EN CASCADA (SOBRESCRITURA DE MÉTODO NATIVO)
@@ -105,3 +132,6 @@ class ServoModel extends Model
         }
     }
 }
+=======
+}
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95

@@ -65,7 +65,10 @@
         <?php endif; ?>
         
         <form method="POST" action="<?= site_url('verify-code') ?>">
+<<<<<<< HEAD
             <?= csrf_field() ?><input type="hidden" name="email" value="<?= esc($email) ?>">
+=======
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
             <input type="hidden" name="email" value="<?= esc($email) ?>">
             
             <div class="form-group">

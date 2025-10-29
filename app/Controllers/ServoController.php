@@ -73,6 +73,10 @@ class ServoController extends BaseController
      */
     public function actualizarEstado($servo_id, $estado)
     {
+<<<<<<< HEAD
+=======
+        // 1. Validaciones básicas (igual que antes)
+>>>>>>> 5713a74aeae9c8278a7179ddb883ccac5ba353c4
         $servo = $this->servoModel->find($servo_id);
         if (!$servo) {
             return $this->response->setJSON(['status' => 'error', 'message' => 'Servo no encontrado.'])->setStatusCode(404);
@@ -83,6 +87,7 @@ class ServoController extends BaseController
             return $this->response->setJSON(['status' => 'error', 'message' => 'Acceso denegado.'])->setStatusCode(403);
         }
 
+<<<<<<< HEAD
         $timezone = new \DateTimeZone('America/Argentina/Buenos_Aires');
         $expires = (new \DateTime('now', $timezone))->modify('+1 minute');
 
@@ -91,14 +96,74 @@ class ServoController extends BaseController
             'modo_operacion' => 'MANUAL',
             'manual_override_expires' => $expires->format('Y-m-d H:i:s')
         ];
+=======
+        // --- INICIO DE LA NUEVA LÓGICA DE CÁLCULO DE TIEMPO ---
+
+        $timezone = new \DateTimeZone('America/Argentina/Buenos_Aires');
+        $now = new \DateTime('now', $timezone);
+        $targetEstado = strtoupper($estado);
+        $expires = null; // Por defecto, no hay expiración
+
+        // 2. Determinar a qué horario programado debemos apuntar
+        $horarioReferencia = null;
+        if ($targetEstado === 'ABIERTO' && !empty($servo['horario_apertura'])) {
+            $horarioReferencia = $servo['horario_apertura'];
+        } elseif ($targetEstado === 'CERRADO' && !empty($servo['horario_cierre'])) {
+            $horarioReferencia = $servo['horario_cierre'];
+        }
+
+        // 3. Calcular la fecha de expiración si tenemos un horario de referencia
+        if ($horarioReferencia) {
+            try {
+                // Creamos un objeto DateTime para el horario de hoy
+                $horarioHoy = \DateTime::createFromFormat('H:i:s', $horarioReferencia, $timezone);
+                // Le asignamos la fecha de hoy
+                $horarioHoy->setDate($now->format('Y'), $now->format('m'), $now->format('d'));
+
+                // Si la hora programada ya pasó hoy, asumimos que se refiere a la de mañana
+                if ($horarioHoy < $now) {
+                    $horarioHoy->modify('+1 day');
+                }
+
+                // El tiempo de expiración es el horario programado más 1 minuto de precaución
+                $expires = (clone $horarioHoy)->modify('+1 minute');
+
+            } catch (\Exception $e) {
+                // Si hay un error en el formato de la hora, usamos un fallback
+                log_message('error', 'Error al parsear horario para override: ' . $e->getMessage());
+                // Fallback: 15 minutos de override manual si el horario es inválido
+                $expires = (clone $now)->modify('+15 minutes');
+            }
+        } else {
+            // Fallback: Si no hay horario configurado para esa acción, damos un override de 15 minutos
+            $expires = (clone $now)->modify('+15 minutes');
+        }
+
+        // 4. Preparar los datos para actualizar la base de datos
+        $dataToUpdate = [
+            'estado_actual'           => $targetEstado,
+            'modo_operacion'          => 'MANUAL',
+            'manual_override_expires' => $expires->format('Y-m-d H:i:s') // Guardamos el timestamp calculado
+        ];
+        
+        // --- FIN DE LA NUEVA LÓGICA ---
+>>>>>>> 5713a74aeae9c8278a7179ddb883ccac5ba353c4
 
         try {
             $this->servoModel->update($servo_id, $dataToUpdate);
             return $this->response->setJSON([
+<<<<<<< HEAD
                 'status' => 'ok',
                 'estado' => $dataToUpdate['estado_actual'],
                 'servo_id' => $servo_id,
                 'modo' => $dataToUpdate['modo_operacion']
+=======
+                'status'   => 'ok',
+                'estado'   => $dataToUpdate['estado_actual'],
+                'servo_id' => $servo_id,
+                'modo'     => $dataToUpdate['modo_operacion'],
+                'expira'   => $dataToUpdate['manual_override_expires'] // Opcional: enviar la expiración a la vista
+>>>>>>> 5713a74aeae9c8278a7179ddb883ccac5ba353c4
             ])->setStatusCode(200);
         } catch (\Exception $e) {
             log_message('error', 'Error al actualizar estado manual: ' . $e->getMessage());
@@ -107,10 +172,7 @@ class ServoController extends BaseController
     }
 
     /**
-     * ESTA ES LA FUNCIÓN QUE SE USARÁ TANTO PARA LA PÁGINA WEB COMO PARA EL ESP32.
-     * Devuelve el estado de TODOS los servos asociados a un dispositivo.
-     * Esta función también aplica la lógica horaria y actualiza la DB si es necesario.
-     * Ruta: /dispositivos/estado/{id_o_mac}
+     * Función principal para el ESP32 y la web. Decide y devuelve el estado de los servos.
      */
     public function obtenerEstadoDispositivo($macAddress)
     {
@@ -122,6 +184,10 @@ class ServoController extends BaseController
         $timezone = new \DateTimeZone('America/Argentina/Buenos_Aires');
         $nowFormatted = (new \DateTime('now', $timezone))->format('Y-m-d H:i:s');
 
+<<<<<<< HEAD
+=======
+        // LÓGICA 1: REVERTIR A AUTOMÁTICO SI EL TIEMPO MANUAL HA EXPIRADO
+>>>>>>> 5713a74aeae9c8278a7179ddb883ccac5ba353c4
         $servosExpirados = $this->servoModel
             ->where('dispositivo_id', $dispositivo['id'])
             ->where('modo_operacion', 'MANUAL')
@@ -132,15 +198,26 @@ class ServoController extends BaseController
         if (!empty($servosExpirados)) {
             foreach ($servosExpirados as $servo) {
                 $this->servoModel->update($servo['id'], [
+<<<<<<< HEAD
                     'modo_operacion' => 'AUTOMATICO',
+=======
+                    'modo_operacion'          => 'AUTOMATICO',
+>>>>>>> 5713a74aeae9c8278a7179ddb883ccac5ba353c4
                     'manual_override_expires' => null
                 ]);
                 log_message('info', 'Servo ID ' . $servo['id'] . ' revertido a modo AUTOMATICO por expiración.');
             }
         }
         
+<<<<<<< HEAD
         $servos = $this->servoModel->where('dispositivo_id', $dispositivo['id'])->findAll();
 
+=======
+        // Volvemos a cargar los servos para tener los datos más actualizados
+        $servos = $this->servoModel->where('dispositivo_id', $dispositivo['id'])->findAll();
+
+        // LÓGICA 2: CONSULTAR EL CLIMA (OpenWeatherMap)
+>>>>>>> 5713a74aeae9c8278a7179ddb883ccac5ba353c4
         $apiKey = '0d132a7baaa02ea9cfc60077249f0254';
         $city = 'Rio Tercero,AR';
         $encodedCity = urlencode($city);
@@ -164,6 +241,7 @@ class ServoController extends BaseController
             $climaData = ['temperatura' => -100.0, 'esta_lloviendo' => false];
         }
 
+<<<<<<< HEAD
         $respuesta = ['clima'  => $climaData, 'servos' => []];
         foreach ($servos as $servo) {
             
@@ -184,12 +262,31 @@ class ServoController extends BaseController
                 }
 
                 // 2. Aplicar "overrides" del CLIMA
+=======
+        // LÓGICA 3: CONSTRUIR LA RESPUESTA FINAL
+        $respuesta = ['clima'  => $climaData, 'servos' => []];
+        foreach ($servos as $servo) {
+            $decisionFinal = $servo['estado_actual']; // Por defecto, es el estado actual
+
+            if ($servo['modo_operacion'] === 'AUTOMATICO') {
+                $horaActual = date('H:i:s');
+                $estadoBaseHorario = 'MANUAL'; // Valor si no hay horarios
+                
+                if ($servo['horario_apertura'] && $servo['horario_cierre']) {
+                    $estadoBaseHorario = ($horaActual >= $servo['horario_apertura'] && $horaActual < $servo['horario_cierre']) ? 'ABIERTO' : 'CERRADO';
+                }
+
+                $decisionAutomatica = $estadoBaseHorario;
+
+                // Aplicar overrides del clima
+>>>>>>> 5713a74aeae9c8278a7179ddb883ccac5ba353c4
                 $tempActual = $climaData['temperatura'];
                 $estaLloviendo = $climaData['esta_lloviendo'];
                 $tempCerrar = (float)$servo['temp_min_cierre'];
                 $tempAbrir = (float)$servo['temp_max_apertura'];
                 $ignorarLluvia = (bool)$servo['permitir_lluvia'];
 
+<<<<<<< HEAD
                 // Override por calor (puede ser anulado por frío o lluvia)
                 if ($tempActual != -100.0 && $tempAbrir != 0 && $tempActual >= $tempAbrir) {
                     $decisionFinal = 'ABIERTO';
@@ -232,6 +329,24 @@ class ServoController extends BaseController
                     'viento_max'     => $servo['viento_max_cierre'] !== null ? (float)$servo['viento_max_cierre'] : null,
                     'ignorar_lluvia' => (bool)$servo['permitir_lluvia']
                 ]
+=======
+                if ($tempActual != -100.0 && $tempAbrir != 0 && $tempActual >= $tempAbrir) $decisionAutomatica = 'ABIERTO';
+                if ($tempActual != -100.0 && $tempCerrar != 0 && $tempActual <= $tempCerrar) $decisionAutomatica = 'CERRADO';
+                if ($estaLloviendo && !$ignorarLluvia) $decisionAutomatica = 'CERRADO';
+
+                if ($decisionAutomatica !== 'MANUAL' && $servo['estado_actual'] !== $decisionAutomatica) {
+                    $this->servoModel->update($servo['id'], ['estado_actual' => $decisionAutomatica]);
+                    $decisionFinal = $decisionAutomatica; // Actualizamos la decisión final
+                    log_message('info', "Servo ID {$servo['id']} actualizado automáticamente a {$decisionFinal}.");
+                }
+            }
+            
+            $respuesta['servos'][] = [
+                'id'              => (int)$servo['id'],
+                'estado'          => $decisionFinal,
+                'modo'            => $servo['modo_operacion'],
+                'pin'             => (int)$servo['pin_gpio'],
+>>>>>>> 5713a74aeae9c8278a7179ddb883ccac5ba353c4
             ];
         }
         return $this->respond($respuesta);
@@ -362,6 +477,7 @@ class ServoController extends BaseController
             return $this->failServerError('Error interno del servidor.');
         }
     }
+<<<<<<< HEAD
 
     /**
      * Cancela (pone en NULL) un horario de apertura o cierre para un servo específico.
@@ -430,5 +546,7 @@ class ServoController extends BaseController
             return $this->failServerError('Ocurrió un error al actualizar la base de datos.');
         }
     }
+=======
+>>>>>>> 5713a74aeae9c8278a7179ddb883ccac5ba353c4
     
 }

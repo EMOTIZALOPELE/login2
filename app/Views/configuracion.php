@@ -236,6 +236,7 @@
             width: 18px;
             height: 18px;
             accent-color: var(--accent-color);
+<<<<<<< HEAD
         }
 
         /* --- CLASES PARA CONTROLAR VISIBILIDAD DINÁMICA --- */
@@ -244,6 +245,8 @@
         }
         .servo-block.hidden {
             display: none;
+=======
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
         }
 
         /* --- MEDIA QUERIES PARA RESPONSIVIDAD --- */
@@ -313,6 +316,7 @@
             .day-checkbox {
                 flex: 0 0 calc(100% / 4 - 10px);
             }
+<<<<<<< HEAD
             
             /* Ajustes dinámicos para móvil */
             .config-card.form-1-servo form,
@@ -324,6 +328,8 @@
                     "pronostico"
                     "buttons";
             }
+=======
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
         }
 
         /* Vista para Móviles Pequeños (hasta 480px) */
@@ -367,6 +373,7 @@
             </div>
         <?php endif; ?>
 
+<<<<<<< HEAD
         <form method="POST" action="<?= site_url('/configuracion/guardar') ?>" >
             <input type="hidden" name="<?= csrf_token() ?>" value="<?= csrf_hash() ?>">
 
@@ -374,6 +381,16 @@
 
             <!-- Bloque Ventana -->
             <div class="content-block servo-block <?= !in_array('ventana', $servos_disponibles) ? 'hidden' : '' ?>" id="ventana_block">
+=======
+<<<<<<< HEAD
+        <form method="POST" action="<?= site_url('/configuracion/guardar') ?>" >
+=======
+        <form method="POST" action="<?= site_url('configuracion/guardar') ?>" >
+>>>>>>> 5713a74aeae9c8278a7179ddb883ccac5ba353c4
+           <input type="hidden" name="dispositivo_id" value="<?= $dispositivo_id ?? '' ?>">
+
+            <div class="content-block" id="ventana_block">
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
                 <h2>Horarios de <?= esc($servos['ventana']['nombre_servo'] ?? 'Ventana') ?></h2>
                 <div class="form-group">
                     <label for="ventana_apertura">Apertura:</label>
@@ -382,6 +399,10 @@
                 <div class="form-group">
                     <label for="ventana_cierre">Cierre:</label>
                     <input type="time" id="ventana_cierre" name="close_hour_ventana" class="form-control-time" value="<?= esc($horarios['ventana']['cierre'] ?? '18:00') ?>">
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
                 </div>
                 
                 <div class="form-group">
@@ -398,8 +419,31 @@
                             </div>
                         <?php } ?>
                     </div>
+<<<<<<< HEAD
                 </div>
                 
+=======
+=======
+>>>>>>> 5713a74aeae9c8278a7179ddb883ccac5ba353c4
+                </div>
+                
+                <div class="form-group">
+    <label>Días activos para <?= esc($servos['ventana']['nombre_servo'] ?? 'Ventana') ?></label>
+    <div class="days-checkbox-group">
+        <?php
+        $diasVentana = $dias_servos['ventana'] ?? [];
+        foreach ($todos_dias as $dia) {
+            $checked = in_array($dia['ID'], $diasVentana) ? 'checked' : '';
+        ?>
+            <div class="day-checkbox">
+                <input type="checkbox" id="ventana_<?= $dia['ID'] ?>" name="ventana_days[]" value="<?= $dia['ID'] ?>" <?= $checked ?>>
+                <label for="ventana_<?= $dia['ID'] ?>"><?= substr($dia['DIA_semana'], 0, 1) ?></label>
+            </div>
+        <?php } ?>
+    </div>
+</div>
+                
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
                 <h3>Condicionantes</h3>
                 <div class="form-group">
                     <label for="min_temp_ventana">Temp. Mínima (°C):</label>
@@ -419,8 +463,12 @@
                 </div>
             </div>
 
+<<<<<<< HEAD
             <!-- Bloque Cortina -->
             <div class="content-block servo-block <?= !in_array('cortina', $servos_disponibles) ? 'hidden' : '' ?>" id="cortina_block">
+=======
+            <div class="content-block" id="cortina_block">
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
                 <h2>Horarios de <?= esc($servos['cortina']['nombre_servo'] ?? 'Cortina') ?></h2>
                 <div class="form-group">
                     <label for="cortina_apertura">Apertura:</label>
@@ -429,6 +477,10 @@
                 <div class="form-group">
                     <label for="cortina_cierre">Cierre:</label>
                     <input type="time" id="cortina_cierre" name="close_hour_cortina" class="form-control-time" value="<?= esc($horarios['cortina']['cierre'] ?? '20:00') ?>">
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
                 </div>
                 
                 <div class="form-group">
@@ -445,8 +497,31 @@
                             </div>
                         <?php } ?>
                     </div>
+<<<<<<< HEAD
                 </div>
                 
+=======
+=======
+>>>>>>> 5713a74aeae9c8278a7179ddb883ccac5ba353c4
+                </div>
+                
+                <div class="form-group">
+    <label>Días activos para <?= esc($servos['cortina']['nombre_servo'] ?? 'Cortina') ?></label>
+    <div class="days-checkbox-group">
+        <?php
+        $diasCortina = $dias_servos['cortina'] ?? [];
+        foreach ($todos_dias as $dia) {
+            $checked = in_array($dia['ID'], $diasCortina) ? 'checked' : '';
+        ?>
+            <div class="day-checkbox">
+                <input type="checkbox" id="cortina_<?= $dia['ID'] ?>" name="cortina_days[]" value="<?= $dia['ID'] ?>" <?= $checked ?>>
+                <label for="cortina_<?= $dia['ID'] ?>"><?= substr($dia['DIA_semana'], 0, 1) ?></label>
+            </div>
+        <?php } ?>
+    </div>
+</div>
+                
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
                 <h3>Condicionantes</h3>
                 <div class="form-group">
                     <label for="min_temp_cortina">Temp. Mínima (°C):</label>
@@ -466,8 +541,12 @@
                 </div>
             </div>
 
+<<<<<<< HEAD
             <!-- Bloque Postigón -->
             <div class="content-block servo-block <?= !in_array('postigon', $servos_disponibles) ? 'hidden' : '' ?>" id="postigon_block">
+=======
+            <div class="content-block" id="postigon_block">
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
                 <h2>Horarios de <?= esc($servos['postigon']['nombre_servo'] ?? 'Postigón') ?></h2>
                 <div class="form-group">
                     <label for="postigon_apertura">Apertura:</label>
@@ -476,6 +555,10 @@
                 <div class="form-group">
                     <label for="postigon_cierre">Cierre:</label>
                     <input type="time" id="postigon_cierre" name="close_hour_postigon" class="form-control-time" value="<?= esc($horarios['postigon']['cierre'] ?? '19:30') ?>">
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
                 </div>
                 
                 <div class="form-group">
@@ -492,8 +575,31 @@
                             </div>
                         <?php } ?>
                     </div>
+<<<<<<< HEAD
                 </div>
                 
+=======
+=======
+>>>>>>> 5713a74aeae9c8278a7179ddb883ccac5ba353c4
+                </div>
+                
+                <div class="form-group">
+    <label>Días activos para <?= esc($servos['postigon']['nombre_servo'] ?? 'Postigón') ?></label>
+    <div class="days-checkbox-group">
+        <?php
+        $diasPostigon = $dias_servos['postigon'] ?? [];
+        foreach ($todos_dias as $dia) {
+            $checked = in_array($dia['ID'], $diasPostigon) ? 'checked' : '';
+        ?>
+            <div class="day-checkbox">
+                <input type="checkbox" id="postigon_<?= $dia['ID'] ?>" name="postigon_days[]" value="<?= $dia['ID'] ?>" <?= $checked ?>>
+                <label for="postigon_<?= $dia['ID'] ?>"><?= substr($dia['DIA_semana'], 0, 1) ?></label>
+            </div>
+        <?php } ?>
+    </div>
+</div>
+                
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
                 <h3>Condicionantes</h3>
                 <div class="form-group">
                     <label for="min_temp_postigon">Temp. Mínima (°C):</label>

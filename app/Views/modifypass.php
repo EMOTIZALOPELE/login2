@@ -133,7 +133,10 @@
         <?php endif; ?>
 
         <form action="<?= base_url('update-password') ?>" method="post">
+<<<<<<< HEAD
             <input type="hidden" name="<?= csrf_token() ?>" value="<?= csrf_hash() ?>">
+=======
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
             <div class="form-group">
                 <label for="identifier" class="form-label">Email o Usuario</label>
                 <input class="form-control-custom" type="text" name="identifier" id="identifier" 

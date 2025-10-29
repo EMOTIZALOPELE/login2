@@ -818,12 +818,15 @@
                 return response.json();
             }).then(function(responseData) {
                 
+<<<<<<< HEAD
                 //  Redirigir a selección de servos si es necesario
                 if (responseData.redirect_url) {
                     window.location.href = responseData.redirect_url;
                     return;
                 }
 
+=======
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
                 const modal = $('#pagoExitosoModal');
                 const titulo = $('#modalTitulo');
                 const cuerpo = $('#modalCuerpo');
@@ -852,7 +855,11 @@
         // Configuración de botones PayPal (mantener igual)
         paypal.Buttons({
             createOrder: function(data, actions) {
+<<<<<<< HEAD
                 return createOrderHandler('99.00'); 
+=======
+                return createOrderHandler('19.99'); 
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
             },
             onApprove: handleApproval,
             onError: handleError,
@@ -861,7 +868,11 @@
 
         paypal.Buttons({
             createOrder: function(data, actions) {
+<<<<<<< HEAD
                 return createOrderHandler('130.00');
+=======
+                return createOrderHandler('49.99');
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
             },
             onApprove: handleApproval,
             onError: handleError,
@@ -870,7 +881,11 @@
 
         paypal.Buttons({
             createOrder: function(data, actions) {
+<<<<<<< HEAD
                 return createOrderHandler('200.00');
+=======
+                return createOrderHandler('99.99');
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
             },
             onApprove: handleApproval,
             onError: handleError,

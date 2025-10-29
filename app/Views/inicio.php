@@ -106,7 +106,14 @@
                             <li><a href="#" onclick="abrirModal()">Añadir Tarjeta</a></li>
                             <li><a href="#" data-toggle="modal" data-target="#servoModal"><i class="fas fa-gamepad"></i> Manual</a></li>
                             <li><a href="<?= base_url('dispositivos') ?>"><i class="fas fa-user-cog"></i> Dispositivos</a></li> 
+<<<<<<< HEAD
                             <li><a href="<?= base_url('mis-compras') ?>"><i class="fas fa-shopping-bag"></i> Mis Compras</a></li>
+=======
+<<<<<<< HEAD
+                            <li><a href="<?= base_url('mis-compras') ?>"><i class="fas fa-shopping-bag"></i> Mis Compras</a></li>
+=======
+>>>>>>> 5713a74aeae9c8278a7179ddb883ccac5ba353c4
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
                             <li><a href="<?= base_url('logout') ?>">Salir</a></li>
                         </ul>
                     </nav>
@@ -133,6 +140,10 @@
     </header>
 
     <main class="container__card">
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
 
         <?php // ?>
         <?php if (session()->getFlashdata('success')): ?>
@@ -148,6 +159,11 @@
         <?php // ?>
 
 
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> 5713a74aeae9c8278a7179ddb883ccac5ba353c4
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
         <div class="horarios-container">
             <?php foreach ($horarios as $horario): ?>
                 <div class="horario-card">
@@ -172,6 +188,7 @@
                         <?php endif; ?>
 
                         <div class="button-container">
+<<<<<<< HEAD
                             <button type="button" class="config-button" 
                                     data-dispositivo-id="<?= esc($horario['dispositivo_id'] ?? $horario['idhorario']) ?>">
                                 Configurar
@@ -180,17 +197,43 @@
                             <button type="button" class="config-button"
                                     data-toggle="modal" data-target="#changeNameModal"
                                     data-idhorario="<?= esc($horario['idhorario']); ?>"
+=======
+<<<<<<< HEAD
+                            
+                            <?php // ?>
+                            <form action="<?= base_url('configuracion/' . esc($horario['dispositivo_id'])) ?>" method="GET">
+=======
+                            <form action="<?= base_url('configuracion/' . esc($horario['idhorario'])) ?>" method="GET">
+>>>>>>> 5713a74aeae9c8278a7179ddb883ccac5ba353c4
+                                <button type="submit" class="config-button">Configurar</button>
+                            </form>
+                            <button type="button" class="config-button"
+                                    data-toggle="modal" data-target="#changeNameModal"
+                                    
+                                    <?php // ?>
+                                    data-idhorario="<?= esc($horario['idhorario']); ?>"
+                                    
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
                                     data-current-name="<?= isset($horario['nombre_tarjeta']) && !empty($horario['nombre_tarjeta'])
                                         ? esc($horario['nombre_tarjeta'])
                                         : 'Horario de ' . session()->get('nombre'); ?>">
                                 Cambiar Nombre
                             </button>
                         </div>
+<<<<<<< HEAD
                         
                         <?php // ?>
                         <form action="<?= site_url('borrar_tarjeta/' . esc($horario['idhorario'])) ?>" method="POST" onsubmit="return confirm('¿Seguro que quieres eliminar esta tarjeta?');">
                                 <input type="hidden" name="<?= csrf_token() ?>" value="<?= csrf_hash() ?>">
 
+=======
+<<<<<<< HEAD
+                        
+                        <?php // ?>
+=======
+>>>>>>> 5713a74aeae9c8278a7179ddb883ccac5ba353c4
+                        <form action="<?= site_url('borrar_tarjeta/' . esc($horario['idhorario'])) ?>" method="POST" onsubmit="return confirm('¿Seguro que quieres eliminar esta tarjeta?');">
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
                             <button type="submit" class="delete-button">Eliminar</button>
                         </form>
                     </div>
@@ -289,6 +332,7 @@
             <?php endforeach; ?>
         ];
     </script>
+<<<<<<< HEAD
 
     <script>
 
@@ -298,6 +342,10 @@
             }
         });
 
+=======
+    
+    <script>
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
     document.addEventListener('DOMContentLoaded', function() {
         const hamburgerButton = document.getElementById('menu-toggle');
         const navigationMenu = document.getElementById('navigationMenu');

@@ -5,18 +5,30 @@ namespace App\Controllers;
 use App\Models\HorariosModel;
 use App\Models\UserModel;
 use App\Models\ServoModel;
+<<<<<<< HEAD
 use App\Models\AuthTokenModel;
+=======
+<<<<<<< HEAD
+use App\Models\AuthTokenModel;
+=======
+>>>>>>> 5713a74aeae9c8278a7179ddb883ccac5ba353c4
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
 use CodeIgniter\Controller;
 use CodeIgniter\I18n\Time;
 
 class Home extends Controller
 {
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
     protected $horariosModel;
     protected $userModel;
     protected $servoModel;
     protected $authTokenModel;
 
     public function __construct()
+<<<<<<< HEAD
     {
         helper('cookie');
         $this->horariosModel = new HorariosModel();
@@ -37,6 +49,90 @@ class Home extends Controller
         return view('inicio2');
     }
 
+=======
+    {
+        helper('cookie');
+        $this->horariosModel = new HorariosModel();
+        $this->userModel = new UserModel();
+        $this->servoModel = new ServoModel();
+        $this->authTokenModel = new AuthTokenModel();
+        $this->autoLogin();
+    }
+=======
+    /**
+     * Carga la vista de inicio con todas las tarjetas y sus servos asociados.
+     */
+    public function irainicio()
+    {
+        // 1. Instanciar los modelos necesarios
+        $horariosModel = new HorariosModel();
+        $servoModel = new ServoModel();
+
+        // 2. Obtener el ID del usuario de la sesión actual
+        $usuario_id = session()->get('id');
+
+        // Si no hay usuario logueado, redirigir a la página de login
+        if (!$usuario_id) {
+            return redirect()->to('/login');
+        }
+
+        // 3. Obtener todas las tarjetas (horarios) que pertenecen al usuario
+        $horarios = $horariosModel->where('usuario_id', $usuario_id)->findAll();
+
+        // 4. Recorrer cada tarjeta para añadirle la información de sus servos
+        foreach ($horarios as &$horario) {
+            
+            if (!empty($horario['dispositivo_id'])) {
+                // Busca en la tabla 'servos' usando el 'dispositivo_id' de la tarjeta
+                $servosAsociados = $servoModel->where('dispositivo_id', $horario['dispositivo_id'])->findAll();
+                
+                // Añade el array de servos encontrados a la tarjeta actual
+                $horario['servos'] = $servosAsociados;
+            } else {
+                // Si no hay dispositivo_id, asigna un array vacío para evitar errores
+                $horario['servos'] = [];
+            }
+        }
+        unset($horario); // Buena práctica después de un bucle con referencia
+
+        // 5. Preparar los datos para enviar a la vista
+        $data['horarios'] = $horarios;
+
+        // 6. Cargar la vista de inicio, pasándole los datos ya procesados
+        return view('inicio', $data);
+    }
+    
+    public function iniciar2()
+    {
+        return view('inicio2');
+    }
+    public function iralogin()
+    {
+        return view('login');
+    }
+    public function inicioregister()
+    {
+        return view('register');
+    }
+    public function iraconfiguracion()
+    {
+        return view('configuracion');
+    }
+
+>>>>>>> 5713a74aeae9c8278a7179ddb883ccac5ba353c4
+
+    public function index()
+    {
+        if (session()->get('logged_in')) {
+            // Si el usuario ya tiene una sesión, lo enviamos al panel principal.
+            return redirect()->to('/irainicio');
+        }
+
+        // Si no hay sesión, le mostramos la página de bienvenida.
+        return view('inicio2');
+    }
+
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
     public function irainicio()
     {
         $usuario_id = session()->get('id');
@@ -80,7 +176,11 @@ class Home extends Controller
                 $this->rememberUser($user['id']);
             }
 
+<<<<<<< HEAD
             // Redirigir a continuación de pago si venía del proceso de PayPal
+=======
+            // 🔥 NUEVA LÓGICA: Redirigir a continuación de pago si venía del proceso de PayPal
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
             if ($session->get('redirect_after_login') && $session->get('payment_data')) {
                 return redirect()->to('/continuar-pago');
             }
@@ -163,9 +263,19 @@ class Home extends Controller
             }
             $session->setFlashdata('error', 'Error al actualizar el token de recuperación.');
             return redirect()->back();
+<<<<<<< HEAD
         }
         $session->setFlashdata('error', 'Correo electrónico no encontrado.');
         return redirect()->back();
+=======
+<<<<<<< HEAD
+        }
+        $session->setFlashdata('error', 'Correo electrónico no encontrado.');
+        return redirect()->back();
+=======
+        }       
+>>>>>>> 5713a74aeae9c8278a7179ddb883ccac5ba353c4
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
     }
 
     public function forgotpassword()   { return view('forgotpassword'); }
@@ -201,7 +311,11 @@ class Home extends Controller
                 'reset_expires' => null,
             ]);
             $session->setFlashdata('success', 'Tu contraseña ha sido actualizada correctamente. Ya puedes iniciar sesión.');
+<<<<<<< HEAD
             return redirect()->to('/iniciovalogin');
+=======
+            return redirect()->to('/iralogin');
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
         }
         $session->setFlashdata('error', 'Token de recuperación inválido o expirado.');
         return redirect()->back();
@@ -254,6 +368,10 @@ class Home extends Controller
         return view('horarios_view', ['horarios' => $horarios]);
     }
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
     public function irAModifyName() { return view('modifyname'); }
     public function irAModifyPass() { return view('modifypass'); }
 
@@ -263,15 +381,57 @@ class Home extends Controller
         $identifier = $this->request->getPost('identifier');
         $password = $this->request->getPost('password');
         $newUsername = $this->request->getPost('new_username');
+<<<<<<< HEAD
+=======
+=======
+    // Cargar la vista para modificar el nombre de usuario
+    public function irAModifyName()
+    {
+        return view('modifyname');
+    }
+
+    // Cargar la vista para modificar la contraseña
+    public function irAModifyPass()
+    {
+        return view('modifypass');
+    }
+
+    // Procesar la actualización del nombre de usuario
+    public function updateUsername()
+    {
+        $session = session();
+        $userModel = new UserModel();
+
+        $identifier = $this->request->getPost('identifier');
+        $password = $this->request->getPost('password');
+        $newUsername = $this->request->getPost('new_username');
+
+        // 1. Validación de campos
+>>>>>>> 5713a74aeae9c8278a7179ddb883ccac5ba353c4
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
         if (empty($identifier) || empty($password) || empty($newUsername)) {
             $session->setFlashdata('error', 'Todos los campos son obligatorios.');
             return redirect()->back()->withInput();
         }
+<<<<<<< HEAD
         $existingUser = $this->userModel->where('nombre', $newUsername)->first();
+=======
+<<<<<<< HEAD
+        $existingUser = $this->userModel->where('nombre', $newUsername)->first();
+=======
+        
+        // 2. Buscar si el nuevo nombre de usuario ya existe
+        $existingUser = $userModel->where('nombre', $newUsername)->first();
+>>>>>>> 5713a74aeae9c8278a7179ddb883ccac5ba353c4
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
         if ($existingUser) {
             $session->setFlashdata('error', 'El nuevo nombre de usuario ya está en uso. Por favor, elige otro.');
             return redirect()->back()->withInput();
         }
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
         $user = filter_var($identifier, FILTER_VALIDATE_EMAIL)
             ? $this->userModel->where('email', $identifier)->first()
             : $this->userModel->where('nombre', $identifier)->first();
@@ -281,7 +441,11 @@ class Home extends Controller
                 session()->set('nombre', $newUsername);
             }
             $session->setFlashdata('success', '¡Nombre de usuario actualizado con éxito! Ya puedes iniciar sesión con tu nuevo nombre.');
+<<<<<<< HEAD
             return redirect()->to('/iniciovalogin');
+=======
+            return redirect()->to('/login');
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
         }
         $session->setFlashdata('error', 'Email/Usuario actual o contraseña incorrectos.');
         return redirect()->back()->withInput();
@@ -313,7 +477,11 @@ class Home extends Controller
             $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
             $this->userModel->update($user['id'], ['password' => $hashedPassword]);
             $session->setFlashdata('success', '✅ ¡Contraseña actualizada con éxito! Ya puedes usar tu nueva contraseña.');
+<<<<<<< HEAD
             return redirect()->to(base_url('iniciovalogin'));
+=======
+            return redirect()->to(base_url('modify-pass'));
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
         }
         $session->setFlashdata('error', 'Email/Usuario o contraseña actual incorrectos.');
         return redirect()->back()->withInput();
@@ -326,7 +494,11 @@ class Home extends Controller
     {
         session()->set([
             'id' => $user['id'], 
+<<<<<<< HEAD
             'usuario_id' => $user['id'], // ESTABLECER AMBAS VARIABLES
+=======
+            'usuario_id' => $user['id'], // 🔥 ESTABLECER AMBAS VARIABLES
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
             'nombre' => $user['nombre'], 
             'email' => $user['email'], 
             'logged_in' => true
@@ -413,4 +585,88 @@ class Home extends Controller
     }
 
     
+<<<<<<< HEAD
 }
+=======
+}
+=======
+
+        // 3. Verificar al usuario actual
+        $user = null;
+        if (filter_var($identifier, FILTER_VALIDATE_EMAIL)) {
+            $user = $userModel->where('email', $identifier)->first();
+        } else {
+            $user = $userModel->where('nombre', $identifier)->first();
+        }
+        
+        // 4. Si el usuario existe y la contraseña es correcta, actualizar
+        if ($user && password_verify($password, $user['password'])) {
+            $userModel->update($user['id'], ['nombre' => $newUsername]);
+            
+            // Opcional: si el usuario está logueado, actualiza la sesión
+            if (session()->get('id') == $user['id']) {
+                session()->set('nombre', $newUsername);
+            }
+
+            $session->setFlashdata('success', '¡Nombre de usuario actualizado con éxito! Ya puedes iniciar sesión con tu nuevo nombre.');
+            return redirect()->to('/login');
+        } else {
+            $session->setFlashdata('error', 'Email/Usuario actual o contraseña incorrectos.');
+            return redirect()->back()->withInput();
+        }
+    }
+
+    // Procesar la actualización de la contraseña
+    public function updatePassword()
+{
+    $session = session();
+    $userModel = new UserModel();
+
+    $identifier = $this->request->getPost('identifier');
+    $currentPassword = $this->request->getPost('current_password');
+    $newPassword = $this->request->getPost('new_password');
+    $confirmPassword = $this->request->getPost('confirm_new_password');
+
+    // 1. Validación de campos
+    if (empty($identifier) || empty($currentPassword) || empty($newPassword) || empty($confirmPassword)) {
+        $session->setFlashdata('error', 'Todos los campos son obligatorios.');
+        return redirect()->back()->withInput();
+    }
+    
+    if ($newPassword !== $confirmPassword) {
+        $session->setFlashdata('error', 'Las nuevas contraseñas no coinciden.');
+        return redirect()->back()->withInput();
+    }
+    
+    if (strlen($newPassword) < 6) { // Puedes añadir más reglas de validación
+        $session->setFlashdata('error', 'La nueva contraseña debe tener al menos 6 caracteres.');
+        return redirect()->back()->withInput();
+    }
+
+    // 2. Verificar al usuario
+    $user = null;
+    if (filter_var($identifier, FILTER_VALIDATE_EMAIL)) {
+        $user = $userModel->where('email', $identifier)->first();
+    } else {
+        $user = $userModel->where('nombre', $identifier)->first();
+    }
+
+    // 3. Si el usuario existe y la contraseña actual es correcta, actualizar
+    if ($user && password_verify($currentPassword, $user['password'])) {
+        $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+        $userModel->update($user['id'], ['password' => $hashedPassword]);
+        
+        $session->setFlashdata('success', '✅ ¡Contraseña actualizada con éxito! Ya puedes usar tu nueva contraseña.');
+        
+        // 🌟 CORRECCIÓN: Redirige a la misma vista (modifypass) para mostrar el mensaje
+        return redirect()->to(base_url('modify-pass')); 
+    } else {
+        $session->setFlashdata('error', 'Email/Usuario o contraseña actual incorrectos.');
+        return redirect()->back()->withInput();
+    }
+}
+
+}
+
+>>>>>>> 5713a74aeae9c8278a7179ddb883ccac5ba353c4
+>>>>>>> 3c34e82b0f649c57139357adfb0935563a96df95
